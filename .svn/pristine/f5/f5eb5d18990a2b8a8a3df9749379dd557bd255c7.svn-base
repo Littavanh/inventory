@@ -1,0 +1,181 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+$info_id = $_SESSION["EDPOSV1info_id"];
+if(isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id']) ) {
+	if (isset($_POST['type'])) {
+		$infoID=$_SESSION['EDPOSV1AddProducinfoID'];
+		$trantmp=$_SESSION['EDPOSV1tmpProductID'];
+		$OpenStockID='';
+		/*====== Open stock ID ==========*/
+				$resultOpenStock = LoadOpenStatus();
+				while ($itemOpenStock = mysql_fetch_array($resultOpenStock)) {
+					$OpenStockID = $itemOpenStock['openID'];
+				}
+		//=========== check traID
+		//======== check transaction ID
+		$catcount = nr_execute("SELECT COUNT(*) FROM tb_transaction WHERE traID = '$trantmp' and info_id='$infoID' ");
+		if ($catcount > 0) {
+			sql_execute("DELETE FROM tb_transactionh WHERE traID='$trantmp' and info_id='$infoID' ");
+			sql_execute("DELETE FROM tb_transactiond WHERE tranID='$trantmp' and info_id='$infoID' ");
+		}
+		//============= INSERT HEADER
+		if ($_SESSION['EDPOSV1tmpProductID'] !='' && $_SESSION['EDPOSV1AddProducttxtDate'] !='' && $_SESSION['EDPOSV1AddProducttxtreciever'] !='') {
+			$txtDate = $_SESSION['EDPOSV1AddProducttxtDate']; 			
+			$txtreciever = $_SESSION['EDPOSV1AddProducttxtreciever']; 
+			$txtSupplier = $_SESSION['EDPOSV1AddProductSupllier'];
+			$txtRemark = $_SESSION['EDPOSV1AddProducttxtRemark']; 
+
+			//sql_execute("INSERT INTO tb_transactionh(traID, traDate, Exp_date, reciever, remark, status_id, user_add, date_add) 
+			//		VALUES('$trantmp', '$txtDate', '$txtexp','$txtreciever', '$txtRemark', '1','$user_id',NOW()) ");
+			$sql="INSERT INTO tb_transactionh(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id) 
+					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID') ";
+			$resultH = mysql_query($sql, $conn);							
+		}
+		//============ INSERT Detail
+		if($resultH){
+			sql_execute("INSERT INTO tb_transactiond(tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
+						staffName, Dremark, pur_price,sale_price, receive_dis, location_addr, info_id) 
+					select 	tranID, '$txtDate', exp_date, materialID, total, '1','$user_id',NOW(),1,'$txtreciever', '$txtRemark',pur_price,sale_price, receive_dis, location_addr, '$infoID'
+					from v_tmp_transactiond   WHERE tranID='$trantmp' and info_id='$infoID' ");	
+
+			$sumAmountTran = nr_execute("SELECT SUM(pur_price*unitQty3) - SUM(receive_dis*unitQty3) FROM v_transaction WHERE tranID = '$trantmp' and info_id='$infoID' ");
+			sql_execute("insert into tb_po (po_date, tranID, supplierID, amount_LAK, typeID, user_add, date_add, info_id)
+						VALUES (NOW(), '$trantmp', $txtSupplier, '$sumAmountTran','1', '$user_id',NOW(), '$infoID') ");
+
+			$success = " ເພີ່ມຂໍ້ມູນສໍາເລັດແລ້ວ ...!";		
+			// delete from tmp
+			sql_execute("DELETE FROM tmp_transaction WHERE traID='$trantmp' and info_id='$infoID'");
+			sql_execute("DELETE FROM tmp_transactiond WHERE tranID='$trantmp' and info_id='$infoID' ");
+			//=========== Unset SESSION
+			unset($_SESSION['EDPOSV1AddProducttxtDate']); 
+			unset($_SESSION['EDPOSV1AddProducttxtexp']); 
+			unset($_SESSION['EDPOSV1AddProducttxtreciever']); 
+			unset($_SESSION['EDPOSV1AddProducttxtRemark']);
+			unset($_SESSION['EDPOSV1tmpProductID']);
+			unset($_SESSION['EDPOSV1AddProductSupllier']);
+		}else{
+						
+		}
+		
+		
+	}
+}
+
+
+
+if(isset($_POST["btnAddproduct"]) && isset($_SESSION['EDPOSV1role_id'])){ 	
+		$_SESSION['EDPOSV1AddProduct'] = "AddProduct";
+		$infoID = mysql_real_escape_string(stripslashes($_POST['infoID'])); 
+		$txtDate = mysql_real_escape_string(stripslashes($_POST['txtDate'])); 
+		$txtexp = mysql_real_escape_string(stripslashes($_POST['txtexp'])); 
+		$txtreciever = mysql_real_escape_string(stripslashes($_POST['txtreciever'])); 
+		$txtSupplier = mysql_real_escape_string(stripslashes($_POST['supplierID'])); 
+		$txtRemark = mysql_real_escape_string(stripslashes($_POST['txtRemark'])); 
+		$txtprice = mysql_real_escape_string(stripslashes(trim($_POST['txtprice'][$i])));
+
+		$_SESSION['EDPOSV1AddProducinfoID'] = $infoID; 		
+		$_SESSION['EDPOSV1AddProducttxtDate'] = $txtDate; 		
+		$_SESSION['EDPOSV1AddProducttxtreciever'] = $txtreciever; 
+		$_SESSION['EDPOSV1AddProductSupllier'] = $txtSupplier; 
+		$_SESSION['EDPOSV1AddProducttxtRemark'] = $txtRemark; 
+		$_SESSION['EDPOSV1AddProductExpDate'] = $txtexp;
+		$_SESSION['EDPOSV1AddProductPricePur'] = $txtprice;
+
+
+		if (!isset($_SESSION['EDPOSV1tmpProductID']) && $_SESSION['EDPOSV1tmpProductID'] =='') {
+			$_SESSION['EDPOSV1tmpProductID'] = nr_execute("SELECT CONCAT (DATE_FORMAT(now(), '%Y%m%d'), RAND()*1000) as trantmp");
+		}
+		$trantmp=$_SESSION['EDPOSV1tmpProductID'];
+		sql_execute("DELETE FROM tmp_transaction WHERE DATE_FORMAT(date_add, '%Y%m%d')  < DATE_FORMAT(now(), '%Y%m%d') and info_id = '$infoID' ");
+		sql_execute("DELETE FROM tmp_transactiond WHERE DATE_FORMAT(date_add, '%Y%m%d') < DATE_FORMAT(now(), '%Y%m%d') and info_id = '$infoID' ");
+		header("Location: ?d=stock/recieve");
+}
+
+if(isset($_POST["btncancel"]) && isset($_SESSION['EDPOSV1role_id']) ){
+	unset($_SESSION['EDPOSV1AddProduct']);	
+	header("Location: ?d=stock/recieve");
+}
+
+if(isset($_POST["btnsaveProduct"]) && isset($_SESSION['EDPOSV1role_id']) ){	
+	if (isset($_POST['type'])) {
+		for ($i = 0; $i < count($_POST['type']); $i++) {
+			$tranID = $_SESSION['EDPOSV1tmpProductID'];			
+			$exp_date = mysql_real_escape_string(stripslashes($_POST['expDate'][$i]));
+			$materialID = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitID1 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty1 = str_replace(",","",$_POST['unitQty1'][$i]);
+			$unitCap1 = str_replace(",","",$_POST['unitCap1'][$i]);
+			$unitID2 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty2 = str_replace(",","",$_POST['unitQty2'][$i]);
+			$unitCap2 = str_replace(",","",$_POST['unitCap2'][$i]);
+			$unitID3 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty3 = str_replace(",","",$_POST['unitQty3'][$i]);
+			$unitCap3 = str_replace(",","",$_POST['unitCap3'][$i]);
+			$txtprice = str_replace(",","",$_POST['txtprice'][$i]);
+			$txtdiscount = str_replace(",","",$_POST['txtdiscount'][$i]);
+			$txtLocation = mysql_real_escape_string(stripslashes($_POST['txtLocation'][$i]));
+			$Stoc_infoID =$_SESSION['EDPOSV1AddProducinfoID'];
+			if (($unitQty1 > 0) || ($unitQty2 > 0) || ($unitQty3 > 0)) { 						
+				switch ($_POST['type'][$i]) {
+					case "added" :
+					break;
+					case "edited":
+						//=====  Convert Unit
+						//======= unit3
+						if ($unitCap2 > 0) {
+							$convert3 = ($unitQty3%$unitCap2);
+							$convert2 = $unitQty2 + (($unitQty3 - $convert3)/$unitCap2);
+							//========== check cap1
+							if ($unitCap1 > 0) {
+								$unitQty2 = ($convert2%($unitCap1/$unitCap2));
+								$unitQty1 = $unitQty1 + (($convert2 - $unitQty2)/($unitCap1/$unitCap2));								
+							} else {
+								$unitQty2 = $convert2;
+								$unitQty1 = 0;
+							}
+						} else {							
+							$convert3 = $unitQty3;
+						}
+						//$txtprice = $txtprice/ $convert3;
+
+						sql_execute("INSERT INTO tmp_transactiond(tranID, exp_date,materialID, traTypeID, unitQty1, unitQty2, unitQty3, 
+										user_add, date_add,pur_price,sale_price, receive_dis, location_addr, info_id) 
+									SELECT '$tranID', '$exp_date',materialID, '1', '$unitQty1', '$unitQty2', '$convert3', '$user_id', NOW(),
+										'$txtprice','0', '$txtdiscount', '$txtLocation', '$Stoc_infoID'
+									FROM v_material2 WHERE materialID = '$materialID'  and info_id='$infoID' ");
+					break;
+				}
+			}
+			//======================================= Unset SESSION
+			unset($_SESSION['EDPOSV1AddProduct']);	
+		}
+	}
+}
+
+
+if(isset($_GET["del_id"]) && isset($_SESSION['EDPOSV1role_id']) ){	
+	$id = mysql_real_escape_string(stripslashes( base64_decode($_GET['del_id'])));
+	$id = substr($id, 0, strlen($id)-11);
+	$delinfoid = mysql_real_escape_string(stripslashes(($_GET['delinfoid'])));
+
+	$sql = "DELETE FROM tmp_transactiond WHERE traDID ='$id' and info_id = '$delinfoid' ";
+	echo "DELETE FROM tmp_transactiond WHERE tmpDID ='$id' and info_id = '$delinfoid' ";
+	$result = mysql_query($sql, $conn);	
+	if($result){
+		unlink("photos/".$image_name);
+		header("Location: ?d=stock/recieve");
+	}else{
+		echo "<center><h2>ERROR Delete</h2></center>";
+	}
+}
+  
+
+$result = LoadPrice_setting($whereclause, $limitclause);
+$infoID=$_SESSION['EDPOSV1AddProducinfoID'];
+// --------------------------------------------------------- Build Paging
+$catcount = nr_execute("SELECT COUNT(*) FROM v_tmp_transactiond where info_id = '$infoID' ");
+$pagecount = ceil($catcount / $pagesize);
+$pagenum = floor($start/$pagesize) +1;
+$starttext = $start+1;
+$endtext = min($start + $pagesize, $catcount);
+$pagedescription = "ຫນ້າທີ $pagenum, ສະແດງລາຍການທີ $starttext ຫາ $endtext, ຈາກທັງຫມົດ $catcount ລາຍການ";

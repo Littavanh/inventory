@@ -1,0 +1,104 @@
+ <?php
+	session_start();
+	htmltage("ຮັບເຄື່ອງຈາກການໂອນ");
+	if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] == 4) {
+		header("Location: ?d=index");
+	}
+	$whereclause = " WHERE status_id IN (8,9)";
+	//$rs_status = selstatus($whereclause);
+	?>
+ <link type="text/css" rel="stylesheet" href="css/element.css" />
+ <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+ <script type="text/javascript" src="js/Action.js"></script>
+ <script type="text/javascript" src="js/calculate.js"></script>
+
+ <section class="content-header">
+ 	<h1>ຮັບເຄື່ອງຈາກການໂອນ</h1>
+ </section>
+ <section class="content">
+ 	<div class="row">
+ 		<div class="col-md-12">
+ 			<div class="box box-primary">
+ 				<div class="box-header with-border">
+ 					<p><?= $success ?></p>
+ 					<p class="errormessage"><?= $exist ?></p>
+
+ 					<div class="form-group col-md-3">
+ 						<label>ຈາກສາງ</label>
+ 						<select class="form-control" name="infoID" onChange="document.location='index.php?d=stock/receive_tran&infoID='+this.value">
+ 							<option value="0">-- ເລືອກທັງໝົດ --</option>
+ 							<?php
+								$rs_info = LoadInfo();
+								while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+									$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : "";
+								?>
+ 								<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+ 							<?php } ?>
+ 						</select>
+ 					</div>
+
+ 				</div>
+ 				<div class="box-body">
+ 					<div class="row">
+ 						<div class="box-body pad table-responsive">
+ 							<form method="post" id="frmPriceSetting" action="?d=stock/receive_tran" enctype="multipart/form-data">
+ 								<table id="example1" class="table table-bordered table-hover beautified editable">
+ 									<thead>
+ 										<tr>
+ 											<th>ລຳດັບ</th>
+ 											<th>ວັນທີ</th>
+ 											<th>ຈາກສາຂາ</th>
+ 											<th>ຜູ້ສົ່ງ</th>
+ 											<th>ຈ/ນ ລາຍການສິນຄ້າ</th>
+ 											<th>ຈ/ນ ສິນຄ້າ</th>
+ 											<th>ໝາຍເຫດ</th>
+ 											<?php if (isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) { ?>
+ 												<th>ຮັບ</th>
+ 												<th>ຍົກເລີກ</th>
+ 											<?php } ?>
+ 										</tr>
+ 									</thead>
+ 									<tbody>
+ 										<?php $i = 1;
+											while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+												if ($_GET['infoID'] != '') {
+													$getInfoIDT = $_GET['infoID'];
+												} else {
+													$getInfoIDT = $Get_infoID;
+												}
+											?>
+ 											<tr>
+ 												<td class="centered itemcols">
+ 													<span><?= ($i + $start) ?></span>
+ 													<input type="hidden" name="type[]" class="type" value="unchanged" />
+ 													<input type="hidden" name="id[]" value="<?= $row['traID'] ?>" />
+ 												</td>
+ 												<td class="eqcodecols"><?= $row['traDate'] ?></td>
+ 												<td class="eqcodecols"><?= $row['info_name'] ?></td>
+ 												<td class="eqcodecols"><?= $row['reciever'] ?></td>
+ 												<td class="eqcodecols"><?= $row['count_list'] ?></td>
+ 												<td class="eqcodecols"><?= $row['count_Iteam'] ?></td>
+ 												<td class="eqcodecols"><?= $row['remark'] ?></td>
+ 												<?php if (isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) { ?>
+ 													<td class="centered">
+ 														<a href="?d=stock/tran_detail&receive=<?php echo base64_encode($row["traID"] . "tasoksavhay"); ?>&tranID=<?= $row["tranID"] ?>&infoID=<?= $getInfoIDT ?>&infoIDF=<?= $row["info_idF"] ?>"><i class="fa fa-get-pocket" aria-hidden="true"></i></a>
+ 													</td>
+ 													<td class="centered">
+ 														<a href="?d=stock/receive_tran&cancel=<?php echo base64_encode($row["traID"] . "tasoksavhay"); ?>&tranID=<?= $row["tranID"] ?>&infoID=<?= $getInfoIDT ?>&infoIDF=<?= $row["info_idF"] ?>" onclick="return confirm('ທ່ານຕ້ອງການລຶບແທ້ບໍ...?')"><i class="fa fa-ban"></i></a>
+ 													</td>
+													
+													 
+ 												<?php } ?>
+ 											</tr>
+ 										<?php $i++;
+											} ?>
+ 									</tbody>
+ 								</table>
+ 							</form>
+ 						</div>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+ </section>

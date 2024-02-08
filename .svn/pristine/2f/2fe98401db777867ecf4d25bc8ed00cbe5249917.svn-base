@@ -1,0 +1,97 @@
+<?php htmltage("ລາຍລະອຽດການບໍລິການ");
+if ( !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] >4) { header("Location: ?d=index"); exit(); }
+ ?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<section class="content-header">
+    <h1>ລາຍລະອຽດການບໍລິການ</h1>    
+</section>
+
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">				
+				<form method="get">
+				<input type="hidden" name="d" value="report/service_detail" />
+					<div class="box-body">						
+			            <div class="row">
+			                <div class="col-md-6">
+				                <div class="form-group">
+				                  <label style="font-size: 20px;">ເລກທີການເປີດໂຕະ: </label>
+				                  <label style="font-size: 20px; color:#00F"> <?=$_SESSION["EDPOSV1service_odno"]?></label>				                 
+				                </div>
+				                <div class="form-group">
+				                  <label style="font-size: 20px;">ຊື່ໂຕະ: </label>
+				                  <label style="font-size: 20px; color:#00F"><?=$_SESSION["EDPOSV1service_tbname"]?></label>
+				                </div>
+				                <div class="form-group">
+				                	<label style="font-size: 20px;">ສະຖານະ: </label>
+				                	<label style="font-size: 20px; color:#00F"><?=$_SESSION["EDPOSV1service_tb_state"] ?></label>
+				                </div>
+				                <div class="form-group">
+				                	<label style="font-size: 20px;">ຜູ້ເປີດ: </label>
+				                	<label style="font-size: 20px; color:#00F"><?=$_SESSION["EDPOSV1service_useradd"]?>, ວັນທີ່ເປີດ: <?=$_SESSION["EDPOSV1service_dateadd"]?></label>
+				                </div>
+			                </div>
+			                <div class="col-md-6">
+				                <div class="form-group">
+									<p class="right"><a href="report/ex_service_detail.php?<?=$params?>" target="_blank">
+				                    <input type="button" value="Export To Excel" />
+				                    </a></p>
+				                </div>			                	
+			                </div>			                
+		                </div>
+					</div>					
+				</form>
+			</div>
+		</div>
+	</div>
+	<?php if ($catcount >0) { ?>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body pad table-responsive">
+					<table id="example1" class="table table-bordered beautified_report">
+						<thead>
+							<tr>
+							  	<th>ລຳດັບ</th>
+							  	<th>ຊື່ ອາຫານ ແລະ ເຄື່ອງດື່ມ</th>	  	 
+						        <th>ລາຄາ</th>               
+								<th>ຈໍານວນ</th>         
+						        <th>ຜູ້ເພີ່ມ</th>
+						        <th>ວັນທີເພີ່ມ</th> 
+						        <th>ມູນຄ່າລວມ</th>    
+							</tr>
+						</thead>
+						<tbody>						
+							<?php 			
+								$i=1;
+								$sum_total = 0;
+								while ($item = mysql_fetch_array($result)) { 
+								$sum_total = $sum_total + $item['total']; ?>
+								<tr>
+									<td class="centered"><?= ($i+$start) ?></td>
+									<td>
+										<?php if ($item['remark']!='') { echo $item['fd_name'].' | '.$item['remark']; }
+												else { echo $item['fd_name']; }
+										?> </td>				
+									<td align="right"><?=number_format($item['price']) ?>&nbsp;&nbsp;</td>
+					                <td align="right"><?=number_format($item['qty']) ?>&nbsp;&nbsp;</td>
+									<td class="centered"><?= $item['user_add_name'] ?></td>
+					                <td class="centered"><?= $item['date_add'] ?></td>
+					                <td align="right"><?=number_format($item['total']) ?>&nbsp;&nbsp;</td>                
+								</tr>    
+							<?php $i++; } ?>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="6" class="centered"><strong>ມູນຄ່າລວມ</strong></td>
+								<td align="right"><strong><?=number_format($sum_total)?>&nbsp;ກີບ&nbsp;</strong></td>
+						  </tr>
+						</tfoot>							
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php } ?>
+</section>

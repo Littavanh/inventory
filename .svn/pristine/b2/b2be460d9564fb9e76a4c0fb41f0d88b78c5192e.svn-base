@@ -1,0 +1,16 @@
+<?php
+$TokenKey = $_SESSION['EDPOSV1TokenKey'];
+
+
+function loadAddjustHistory() {
+  
+    //    echo '<script>alert("'.$where.'")</script>';
+	return mysql_query("select * from v_export_  group by `transferID` order by traDID DESC");
+}
+function loadStatus() {
+  
+    //    echo '<script>alert("'.$where.'")</script>';
+	return mysql_query("select * from tb_status_get where id in(1,2,4)");
+}
+
+?>

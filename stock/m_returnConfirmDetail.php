@@ -1,0 +1,12 @@
+<?php
+
+$_SESSION['bId'] = $_GET['bId'];
+
+function loadAddjustHistory() {
+    $bId = $_SESSION['bId'];
+   
+    //    echo '<script>alert("'.$where.'")</script>';
+	return mysql_query("select * from v_export where `transferID`='$bId' and status_get_id = 5 ");
+}
+
+?>

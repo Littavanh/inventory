@@ -1,0 +1,114 @@
+<?php
+date_default_timezone_set('Asia/Vientiane'); // set your timezone
+session_start();
+require_once("../config.php");
+require_once("m_receiveT.php");
+$SumResult = SumMaterial($whereclause);
+$date = date('Y-m');
+$output_filename = "Receive" . $date . ".xls";
+// Redirect the output to the stream
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename={$output_filename}");
+if (isset($_GET['startdate'])) {
+	$FormDate = $_GET['startdate'];
+} else {
+	$FormDate = date('Y-m');
+}
+if (isset($_GET['enddate'])) {
+	$ToDate = $_GET['enddate'];
+} else {
+	$ToDate = date('Y-m');
+}
+
+echo "<h4>ລາຍງານຮັບເຄື່ອງເຂົ້າສາງ  ປະຈໍາເດືອນ " . $FormDate  . "</h4> ";
+echo "<table border='1'> \n";
+
+?>
+
+
+<tr>
+
+	<th style="white-space: nowrap; overflow: hidden;">ລຳດັບ</th>
+	<th style="white-space: nowrap; overflow: hidden;">Barcode</th>
+	<th style="white-space: nowrap; overflow: hidden;">ລາຍລະອຽດສິນຄ້າ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ຫົວໜ່ວຍ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ລາຄາ</th>
+	<th colspan="2" style="white-space: nowrap; overflow: hidden;">ຈຳນວນຮັບສິນຄ້າເຂົ້າສາງ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ສະກຸນເງິນ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ວັນ/ເດືອນ/ປີ</th>
+	<th colspan="3" style="white-space: nowrap; overflow: hidden;">ໃບບີນສິນຄ້າ</th>
+	<th colspan="2" style="white-space: nowrap; overflow: hidden;">ໃບຮັບສິນຄ້າເຂົ້າສາງ</th>
+	<th colspan="2" style="white-space: nowrap; overflow: hidden;">ໃບສັ່ງຊື້ PO</th>
+</tr>
+<tr>
+
+	<th style="white-space: nowrap; overflow: hidden;">Items</th>
+	<th style="white-space: nowrap; overflow: hidden;">ID</th>
+	<th style="white-space: nowrap; overflow: hidden;">Description of Goods</th>
+	<th style="white-space: nowrap; overflow: hidden;">Unit</th>
+	<th style="white-space: nowrap; overflow: hidden;">Unit Price</th>
+	<th style="white-space: nowrap; overflow: hidden;">Quantity</th>
+	<th style="white-space: nowrap; overflow: hidden;">Amount</th>
+	<th style="white-space: nowrap; overflow: hidden;">currency</th>
+	<th style="white-space: nowrap; overflow: hidden;">dd/mm/yy</th>
+
+	<th style="white-space: nowrap; overflow: hidden;">ຜູ້ສົ່ງສິນຄ້າ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ເລກທີ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ລົງວັນທີ</th>
+
+	<th style="white-space: nowrap; overflow: hidden;">ເລກທີ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ລົງວັນທີ</th>
+
+	<th style="white-space: nowrap; overflow: hidden;">ເລກທີ</th>
+	<th style="white-space: nowrap; overflow: hidden;">ລົງວັນທີ</th>
+</tr>
+
+<?php
+
+$i = 1;
+while ($item = mysql_fetch_array($SumResult)) {
+	$whereGroupID = $item['materialID'];
+	
+?>
+
+	<?php
+	$j = 1;
+	$result_detail = LoadTable($whereclause, $whereGroupID);
+	while ($itemD = mysql_fetch_array($result_detail)) {
+
+	?>
+
+		<tr>
+
+			<td><?= $j ?></td>
+			<td><?= $itemD['mBarcode'] ?></td>
+			<td><?= $itemD['materialName'] ?></td>
+			<td><?= $itemD['unitName3'] ?></td>
+			<td><?= number_format($itemD['pur_price']) ?></td>
+
+			<td><?= number_format($itemD['pur_price']) ?></td>
+
+			<td><?= number_format(($itemD['pur_price'] * $itemD['unitQty3']) - ($itemD['receive_dis'] * $itemD['unitQty3'])) ?></td>
+			<td><?= $itemD['cur_name'] ?></td>
+			<td><?= date('y-m-d', strtotime($itemD['date_tran'])) ?></td>
+			<td><?= $itemD['supplierName'] ?></td>
+			<td><?= $itemD['bill_no'] ?></td>
+			<td><?= $itemD['bill_date'] ?></td>
+			<td><?= $itemD['whouse'] ?></td>
+			<td><?= $itemD['whouseDate'] ?></td>
+			<td><?= $itemD['po_no'] ?></td>
+			<td><?= $itemD['po_date'] ?></td>
+		</tr>
+	<?php $j++;
+	}  ?>
+
+
+
+
+<?php $i++;
+}  ?>
+
+
+<?php
+mysql_close($conn);
+?>

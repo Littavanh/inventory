@@ -1,0 +1,270 @@
+*{
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif, Saysettha OT;
+	font-size: 12pt; 
+	
+}
+
+body{
+	
+}
+
+#container{
+	width: 90%;
+	margin: 0.5em auto;
+	box-shadow: 0 0 0.8em 0 rgba(0,0,0,0.4),
+		inset 0 -1.5em 1.5em -1.5em #FFC373,
+		inset 0 1.5em 1.5em -1.5em #FFC373,
+		inset 0 0.8em 0 0 rgba(255,255,255,0.1);		
+}
+
+#header{
+	height: 150px;
+	/*background-color: #00FFCC;*/
+	background-image:url(../img/banner.png);	
+	background-size:100% 150px;
+	background-repeat:no-repeat;
+	box-shadow: 0 0 0.5em 0 rgba(0,0,0,0.4),
+		inset 0 -1.1em 1.5em -1.5em #82D8E8,
+		inset 0 1.5em 1.5em -1.5em #82D8E8,
+		inset 0 1.5em 0 0 rgba(255,255,255,0.1);	
+}
+
+#header h1{
+	color: #FFFFFF;	
+	font-size: 20pt;
+}
+
+.headername{
+	padding: 0.7em 0 0 0.8em;	
+}
+#header haddr{
+	color: #FFFFFF;	
+	font-size: 14pt;
+}
+.headerAddr{
+	padding: 0.9em 0 0 1em;	
+}
+
+#header img{	
+	border: solid thin #FFAAFF;
+	border-bottom-left-radius: 0.9em;
+	border-bottom-right-radius: 0.9em;
+	width: 100%;
+	height: 10em;
+	background-image:url(../img/banner.png);	
+}
+#topbar{
+	margin-top: 0.2em;
+	position: relative;				
+	background-color: #9369EE;
+	box-shadow: 0 0 0.5em 0 rgba(0,0,0,0.6),
+		inset 0 -1.5em 1.5em -1.5em #82D8E8,
+		inset 0 1.5em 1.5em -1.5em #82D8E8,
+		inset 0 0.7em 0 0 rgba(255,255,255,0.1);	
+	display: inline-block;
+	width: 100%;
+}
+
+
+#topbar li{
+	list-style: none;
+	display: inline-block;
+	padding: 0.5em;	
+	font-weight: bold;
+}
+
+#topbar a{
+	text-decoration: none;
+	color: #FFFFFF;	
+	cursor: pointer;
+	padding: 0.5em;
+	border-left: solid thin;
+}
+
+#topbar a:hover{
+	background-color: #FFE2BC;	
+	color: #000000;
+}
+#searchbox{
+	
+	float: right;
+	
+}
+
+.right{
+	float: right;
+}
+
+#leftbar{
+	float: left;
+	width: 12.5em;
+	
+	
+}
+#contentpage{
+	margin-left: 12.3em;
+	
+}
+
+#footer{
+	clear: both;
+	font-weight: bold;
+	font-style: italic;
+	color: #FFFFFF;
+	padding: 0.2em;
+	line-height: 1.8em;
+	background-color: #9369EE;
+	box-shadow: 0 0 0.5em 0 rgba(0,0,0,0.4),
+		inset 0 -1.5em 1.5em -1.5em #82D8E8,
+		inset 0 1.5em 1.5em -1.5em #82D8E8,
+		inset 0 1em 0 0 rgba(255,255,255,0.1);	
+	text-align: center;
+	
+}
+#footer a{
+	color: #FFFFFF;
+	font-size: 0.7em;
+	text-decoration: none;
+}
+
+/* ------------------------------------- Index Page ------------------------------- */
+
+#topcontent{
+	margin-top: 0.3em;
+	
+}
+
+#notice_bar{
+	float: left;
+	width: 11em;	
+}
+
+#calendar{
+	
+	width: 95%;	
+}
+#calendarbox{
+	margin: 0.5em auto;
+	
+}
+#contentzone{
+	margin-left: 12em;
+}
+
+#bottom{
+	width: 95%;
+	position: relative;
+	margin-bottom: 1.5em;
+}
+
+.boxmenu{
+	display: inline-block;
+	margin: 0.5em auto;
+}
+
+.boxmenu li{
+	width:7.3em;
+	height: 7.1em;
+	margin: 0.3em 0.3em 0.3em 3em;
+	float: left;
+	border: solid thin #44919E;
+	list-style-type: none;
+	box-shadow: 0 0 0.8em #E2E2CF;
+	background-color: rgba(255,255,210,0.5);
+}
+.boxmenu img{
+	width: 5em;
+	height: 6em;
+}
+
+.boxmenu li:hover{
+	background-color: #2EF5F5;
+}
+.boxmenu a{
+	text-decoration: none;
+}
+
+#search{
+	border: solid thin;
+	position: absolute;
+	margin-right: 0.5em;
+}
+#search input{
+	padding: 0.15em;
+}
+/* ----------------------------------------------- LOGIN FORM ------------------------- */
+#loginform{
+	
+	margin: 5em 0 9em 19em; 	
+	padding: 0 0.5em 0.7em 0.5em;
+	width: 13em;
+	border-radius: 1.5em;
+	border: solid thin #C57100;
+	box-shadow: 0 0 0.5em #82D8E8;
+	text-align: center;
+}
+#loginform input[type="submit"] {
+	padding: 0.8em 1.5em;
+	margin-top: 0.8em;	
+	font-weight: bold;
+	cursor: pointer;		
+}
+
+#loginform input{
+	padding: 0.3em 0.2em;
+	margin-top: 0.1em
+}
+#loginform p{
+	margin-top: 0.5em;
+}
+/********************************* LOGIN INFI ***********************************/
+.loginfo{
+	position: absolute;
+	right: 0;
+	line-height: 1.3em;
+	border: dotted thin #0054E3;
+	border-radius: 0.8em;
+	margin: 0.2em;
+	margin-top: 0.3em;
+	padding: 0.5em;
+	
+	box-shadow: 0 0 1.5em 0 rgba(0,0,0,0.4),
+		inset 0 -1.5em 1.5em -1.5em #FFC373,
+		inset 0 1.5em 1.5em -1.5em #FFC373,
+		inset 0 1em 0 0 rgba(255,255,255,0.1);
+}
+/* left box */
+/* --------------------------------------------Left Box -------------------- */
+.boxtitle{
+	
+}
+.leftbox{
+	margin: 0.1em;
+	margin-bottom: 0.3em;
+	padding: 0.5em;	
+	border-radius: 0.5em;
+	
+}
+.leftbox li{	
+	list-style: none;
+	padding: 0.6em 0.2em;
+	border-bottom: solid thin;	
+	margin: 0.2em 0;		
+		
+}
+.leftbox li:hover {
+	background-color: #AFE2BC;
+	
+	
+	
+}
+.leftbox a{
+	text-decoration: none;	
+	font-weight: bold;
+}
+.leftbox p{
+	padding-bottom: 0.3em;
+}
+

@@ -1,0 +1,26 @@
+@page { 	
+	size: 21cm 29.7cm;	
+	font-size: 12pt;
+}
+
+.noprint{
+	display: none;
+}
+
+
+table{
+	border-collapse: collapse;
+	width: 19.8cm;
+}
+
+th{
+	color: #FFFFFF;
+	background-color: #000000;
+	
+}
+
+td{
+	height: 0.8cm;
+}
+
+

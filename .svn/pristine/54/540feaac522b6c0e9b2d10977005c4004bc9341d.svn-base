@@ -1,0 +1,91 @@
+<?php 
+	$GnfoID= $_SESSION['EDPOSV1info_id'];
+	$Get_infoName=$_SESSION['EDPOSV1info_name'];
+
+	$infoID = mysql_real_escape_string(stripslashes($_GET['infoID']));
+	$startdate = mysql_real_escape_string(stripslashes($_GET['startdate']));
+	$enddate = mysql_real_escape_string(stripslashes($_GET['enddate']));
+
+	//================
+
+	//=======Load Open Date
+	function LoadOpenDate() {
+		return mysql_query("select * from v_opendate WHERE closeDate is null and status_id = 1 order by openID DESC ");
+	}
+
+	$resultCur = LoadOpenDate();
+	while($rowC = mysql_fetch_array($resultCur, MYSQL_ASSOC)) {
+		$result_ID = $rowC['openID'];
+		$result_open = $rowC['openDate']; 
+	}
+	
+	//------------------------------------------------ Building search clause // 	
+$whereclause = "";
+/*
+if ($startdate != NULL && $enddate != NULL){
+	$whereclause .= "(DATE(date_tran) BETWEEN '$result_open' AND '$enddate') AND ";
+}else{
+	$whereclause .= "(DATE(date_tran) BETWEEN '$result_open' AND DATE(NOW())) AND ";
+} 
+*/
+if ($infoID >'0') {
+	$whereclause = " info_id='$infoID'  AND ";
+} 
+ if ($infoID =='' || $infoID =='0') {
+	$whereclause = " info_id='$GnfoID'  AND ";
+}
+
+if ($whereclause != "") $whereclause = "WHERE  " . substr($whereclause, 0, strlen($whereclause)-5);
+
+
+$params = "";
+if ($startdate != NULL && $enddate != NULL){
+	$params .= "startdate=$startdate&enddate=$enddate&infoID=$GnfoID&";
+}	
+
+// ------------------------------------- PAGE ------------------------------ //
+/*
+$pagesize = 50;
+$start =  (int)$_GET['start'];
+	
+$limitclause = "LIMIT $start, $pagesize";
+
+*/
+// --------------------------------------------------------- Build Paging
+$catcount = nr_execute("SELECT COUNT(SUM(unitQty3)) FROM v_stock_movement $whereclause GROUP BY info_id, materialID, exp_date, pur_price HAVING SUM(unitQty3) >0 ");
+
+function SumMaterial_CountRow($whereclause) {
+	return mysql_query("SELECT sum(unitQty3) FROM v_stock_movement $whereclause GROUP BY info_id, materialID, exp_date, pur_price HAVING SUM(unitQty3) >0 ");
+}
+$catcount=0;
+$RS_CountRow = SumMaterial_CountRow($whereclause);
+while ($item_CR = mysql_fetch_array($RS_CountRow)) {
+	$catcount++;
+}
+
+
+
+/*
+$pagecount = ceil($catcount / $pagesize);
+$pagenum = floor($start/$pagesize) +1;
+$starttext = $start+1;
+$endtext = min($start + $pagesize, $catcount);
+$pagedescription = "ຫນ້າທີ $pagenum, ສະແດງລາຍການທີ $starttext ຫາ $endtext, ຈາກທັງຫມົດ $catcount ລາຍການ";
+*/
+
+
+//=======SUM material by material ID
+function SumMaterial($whereclause, $limitclause) {
+	return mysql_query("SELECT info_id, mBarcode, materialID, materialName, SUM(unitQty3) as unitQty3, 
+						cap1,  cap2, cap3, unitName1, unitName2,unitName3, exp_date, pur_price,cur_name
+						from v_stock_movement $whereclause GROUP BY info_id, materialID, exp_date, pur_price HAVING SUM(unitQty3) >0 $limitclause");
+}
+
+
+function LoadTranType() {
+	return mysql_query("select tranType, Typename from tb_trantype WHERE tranType IN (3,4,6,11,19) ORDER BY `tb_trantype`.`tranType` DESC");
+}
+
+function LoadInfo() { 
+	return mysql_query("select distinct info_id, info_name, info_id from tb_info WHERE status_id IN (1)  ");
+}

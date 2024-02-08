@@ -1,0 +1,186 @@
+<?php 
+session_start();
+htmltage("ກ່ຽວກັບໂປຼແກຼມ");
+?>
+
+<section class="content-header">
+    <h1>ກ່ຽວກັບໂປຼແກຼມ</h1>      
+</section>
+
+    <section class="content">
+
+      <div class="row">
+    
+        <!-- /.col -->
+        <div class="col-md-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#activity" data-toggle="tab">ຂໍ້ມູນທົ່ວໄປ</a></li>
+              <li><a href="#timeline" data-toggle="tab">ໂປຼແກຼມ</a></li>
+              <li><a href="#settings" data-toggle="tab">ຕິດຕໍ່</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="active tab-pane" id="activity">                 
+	            <div class="box-body">
+	              <div class="user-block">
+	                    <img class="img-circle img-bordered-sm" src="logo/LOGO_EGPOS.jpg" alt="User Image" width="250" height="250" >
+	                        <span class="username">
+	                          <a href="#">EG POS V2.0</a>
+	                        </span>
+	                  </div>
+	              <dl class="dl-horizontal">
+	              	<P>ໂປຼແກຼມຂາຍໜ້າຮ້ານ (POS) ພັດທະນາຂື້ນເພື່ອນໍາໃຊ້ເຂົ້າໃນການຄຸ້ມຄອງ ບໍລິຫານທູລະກິດຂະໜາດນ້ອຍເຖິງລະດັບອົງກອນທີ່ໃຫຍ່ມີຫຼາຍສາຂາ</P>
+	              	<P>ໂດຍມີ 5 ໜ້າທີ່ຫຼັກດັ່ງນີ້</P>
+	                <dt>ການບໍລິການ</dt>
+	                <dd>-​ ເປີດ/ປິດ ງວດການຂາຍ</dd>
+					<dd>-​ ເປີດໂຕະ</dd>
+					<dd>- ສາມາດປ່ຽນໂຕະໄດ້</dd>
+					<dd>- ຕິດຕາມການບໍລິການ</dd>
+					<dd>- ຄິດໄລ່ເງິນ</dd>
+					<dd>- ຕັ້ງອັດຕາແລກປ່ຽນເງິນ</dd>
+					<dd>- ສາມາດຮັບເງິນໄດ້ 3 ສະກຸນເງິນ (ກີບ, ໂດລາ, ບາດ)</dd>
+					<dd>-​ ສາມາດຮັບສິນຄ້າຄືນຈາກລູກຄ້າໄດ້</dd>
+	                <dt>ການຕັ້ງຄ່າຂໍ້ມູນພື້ນຖານ</dt>
+	                <dd>- ແຍກໂຊນຮ້ານ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ປັບປຸງຂໍ້ມູນໂຕະ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ປັບປຸງຂໍ້ມູນໝວດສິນຄ້າ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ປັບປຸງຂໍ້ມູນລາຍການສິນຄ້າ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ກໍານົດການເບີກຈ່າຍສິນຄ້າ</dd>
+					<dt>ສາງສິນຄ້າ</dt>
+					<dd>- ຮັບເຄື່ອງເຂົ້າສາງ</dd>
+					<dd>- ຊໍາລະເຄື່ອງອອກສາງ</dd>
+					<dd>- ວັດຖຸດິບ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ຫົວໜ່ວຍສິນຄ້າ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+	                <dt>ລາຍງານ</dt>
+	                <dd><strong># ລາຍງານ ພື້ນຖານຂອງໂປຼແກຼມມີ 11ລາຍງານ</strong></dd>
+					<dd>- ລາຍງານ ໂຕະອາຫານ</dd>
+					<dd>- ລາຍງານ ລາຍການອາຫານ ແລະ ເຄື່ອງດື່ມ</dd>
+					<dd>- ລາຍງານ ການບໍລິການ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ການຮັບເງິນ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ເມນູທີ່ຂາຍ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ຮັບເຄື່ອງເຂົ້າສາງ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ການເຄື່ອນໄຫວສາງ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ຊໍາລະເຄື່ອງອອກສາງ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ເຄື່ອງໃນສາງ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dd>- ລາຍງານ ຈຸດຕໍ່າສຸດ</dd>
+					<dd>- ລາຍງານ ສິນຄ້າໃກ້ໝົດອາຍຸ (ສາມາດສະຫຼຸບລາຍຮັບເປັນ ວັນ, ເດືອນ, ປີ ແລະ ອື່ນໆຕາມຄວາມຕ້ອງການ)</dd>
+					<dt>ຄວາມປອດໄພ</dt>
+		            <dd>- ສາມາດ ຈັດການກັບຜູ້ໃຊ້ (ເພີ່ມ, ແກ້ໄຂ, ລຶບ)</dd>
+					<dd>- ສາມາດ ບັນທຶກທຸກໆ ການເຄື່ອນໄຫວຂອງ ຜູ້ໃຊ້ ໃນໂປຼແກຼມໄດ້</dd>
+	              </dl>
+	             </div>
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="timeline">
+                <ul class="timeline timeline-inverse">
+                  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">15 Mar. 2012</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">ໂປຼແກຼມບັນຊີສາງ </a>V1.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->  
+                  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">01 Aug. 2013</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">Hospital Management System (HRMS) </a>V1.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item --> 
+                  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">12 Dec. 2013</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">Human Resource Management System (HRMS) </a>V1.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->                 
+                  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">10 Feb. 2014</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">POS for Restaurant </a>V1.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->
+                  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">25 Aug. 2015</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">School Managent System </a>V1.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->                  
+				<!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">01 May. 2018</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">EG POS </a>V1.2</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->  
+    			  <!-- Start timeline item -->
+                  <li class="time-label">
+                        <span class="bg-red">30 Aug. 2018</span>
+                  </li>          
+                  <li>
+                    <i class="fa fa-th-large bg-blue"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header"><a href="#">Full POS (EG POS) </a>V2.0</h3>
+                    </div>
+                  </li>
+                  <!-- END timeline item -->   
+                  <li>
+                    <i class="fa fa-clock-o bg-gray"></i>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.tab-pane -->
+
+              <div class="tab-pane" id="settings">
+                <dl class="dl-horizontal">              	
+	                <dt>Develop by</dt>
+	                <dd>Mr. Souksavay PHONEKHAMMA</dd>
+	                <dt>Mobile</dt>
+	                <dd>(+856) 20 22221382</dd>
+	                <dt>whatsapp</dt>
+	                <dd>(+856) 20 22221382</dd>
+	                <dt>Line ID</dt>
+	                <dd>ta_souk</dd>
+	                <dt>E-mail</dt>
+	                <dd>souksavhaypkm@gmail.com</dd>
+	                <dt>Facebook</dt>
+	                <dd><a href="https://www.facebook.com/EG-POS-209297582890361/">EG POS</a></dd>
+              </dl>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+    </section>

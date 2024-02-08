@@ -1,0 +1,11 @@
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_kind_of_food_` AS select
+ `kf`.`kf_id` AS `kf_id`,`kf`.`status_id` AS `status_id`,`kf`.`kf_name` AS `kf_name`,`kf`.`user_add` AS `user_add`,
+ `kf`.`date_add` AS `date_add`,`kf`.`user_edit` AS `user_edit`,`kf`.`date_edit` AS `date_edit`,
+ `kf`.`edit_to` AS `edit_to`,`st`.`status_text` AS `status_text`,`usadd`.`username` AS `user_add_name`,
+ `usadd`.`first_name` AS `user_add_firstname`,`usadd`.`last_name` AS `user_add_last_name`,
+ `usedit`.`username` AS `user_edit_name`,`usedit`.`first_name` AS `user_edit_firstname`,
+ `usedit`.`last_name` AS `user_edit_last_name`,`kf`.`info_id` AS `info_id`,`kf`.`viewOrder` AS `viewOrder`,
+ `kf`.`mainCategoryID` AS `mainCategoryID` from (((`tb_kind_food_` `kf` join `tb_status` `st` 
+ on((`kf`.`status_id` = `st`.`status_id`))) join `tb_user` `usadd` on((`kf`.`user_add` = `usadd`.`user_id`))) 
+ left join `tb_user` `usedit` on((`kf`.`user_edit` = `usedit`.`user_id`))) order by `kf`.`kf_id`

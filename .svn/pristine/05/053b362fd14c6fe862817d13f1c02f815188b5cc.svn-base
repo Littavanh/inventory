@@ -1,0 +1,239 @@
+<?php htmltage("ລາຍງານຮັບເຄື່ອງເຂົ້າສາງ"); ?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<section class="content-header">
+	<h1>ລາຍງານຮັບເຄື່ອງເຂົ້າສາງ</h1>
+</section>
+
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">
+				<form method="get">
+					<input type="hidden" name="d" value="report/receive" />
+					<div class="box-body">
+						<div class="row">
+							<div class="col-md-6">
+								<!-- <div class="form-group col-md-6">
+									<label>ແຕ່ວັນທີ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" name="startdate" class="form-control pull-right" id="datepicker1" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['startdate']  ?>">
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label>ເຖິງວັນທີ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" name="enddate" class="form-control pull-right" id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['enddate']  ?>">
+									</div>
+								</div> -->
+
+								<div class="form-group col-md-6">
+									<label>ສາງ</label>
+									<select class="form-control" name="infoID">
+										<option value="0">-- ເລືອກທັງໝົດ --</option>
+										<?php
+										$rs_info = LoadInfo();
+										while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+											$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+										<?php } ?>
+									</select>
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>ຜູ້ສະໜອງ</label>
+									<select name="supplierID" class="form-control">
+										<option value="">-- ເລືອກຜູ້ສະໜອງ --</option>
+										<?php
+										$rsSupplier = LoadSupplier();
+										while ($row_c = mysql_fetch_array($rsSupplier, MYSQL_ASSOC)) {
+											$selected = $row_c['supplierID'] == $_GET['supplierID'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['supplierID'] ?>" <?= $selected ?>><?= $row_c['supplierName'] . '|' . $row_c['ContactName'] . '|' . $row_c['tel'] ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<p class="right">
+										<a href="report/ex_receive.php?<?= $params ?>" target="_blank">
+											<input type="button" value="Export To Excel" />
+										</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<button type="reset" class="btn btn-default" onclick="document.location='?d=report/receive'">ຍົກເລີກ</button>
+						<button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body pad table-responsive">
+					<table id="example1" class="table table-bordered beautified_report">
+						<thead>
+							<tr>
+								<th>ລຳດັບ</th>
+								<th>ລະຫັດສິນຄ້າ</th>
+								<th>*ລາຍລະອຽດສິນຄ້າ</th>
+								<th>ຫົວໜ່ວຍ</th>
+								<th>ລາຄາ</th>
+								<th colspan="2">ຍອດເຫລືອຕົ້ນເດືອນ</th>
+								<th colspan="2">ຮັບສິນຄ້າເຂົ້າ</th>
+								<th colspan="2">ຈ່າຍສິນຄ້າອອກ</th>
+								<th colspan="2">ຍອດຄົງເຫລືອທ້າຍເດືອນ</th>
+							</tr>
+							<tr>
+								<th>Items</th>
+								<th>ID</th>
+								<th>Description of Goods</th>
+								<th>Unit</th>
+								<th>Unit Price</th>
+								<th>ຈຳນວນ</th>
+								<th>ລວມມູນຄ່າ</th>
+								<th>ຈຳນວນ</th>
+								<th>ລວມມູນຄ່າ</th>
+								<th>ຈຳນວນ</th>
+								<th>ລວມມູນຄ່າ</th>
+								<th>ຈຳນວນ</th>
+								<th>ລວມມູນຄ່າ</th>
+								
+							</tr>
+
+
+						</thead>
+						<tbody>
+							<?php
+							$i = 1;
+							while ($item = mysql_fetch_array($SumResult)) {
+								$whereGroupID = $item['tranID'];
+							?>
+								<!-- <tr bgcolor="#00FFFF">
+									<td class="centered"><?= ($i + $start) ?></td>
+									<td>
+										<div align="center"><strong><?= $item['traDate'] ?></strong></div>
+									</td>
+									<td>
+										<div align="left"><strong><?= $item['reciever'] ?></strong></div>
+									</td>
+									<td>
+										<div align="center"><strong><?= $item['username'] ?></strong></div>
+									</td>
+									<td>
+										<div align="center"><strong><?= $item['date_add'] ?></strong></div>
+									</td>
+									<td colspan="3"><strong><?= $item['supplierName'] ?></td>
+									<td colspan="4"><strong><?= $item['remark'] ?></td>
+								</tr> -->
+								<?php
+								$j = 1;
+								$sumPriceBill = 0;
+								$sumDiscountBill = 0;
+								$sumTotalPriceBill = 0;
+
+								// $result_detail = LoadTable($whereclause, $whereGroupID);
+								$result_detail = LoadTableV2($whereclause, $whereGroupID);
+								//$sumTotalPrice = '0';
+								while ($itemD = mysql_fetch_array($result_detail) ) {
+									$convert11 = 0;
+									$convert12 = 0;
+									$convert21 = 0;
+									$convert22 = 0;
+									$sumTotalPrice = $sumTotalPrice + (($itemD['pur_price'] - $itemD['receive_dis']) * $itemD['unitQty3']);
+									$sumDiscount = $sumDiscount + ($itemD['receive_dis'] * $itemD['unitQty3']);
+									$sumPrice = $sumPrice + ($itemD['pur_price']);
+
+									$sumTotalPriceBill = $sumTotalPriceBill + (($itemD['pur_price'] - $itemD['receive_dis']) * $itemD['unitQty3']);
+									$sumDiscountBill = $sumDiscountBill + ($itemD['receive_dis'] * $itemD['unitQty3']);
+									$sumPriceBill  = $sumPriceBill + ($itemD['pur_price']);
+
+									if ($itemD['cap1'] != 0) {
+										$convert11 = $itemD['unitQty3'] % $itemD['cap1'];
+										$convert12 = ($itemD['unitQty3'] - ($convert11)) / $itemD['cap1'];
+										$convert21 = $convert11 % $itemD['cap2'];
+										$convert22 = ($convert11 - $convert21) / $itemD['cap2'];
+									} else if ($itemD['cap2'] != 0) {
+										$convert11 = 0;
+										$convert12 = 0;
+										$convert21 = $itemD['unitQty3'] % $itemD['cap2'];
+										$convert22 = ($itemD['unitQty3'] - $convert21) / $itemD['cap2'];
+									} else if ($itemD['cap3'] != 0) {
+										$convert11 = 0;
+										$convert12 = 0;
+										$convert21 = $itemD['unitQty3'];
+										$convert22 = 0;
+									}
+
+								?>
+									<tr>
+										<td class="centered"><?= ($i + $start) . '.' . $j ?></td>
+										<td><?= $itemD['mBarcode'] ?></td>
+										<td><?= $itemD['materialName'] ?></td>
+										<td><?= $itemD['unitName3'] ?></td>
+										<td align="right"><?= number_format($itemD['pur_price']) ?></td>
+										<td>-</td>
+										<td>-</td>
+										<td><?= $itemD['unitQty3'] ?></td>
+										<td align="right"><?= number_format($sumTotalPrice) ?></td>
+
+										<td align="right"><?= number_format($itemD['S_balance']) ?></td>
+										<td align="right"><?= number_format($itemD['S_total']) ?></td>
+							
+										
+										<td>-</td>
+										<td>-</td>
+								
+
+
+
+										
+										<!-- <td colspan="3"><?= $itemD['materialName'] ?></td>
+										<td align="right"><?= number_format($convert12) . ' ' . $itemD['unitName1'] ?></td>
+										<td align="right"><?= number_format($convert22) . ' ' . $itemD['unitName2'] ?></td>
+										<td align="right"><?= number_format($convert21) . ' ' . $itemD['unitName3'] ?></td>
+										<td align="right"><?= number_format($itemD['pur_price']) ?></td>
+										<td align="right"><?= number_format($itemD['receive_dis'] * $itemD['unitQty3']) ?></td>
+										<td align="right"><?= number_format(($itemD['pur_price'] * $itemD['unitQty3']) - ($itemD['receive_dis'] * $itemD['unitQty3'])) ?></td>
+										<td align="center"><?= $itemD['exp_date'] ?></td> -->
+									</tr>
+
+								<?php $j++;
+								}  ?>
+								<tr style="color:#FFF" bgcolor="#999999">
+									<td colspan="4" align="center"><strong>ລວມມູນຄ່າ ວັນທີ <?= $item['date_add'] ?></strong></td>
+									<td align="right"><strong> </strong></td>
+									<td align="right"><strong><?= number_format($sumDiscountBill) ?></strong></td>
+									<td align="right"><strong><?= number_format($sumTotalPriceBill) ?></strong></td>
+									
+								</tr>
+							<?php $i++;
+							} ?>
+						</tbody>
+						<tfoot>
+							<tr style="color:#FFF" bgcolor="#999999">
+								<td colspan="4" align="center"><strong>ລວມມູນຄ່າ    ?></strong></td>
+								<td align="right"><strong></strong></td>
+								<td align="right"><strong><?= number_format($sumDiscount) ?></strong></td>
+								<td align="right"><strong><?= number_format($sumTotalPrice) ?></strong></td>
+								
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

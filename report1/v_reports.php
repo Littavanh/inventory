@@ -1,0 +1,35 @@
+<? htmltage("ລາຍງານ");
+	if(isset($_SESSION['EDPOSV1user_id']) && $_SESSION['EDPOSV1role_id'] <=5) {  
+?>
+<div class="contentpage">
+<h1 class="h1">ລາຍງານ</h1>
+<div class="indexpage centered">
+	<ul class="titles centered">
+		<h2>ລາຍງານ</h2>
+		<a href="?d=report/table"><li><div class="titlenames">ລາຍງານ ໝວດສີນຄ້າ</div></li></a>		
+		<a href="?d=report/food_and_drink"><li><div class="titlenames">ລາຍງານ ລາຍການສິນຄ້າ</div></li></a>		 
+	</ul>	
+</div>
+<div class="indexpage centered">
+	<ul class="titles centered">
+		<h2></h2>
+		<?php if($_SESSION['EDPOSV1role_id'] <=3 || $_SESSION['EDPOSV1role_id'] ==5) { ?>
+			<a href="?d=report/receive"><li><div class="titlenames">ລາຍງານ ສິນຄ້າຄົງເຫລືອ</div></li></a>
+			<a href="?d=report/receive"><li><div class="titlenames">ລາຍງານ ຮັບສິນຄ້າເຂົ້າສາງ (ລວມ)</div></li></a>
+			<a href="?d=report/inventory_movement"><li><div class="titlenames">ລາຍງານ ການເຄື່ອນໄຫວສາງ</div></li></a>
+			<a href="?d=report/stock_transfer"><li><div class="titlenames">ລາຍງານ ສົ່ງສິນຄ້າອອກສາງ</div></li></a>		
+		<?php } ?>
+	</ul>	
+</div>
+<div class="indexpage centered">
+	<ul class="titles centered">
+		<h2></h2>		
+		<?php  if($_SESSION['EDPOSV1role_id'] <=5) { ?>
+			<a href="?d=report/material_instock"><li><div class="titlenames">ລາຍງານ ສິນຄ້າໃນສາງ</div></li></a>					
+			<a href="?d=report/material_min"><li><div class="titlenames">ຈໍານວນສິນຄ້າ ຈຸດຕໍ່າສຸດ</div></li></a>	
+			<a href="?d=report/material_exp"><li><div class="titlenames">ລາຍງານ ສິນຄ້າໃກ້ໝົດອາຍຸ</div></li></a>	
+		<?php } ?>
+	</ul>	
+</div>
+</div>
+<?php } else { header("Location: ?d=index"); exit();	}?>

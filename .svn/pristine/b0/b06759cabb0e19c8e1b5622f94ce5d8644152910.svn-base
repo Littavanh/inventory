@@ -1,0 +1,71 @@
+<?php
+	$Get_infoID= $_SESSION['EDPOSV1info_id'];
+	$Get_infoName=$_SESSION['EDPOSV1info_name'];
+
+	$infoID = mysql_real_escape_string(stripslashes($_GET['infoID']));	
+	$startdate = mysql_real_escape_string(stripslashes($_GET['startdate']));
+	$enddate = mysql_real_escape_string(stripslashes($_GET['enddate']));
+	$supplierID = mysql_real_escape_string(stripslashes($_GET['supplierID']));
+
+	//===============	
+	//------------------------------------------------ Building search clause // 	
+$whereclause = "";
+/*
+if ($startdate != NULL && $enddate != NULL){
+	$whereclause .= "(DATE(date_tran) BETWEEN '$startdate' AND '$enddate') AND ";
+}else{
+	$whereclause .= "(DATE(date_tran) BETWEEN '$startdate' AND DATE(NOW())) AND ";
+} 
+*/
+if ($startdate != NULL && $enddate != NULL){
+	$whereclause .= "(DATE(date_tran) BETWEEN '$startdate' AND '$enddate') AND ";
+}else{
+	$whereclause .= "(DATE(date_tran) BETWEEN DATE(NOW()) AND DATE(NOW())) AND ";
+} 
+
+if ($supplierID != NULL) {
+	$whereclause .= " supplierID='$supplierID' AND ";
+}
+if ($infoID !='0') $whereclause .= "info_id='$infoID' AND ";
+if ($whereclause != "") $whereclause = "WHERE  " . substr($whereclause, 0, strlen($whereclause)-5);
+
+
+$params = "";
+if ($startdate != NULL && $enddate != NULL){
+	$params .= "startdate=$startdate&enddate=$enddate&infoID=$infoID&";
+}
+if ($supplierID != NULL) {
+	$params .= "supplierID=$supplierID&";
+}
+
+function LoadTable($whereclause, $whereGroupID) {
+	//return mysql_query("select * from v_transaction $whereclause and materialID = '$whereGroupID' and active_id IN (1,2) and tranType = 1  ORDER BY materialID, date_add");
+	return mysql_query("select traDate, sum(unitQty1) as unitQty1, sum(unitQty2) as unitQty2, sum(unitQty3) as unitQty3, 
+							AVG(pur_price) as pur_price, 
+							AVG(receive_dis) as receive_dis, 
+							materialID, materialName,unitName1, unitName2, unitName3,
+							cap1,cap2,cap3
+							from v_transaction 
+							$whereclause and materialID = '$whereGroupID'
+							and active_id IN (1,2) and tranType = 1 
+							GROUP BY materialID
+							ORDER BY materialID, date_add");
+}
+
+//=======SUM material by material ID
+function SumMaterial($whereclause) {
+	return mysql_query("SELECT tranID, traDate, reciever, remark, username, date_add, supplierName, materialID, materialName
+							from v_transaction $whereclause and  active_id IN (1,2) and tranType = 1  GROUP BY materialID ");
+}
+
+function LoadInfo() { 
+	return mysql_query("select distinct info_id, info_name from tb_info WHERE status_id IN (1)  ");
+}
+ 
+function LoadSupplier(){
+	return mysql_query(" select * from tb_supplier WHERE status_id=1 ");
+}
+
+$SumResult = SumMaterial($whereclause);
+
+// echo "SELECT tranID, traDate, reciever, remark, username, date_add, supplierName from v_transaction $whereclause and  active_id IN (1,2) and tranType = 1  GROUP BY materialID ";

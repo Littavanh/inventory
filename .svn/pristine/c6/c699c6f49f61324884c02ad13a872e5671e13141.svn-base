@@ -1,0 +1,164 @@
+<?php htmltage("ລາຍງານຊໍາລະເຄື່ອງອອກສາງ");
+date_default_timezone_set('Asia/Vientiane');
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<section class="content-header">
+	<h1>ລາຍງານເບີກສາງ</h1>
+</section>
+
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">
+				<form method="get">
+					<input type="hidden" name="d" value="report/stock_transfer" />
+					<div class="box-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group col-md-6">
+									<label>ແຕ່ວັນທີ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" name="startdate" class="form-control pull-right" id="datepicker1" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['startdate']  ?>">
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label>ເຖິງວັນທີ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" name="enddate" class="form-control pull-right" id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['enddate']  ?>">
+									</div>
+								</div>
+
+								<div class="form-group col-md-6">
+									<label>ສາງ</label>
+									<select class="form-control" name="infoID">
+										<option value="0">-- ເລືອກທັງໝົດ --</option>
+										<?php
+										$rs_info = LoadInfo();
+										while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+											$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<p class="right"><a href="report/ex_stock_transfer.php?<?= $params ?>" target="_blank">
+											<input type="button" value="Export To Excel" />
+										</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<button type="reset" class="btn btn-default" onclick="document.location='?d=report/stock_transfer'">ຍົກເລີກ</button>
+						<button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body pad table-responsive">
+					<table id="example1" class="table table-bordered beautified_report">
+						<thead>
+
+							<tr>
+
+								<th>ລຳດັບ</th>
+								<th>ລະຫັດສິນຄ້າ</th>
+								<th>*ລາຍລະອຽດສິນຄ້າ</th>
+								<th>ຫົວໜ່ວຍ</th>
+								<th>ລາຄາ</th>
+								<th colspan="2">ອອກສາງ</th>
+								<th>ວັນ/ເດືອນ/ປີ</th>
+								<th>ໃບສະເໜີຂໍເບີກ ສິນຄ້າເລກທີ່</th>
+								<th>ຜູ້ສະເໜີ</th>
+								<th>ຂະແໜງນຳໃຊ້</th>
+								<th>ເຫດຜົນທີ່ນຳໃຊ້</th>
+
+							</tr>
+							<tr>
+
+								<th>Items</th>
+								<th>ID</th>
+								<th>Description of Goods</th>
+								<th>Unit</th>
+								<th>Unit Price</th>
+								<th>Quantity</th>
+								<th>Amount</th>
+								<th>dd/mm/yy</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+
+
+							</tr>
+						</thead>
+						<tbody>
+						
+						<?php 
+					
+							$i = 1;
+							while ($item = mysql_fetch_array($SumResult)) {
+								$whereGroupID = $item['Dstatus_id'];
+								
+							?>
+								<?php
+								$result_detail = LoadTable($whereclause, $whereGroupID);
+								$SumPrice = 0;
+
+								while ($itemD = mysql_fetch_array($result_detail)) {
+								
+
+									$SumPrice = $SumPrice + ($itemD['pur_price'] * $itemD['unitQTY3']);
+									
+								?>
+									
+									<tr>
+										<td class="centered"><?= ($i) ?></td>
+										<td><?= $itemD['mBarcode'] ?></td>
+										<td><?= $itemD['materialName'] ?></td>
+										<td><?= $itemD['unitName3'] ?></td>
+										<td align="right"><?= number_format($itemD['pur_price']) ?></td>
+										<td align="right"><?= number_format($itemD['unitQTY3']) ?></td>
+										<td  align="right"><?= number_format($SumPrice) ?></td>
+										<td><?= date('Y-m-d', strtotime($itemD['date_ad'])) ?></td>
+										<td>-----</td>
+										<td><?= $itemD['staffName'] ?></td>
+										<td>------</td>
+										<td><?= $itemD['Dremark'] ?></td>
+
+									</tr>
+
+							<?php
+							
+								}
+								$i++;
+							}
+							?>
+						</tbody>
+						<tfoot>
+							<tr style="color:#222" bgcolor="#999999">
+								<td colspan="6" align="center">ລວມມູນຄ່າ</td>
+
+								<td colspan="1" align="right"><?= number_format($SumPrice) ?></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,23 @@
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_export_` AS
+select `a`.`traDID` AS `traDID`,`a`.`tranID` AS `tranID`,`a`.`info_id` AS `info_id`,`a`.`date_tran` AS `date_tran`,
+`a`.`exp_date` AS `exp_date`,`a`.`materialID` AS `materialID`,`a`.`unitQty1` AS `unitQty1`,`a`.`unitQty2` AS `unitQty2`,
+`a`.`unitQty3` AS `unitQty3`,`a`.`tranType` AS `tranType`,`a`.`status_id` AS `status_id`,`a`.`user_add` AS `user_add`,
+`a`.`date_add` AS `date_add`,`a`.`Dremark` AS `Dremark`,`a`.`staffName` AS `staffName`,`a`.`transferID` AS `transferID`,
+`a`.`pur_price` AS `pur_price`,`a`.`pur_tax` AS `pur_tax`,`a`.`pur_zip` AS `pur_zip`,`a`.`pur_other` AS `pur_other`,
+`a`.`sale_price` AS `sale_price`,`a`.`receive_dis` AS `receive_dis`,`a`.`location_addr` AS `location_addr`,
+`a`.`openID` AS `openID`,`a`.`info_idF` AS `info_idF`,`a`.`cnID` AS `cnID`,`a`.`dbch` AS `dbch`,
+`a`.`bill_no` AS `bill_no`,`a`.`bill_date` AS `bill_date`,`a`.`whouse_no` AS `whouse_no`,
+`a`.`whouse_date` AS `whouse_date`,`a`.`po_no` AS `po_no`,`a`.`po_date` AS `po_date`,`a`.`cur_id` AS `cur_id`,
+`a`.`lot_no` AS `lot_no`,`a`.`release` AS `release`,`a`.`sector` AS `sector`,`a`.`po_file` AS `po_file`,
+`a`.`status_approve_id` AS `status_approve_id`,`a`.`approve_level` AS `approve_level`,`a`.`approver` AS `approver`,
+`a`.`date_want` AS `date_want`,`a`.`status_get_id` AS `status_get_id`,`a`.`date_get` AS `date_get`,
+`b`.`materialName` AS `materialName`,`d`.`info_name` AS `info_name`,
+`e`.`first_name` AS `first_name`,`e`.`last_name` AS `last_name`,`f`.`first_name` AS `approve_name`,
+`f`.`last_name` AS `approve_lastName`,`g`.`statusText` AS `statusGet`
+from (((((`tb_export_` `a`
+left join `tb_material_` `b` on((`a`.`materialID` = `b`.`materialID`)))
+
+left join `tb_info_` `d` on((`a`.`info_id` = `d`.`info_id`)))
+left join `tb_user` `e` on((`a`.`user_add` = `e`.`user_id`)))
+left join `tb_user` `f` on((`a`.`approver` = `f`.`user_id`)))
+left join `tb_status_get` `g` on((`a`.`status_get_id` = `g`.`id`)))

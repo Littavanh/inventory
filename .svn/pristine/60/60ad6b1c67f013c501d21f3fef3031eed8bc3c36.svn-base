@@ -1,0 +1,26 @@
+<?php
+
+/*---------------------------------- call from unRecieve print.php --------------------------*/
+function headerPrint()
+{
+	$release = $_GET["release"];
+
+	if (isset($release) && $release != "") {
+		$sql = "select * from v_export_ where `release` = '$release' group by `release`";
+		$result = mysql_query($sql);
+		return $result;
+	}
+}
+/*-------- select to list the product -------*/
+function detailPrint()
+{
+	$release = $_GET["release"];
+	if (isset($release) && $release != "") {
+
+		$sql = "select * from v_export_ where `release` = '$release'";
+
+		$result = mysql_query($sql);
+		return $result;
+	}
+}
+

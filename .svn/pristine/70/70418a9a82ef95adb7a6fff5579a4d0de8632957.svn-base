@@ -1,0 +1,182 @@
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_sumrecipeprice`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_sumrecipeprice` AS 
+select `tb_recipe`.`fd_id` AS `fd_id`,
+sum(coalesce((`tb_recipe`.`price` * `tb_recipe`.`recipeCapacity`),0)) AS `recipePrice`,
+sum(coalesce((`tb_recipe`.`price_cost` * `tb_recipe`.`recipeCapacity`),0)) AS `PriceCost`,`tb_recipe`.`info_id` AS `info_id` 
+from `tb_recipe` 
+where (`tb_recipe`.`status_id` = 3) group by info_id, `tb_recipe`.`fd_id`
+$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_transaction_tran`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_transaction_tran` AS select `tbth`.`traID` AS `traID`,`tbth`.`tranID` AS `tranID`,`tbth`.`traDate` AS `traDate`,`tbth`.`reciever` AS `reciever`,`tbth`.`remark` AS `remark`,`tbth`.`status_id` AS `status_id`,`tbtd`.`status_id` AS `Dstatus_id`,`tbth`.`active_id` AS `active_id`,`tbtd`.`exp_date` AS `exp_date`,`tbtd`.`materialID` AS `materialID`,`vmtr`.`materialName` AS `materialName`,coalesce(((`tbtd`.`unitQty3` - (`tbtd`.`unitQty3` % `vmtr`.`unitQty1`)) / `vmtr`.`unitQty1`),0) AS `unitQty1`,`vmtr`.`unitQty1` AS `cap1`,coalesce(((coalesce((`tbtd`.`unitQty3` % `vmtr`.`unitQty1`),`tbtd`.`unitQty3`) - coalesce((coalesce((`tbtd`.`unitQty3` % `vmtr`.`unitQty1`),`tbtd`.`unitQty3`) % `vmtr`.`unitQty2`),`tbtd`.`unitQty3`)) / `vmtr`.`unitQty2`),0) AS `unitQty2`,`vmtr`.`unitQty2` AS `cap2`,coalesce((coalesce((`tbtd`.`unitQty3` % `vmtr`.`unitQty1`),`tbtd`.`unitQty3`) % `vmtr`.`unitQty2`),`tbtd`.`unitQty3`) AS `unitQty31`,`vmtr`.`unitQty3` AS `cap3`,`tbtd`.`tranType` AS `tranType`,`tb_trantype`.`Typename` AS `Typename`,coalesce(`vmtr`.`unitName1`,'') AS `unitName1`,coalesce(`vmtr`.`unitName2`,'') AS `unitName2`,coalesce(`vmtr`.`unitName3`,'') AS `unitName3`,`tbtd`.`date_tran` AS `date_tran`,`tbtd`.`unitQty3` AS `unitQty3`,`tbtd`.`date_add` AS `date_add`,`tb_user`.`username` AS `username`,`tbtd`.`Dremark` AS `Dremark`,`tbtd`.`staffName` AS `staffName`,`tbtd`.`transferID` AS `transferID`,`vmtr`.`mBarcode` AS `mBarcode`,coalesce(`tbtd`.`pur_price`,0) AS `pur_price`,coalesce(`tbtd`.`sale_price`,0) AS `sale_price`,`tbth`.`supplierID` AS `supplierID`,`tb_supplier`.`supplierName` AS `supplierName`,`tb_supplier`.`ContactName` AS `ContactName`,`tb_supplier`.`tel` AS `tel`,`tbtd`.`receive_dis` AS `receive_dis`,`tbtd`.`location_addr` AS `location_addr`,`tbtd`.`info_id` AS `info_id`,`vmtr`.`mOpenStock` AS `mOpenStock`, info_idF from (((((`tb_transactionh` `tbth` join `tb_transactiond` `tbtd` on(((`tbth`.`tranID` = `tbtd`.`tranID`) and (`tbth`.`info_id` = `tbtd`.`info_id`)))) join `v_material2` `vmtr` on(((`tbtd`.`materialID` = `vmtr`.`materialID`) and (`tbtd`.`info_id` = `vmtr`.`info_id`)))) join `tb_user` on((`tbth`.`user_add` = `tb_user`.`user_id`))) join `tb_trantype` on((`tbtd`.`tranType` = `tb_trantype`.`tranType`))) left join `tb_supplier` on((`tbth`.`supplierID` = `tb_supplier`.`supplierID`))) where (`tbtd`.`status_id` in (1,15))$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_tmp_transactiond`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_tmp_transactiond` AS select `tmp_transactiond`.`traDID` AS `tmpDID`,`tmp_transactiond`.`traTypeID` AS `traTypeID`,`tmp_transactiond`.`tranID` AS `tranID`,`tmp_transactiond`.`materialID` AS `materialID`,`v_material2`.`materialName` AS `materialName`,`tmp_transactiond`.`exp_date` AS `exp_date`,`tmp_transactiond`.`unitID1` AS `unitID1`,`v_material2`.`unitName1` AS `unitName1`,sum(`tmp_transactiond`.`unitQty1`) AS `unitQty1`,`tmp_transactiond`.`unitID2` AS `unitID2`,`v_material2`.`unitName2` AS `unitName2`,sum(`tmp_transactiond`.`unitQty2`) AS `unitQty2`,`tmp_transactiond`.`unitID3` AS `unitID3`,`v_material2`.`unitName3` AS `unitName3`,sum(`tmp_transactiond`.`unitQty3`) AS `unitQty3`,coalesce(`tmp_transactiond`.`pur_price`,0) AS `pur_price`,coalesce(`tmp_transactiond`.`sale_price`,0) AS `sale_price`,(((sum(`tmp_transactiond`.`unitQty1`) * `v_material2`.`unitQty1`) + (sum(`tmp_transactiond`.`unitQty2`) * `v_material2`.`unitQty2`)) + (sum(`tmp_transactiond`.`unitQty3`) * `v_material2`.`unitQty3`)) AS `total`,`tmp_transactiond`.`receive_dis` AS `receive_dis`,`tmp_transactiond`.`location_addr` AS `location_addr`,`tmp_transactiond`.`info_id` AS `info_id`,tmp_transactiond.tranOld, tmp_transactiond.tranNew  from (`tmp_transactiond` join `v_material2` on(((`tmp_transactiond`.`materialID` = `v_material2`.`materialID`) and (`tmp_transactiond`.`info_id` = `v_material2`.`info_id`)))) group by `tmp_transactiond`.`info_id`,`tmp_transactiond`.`tranID`,`tmp_transactiond`.`materialID`,`tmp_transactiond`.`exp_date`,`tmp_transactiond`.`pur_price`$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_pos_t2`.`v_customers`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_customers` AS select `tb_customer`.`cusID` AS `cusID`,`tb_customer`.`cusName` AS `cusName`,`tb_customer`.`addr` AS `addr`,`tb_customer`.`tel` AS `tel`,`tb_customer`.`remark` AS `remark`,`tb_customer`.`dueDate` AS `dueDate`,`tb_customer`.`districtID` AS `districtID`,`tb_customer`.`status_id` AS `status_id`,`tb_district`.`districtName` AS `districtName`,`tb_district`.`ProID` AS `ProID`,`tb_province`.`pronameln` AS `pronameln`,coalesce(`tb_cashlog`.`od_no`,0) AS `od_no`,coalesce(sum(`tb_cashlog`.`bill_total`),0) AS `bill_total`,coalesce(sum(`tb_cashlog`.`pay_total`),0) AS `pay_total`,coalesce(sum(`tb_cashlog`.`amount_credit`),0) AS `amount_credit`,coalesce(cast(`tb_cashlog`.`date_add` as date),'0000-00-00') AS `date_add` from (((`tb_customer` left join `tb_cashlog` on((`tb_customer`.`cusID` = `tb_cashlog`.`cusID`))) join `tb_district` on((`tb_district`.`districtID` = `tb_customer`.`districtID`))) join `tb_province` on((`tb_province`.`ProID` = `tb_district`.`ProID`))) group by `tb_customer`.`cusID`$$
+
+DELIMITER ;
+
+
+
+ CREATE view v_cus_credit as 
+select `tb_customer`.`cusID` AS `cusID`,`tb_customer`.`cusName` AS `cusName`,`tb_customer`.`addr` AS `addr`,
+`tb_customer`.`tel` AS `tel`,`tb_customer`.`remark` AS `remark`,`tb_customer`.`dueDate` AS `dueDate`,
+`tb_customer`.`districtID` AS `districtID`,`tb_district`.`districtName` AS `districtName`,`tb_district`.`ProID` AS `ProID`,
+`tb_province`.`pronameln` AS `pronameln`,`tb_cashlog`.`od_no` AS `od_no`,sum(`tb_cashlog`.`bill_total`) AS `bill_total`,
+sum(`tb_cashlog`.`pay_total`) AS `pay_total`,sum(`tb_cashlog`.`amount_credit`) AS `amount_credit`,
+cast(`tb_cashlog`.`date_add` as date) AS `date_add` , tb_cashlog.info_id
+from (((`tb_customer` join `tb_cashlog` on((`tb_customer`.`cusID` = `tb_cashlog`.`cusID`))) 
+join `tb_district` on((`tb_district`.`districtID` = `tb_customer`.`districtID`))) 
+join `tb_province` on((`tb_province`.`ProID` = `tb_district`.`ProID`))) 
+group by `tb_cashlog`.`od_no`,`tb_cashlog`.`cusID`
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_cashlog`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_cashlog` AS 
+select `cl`.`cashlog_id` AS `cashlog_id`,`cl`.`od_no` AS `od_no`,`cl`.`discount_lak` AS `discount_lak`,
+`cl`.`pay_lak` AS `pay_lak`,`cl`.`pay_thb` AS `pay_thb`,`cl`.`pay_usd` AS `pay_usd`,`cl`.`rate_id` AS `rate_id`,
+`r`.`thb` AS `thb`,`r`.`usd` AS `usd`,(`cl`.`pay_thb` * `r`.`thb`) AS `pay_thb_lak`,(`cl`.`pay_usd` * `r`.`usd`) AS `pay_usd_lak`,
+(((`cl`.`pay_lak` + (`cl`.`pay_thb` * `r`.`thb`)) + (`cl`.`pay_usd` * `r`.`usd`)) - `cl`.`discount_lak`) AS `pay_total_lak`,
+`u`.`username` AS `username`,`cl`.`date_add` AS `date_add`,`cl`.`remark` AS `remark`,`cl`.`bill_total` AS `bill_total`,
+`cl`.`openID` AS `openID`,`tb_order_id`.`billNo` AS `billNo`,`cl`.`info_id` AS `info_id`,`cl`.`bill_change` AS `bill_change`,
+`cl`.`receive_lak` AS `receive_lak`, amount_credit, cl.cusID
+ from (((`tb_cashlog` `cl` join `tb_user` `u` on(((`cl`.`user_add` = `u`.`user_id`) and (`cl`.`info_id` = `u`.`info_id`)))) join `tb_rate_setting` `r` on(((`cl`.`rate_id` = `r`.`rate_id`) and (`cl`.`info_id` = `r`.`info_id`)))) join `tb_order_id` on(((`cl`.`od_no` = `tb_order_id`.`od_no`) and (`cl`.`info_id` = `tb_order_id`.`info_id`)))) where (`cl`.`status_id` = 1)$$
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_sumrecipeprice`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_sumrecipeprice` AS 
+select `tb_recipe`.`fd_id` AS `fd_id`,
+sum(coalesce((`tb_recipe`.`price` * `tb_recipe`.`recipeCapacity`),0)) AS `recipePrice`,
+sum(coalesce((`tb_recipe`.`price2` * `tb_recipe`.`recipeCapacity`),0)) AS `recipePrice2`,
+sum(coalesce((`tb_recipe`.`price3` * `tb_recipe`.`recipeCapacity`),0)) AS `recipePrice3`,
+sum(coalesce((`tb_recipe`.`price_cost` * `tb_recipe`.`recipeCapacity`),0)) AS `PriceCost`,
+`tb_recipe`.`info_id` AS `info_id` from `tb_recipe` 
+where (`tb_recipe`.`status_id` = 3) 
+group by `tb_recipe`.`info_id`,`tb_recipe`.`fd_id`$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_food_and_drink`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_food_and_drink` AS 
+select `fd`.`fd_id` AS `fd_id`,`fd`.`fd_Barcode` AS `fd_Barcode`,`fd`.`status_id` AS `status_id`,
+`fd`.`kf_id` AS `kf_id`,`fd`.`fd_name` AS `fd_name`,`fd`.`photo` AS `photo`,`fd`.`user_add` AS `user_add`,
+`fd`.`date_add` AS `date_add`,`fd`.`user_edit` AS `user_edit`,`fd`.`date_edit` AS `date_edit`,`st`.`status_text` AS `status_text`,
+`fd`.`edit_to` AS `edit_to`,`fd`.`price_to` AS `price_to`,`kf`.`kf_name` AS `kf_name`,`usadd`.`username` AS `user_add_name`,
+`usadd`.`last_name` AS `user_add_last_name`,`usedit`.`username` AS `user_edit_name`,`usedit`.`last_name` AS `user_edit_last_name`,
+`kf`.`printerNo` AS `printerNo`,
+coalesce(`sumprice`.`recipePrice`,0) AS `price`,
+coalesce(`sumprice`.`recipePrice2`,0) AS `price2`,
+coalesce(`sumprice`.`recipePrice3`,0) AS `price3`,
+coalesce(`sumprice`.`PriceCost`,0) AS `priceCost`,
+`fd`.`price` AS `price1`,`fd`.`detail1` AS `detail1`,`fd`.`detail2` AS `detail2`,`fd`.`info_id` AS `info_id`,
+`kf`.`CountMaterial` AS `CountMaterial`,`fd`.`print_Barcode` AS `print_Barcode`,`kf`.`viewOrder` AS `viewOrder` 
+from (((((`tb_food_drink` `fd` 
+join `tb_status` `st` on((`fd`.`status_id` = `st`.`status_id`))) 
+join `tb_kind_food` `kf` on(((`fd`.`kf_id` = `kf`.`kf_id`) and (`fd`.`info_id` = `kf`.`info_id`)))) 
+join `tb_user` `usadd` on((`fd`.`user_add` = `usadd`.`user_id`))) 
+left join `v_sumrecipeprice` `sumprice` on(((`fd`.`fd_id` = `sumprice`.`fd_id`) and (`fd`.`info_id` = `sumprice`.`info_id`)))) 
+left join `tb_user` `usedit` on((`fd`.`user_edit` = `usedit`.`user_id`))) 
+where ((`kf`.`status_id` = 3) and (`fd`.`status_id` in (8,18))) order by `fd`.`fd_id`$$
+
+DELIMITER ;
+
+
+ 
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_materail_unit3`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_materail_unit3` AS select `tb_material`.`materialID` AS `materialID`,`tb_material`.`materialName` AS `materialName`,`tb_material`.`materialRemark` AS `materialRemark`,`tb_material`.`materialRemark1` AS `materialRemark1`,`tb_material`.`materialRemark2` AS `materialRemark2`,`tb_material`.`unitQty3` AS `unitQty3`,`tb_material`.`uname3` AS `unitName`,`tb_material`.`status_id` AS `status_id`,`tb_material`.`mBarcode` AS `mBarcode`,`tb_material`.`mpic` AS `mpic`,`tb_material`.`info_id` AS `info_id` from `tb_material`$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_material`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_material` AS select `tb`.`materialID` AS `materialID`,`tb`.`materialName` AS `materialName`,`tb`.`materialRemark` AS `materialRemark`,`tb`.`materialRemark1` AS `materialRemark1`,`tb`.`materialRemark2` AS `materialRemark2`,`tb`.`unitQty1` AS `unitQty1`,`tb`.`unitQty2` AS `unitQty2`,`tb`.`unitQty3` AS `unitQty3`,`tb`.`min_stock` AS `min_stock`,`tb`.`status_id` AS `status_id`,`tb`.`user_add` AS `user_add`,`tb`.`date_add` AS `date_add`,`tb`.`user_edit` AS `user_edit`,`tb`.`date_edit` AS `date_edit`,`tb`.`edit_to` AS `edit_to`,`usadd`.`username` AS `user_add_name`,`usadd`.`first_name` AS `user_add_firstname`,`usadd`.`last_name` AS `user_add_last_name`,`usedit`.`username` AS `user_edit_name`,`usedit`.`first_name` AS `user_edit_firstname`,`usedit`.`last_name` AS `user_edit_last_name`,`tb`.`mBarcode` AS `mBarcode`,`tb`.`mpic` AS `mpic`,`tb`.`kf_id` AS `kf_id`,`tb`.`ingredient` AS `ingredient`,`tb`.`info_id` AS `info_id`,`tb`.`mOpenStock` AS `mOpenStock`,`tb`.`uname1` AS `unitname1`,`tb`.`uname2` AS `unitname2`,`tb`.`uname3` AS `unitname3` from ((`tb_material` `tb` join `tb_user` `usadd` on((`tb`.`user_add` = `usadd`.`user_id`))) left join `tb_user` `usedit` on((`tb`.`user_edit` = `usedit`.`user_id`))) order by `tb`.`materialID`$$
+
+DELIMITER ;
+ 
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_material2`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_material2` AS select `v_material`.`materialID` AS `materialID`,`v_material`.`materialName` AS `materialName`,`v_material`.`materialRemark` AS `materialRemark`,`v_material`.`materialRemark1` AS `materialRemark1`,`v_material`.`materialRemark2` AS `materialRemark2`,`v_material`.`unitname1` AS `unitName1`,`v_material`.`unitQty1` AS `unitQty1`,`v_material`.`unitname2` AS `unitName2`,`v_material`.`unitQty2` AS `unitQty2`,`v_material`.`unitname3` AS `unitName3`,`v_material`.`unitQty3` AS `unitQty3`,`v_material`.`min_stock` AS `min_stock`,`v_material`.`status_id` AS `status_id`,`v_material`.`user_add` AS `user_add`,`v_material`.`date_add` AS `date_add`,`v_material`.`user_add_name` AS `user_add_name`,`v_material`.`mBarcode` AS `mBarcode`,`v_material`.`mpic` AS `mpic`,`v_material`.`kf_id` AS `kf_id`,`v_material`.`ingredient` AS `ingredient`,`v_material`.`info_id` AS `info_id`,`v_material`.`mOpenStock` AS `mOpenStock` from `v_material`$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_min_stock`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_min_stock` AS select `tb_transactiond`.`info_id` AS `info_id`,`tb_transactiond`.`materialID` AS `materialID`,sum(`tb_transactiond`.`unitQty3`) AS `unitQty3`,`tb_transactiond`.`exp_date` AS `exp_date`,`tb_transactiond`.`date_tran` AS `date_tran`,`tb_material`.`min_stock` AS `min_stock`,`tb_material`.`materialName` AS `materialName`,`tb_material`.`unitQty1` AS `cap1`,`tb_material`.`unitQty2` AS `cap2`,`tb_material`.`unitQty3` AS `cap3`,`tb_material`.`uname1` AS `unitname1`,`tb_material`.`uname2` AS `unitname2`,`tb_material`.`uname3` AS `unitname3` from (`tb_transactiond` join `tb_material` on(((`tb_transactiond`.`materialID` = `tb_material`.`materialID`) and (`tb_transactiond`.`info_id` = `tb_material`.`info_id`)))) where (`tb_transactiond`.`status_id` = 1) group by `tb_transactiond`.`info_id`,`tb_transactiond`.`materialID`,`tb_transactiond`.`exp_date` order by `tb_transactiond`.`info_id`,`tb_transactiond`.`materialID`,`tb_transactiond`.`exp_date`$$
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_recipe`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_recipe` AS select `tb_recipe`.`recipeID` AS `recipeID`,`tb_recipe`.`fd_id` AS `fd_id`,`v_food_and_drink`.`fd_name` AS `fd_name`,`tb_recipe`.`materialID` AS `materialID`,`v_material2`.`materialName` AS `materialName`,`tb_recipe`.`status_id` AS `status_id`,`tb_recipe`.`recipeCapacity` AS `recipeCapacity`,`tb_user`.`username` AS `username`,`tb_recipe`.`date_add` AS `date_add`,coalesce(`tb_recipe`.`price`,0) AS `price`,coalesce(`tb_recipe`.`price2`,0) AS `price2`,coalesce(`tb_recipe`.`price3`,0) AS `price3`,coalesce((`tb_recipe`.`price` * `tb_recipe`.`recipeCapacity`),0) AS `recipePrice`,coalesce((`tb_recipe`.`price2` * `tb_recipe`.`recipeCapacity`),0) AS `recipePrice2`,coalesce((`tb_recipe`.`price3` * `tb_recipe`.`recipeCapacity`),0) AS `recipePrice3`,coalesce(`tb_recipe`.`price_cost`,0) AS `priceCost`,`tb_recipe`.`info_id` AS `info_id`,`v_material2`.`unitName3` AS `unitName3` from (((`tb_recipe` join `v_food_and_drink` on(((`tb_recipe`.`fd_id` = `v_food_and_drink`.`fd_id`) and (`tb_recipe`.`info_id` = `v_food_and_drink`.`info_id`)))) join `v_material2` on(((`v_material2`.`materialID` = `tb_recipe`.`materialID`) and (`v_material2`.`info_id` = `tb_recipe`.`info_id`)))) join `tb_user` on((`tb_recipe`.`user_add` = `tb_user`.`user_id`)))$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP VIEW IF EXISTS `db_6000`.`v_min_stock`$$
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_min_stock` AS select `tb_transactiond`.`info_id` AS `info_id`,`tb_transactiond`.`materialID` AS `materialID`,sum(`tb_transactiond`.`unitQty3`) AS `totalQTY`,`tb_transactiond`.`exp_date` AS `exp_date`,`tb_transactiond`.`date_tran` AS `date_tran`,`tb_material`.`min_stock` AS `min_stock`,`tb_material`.`materialName` AS `materialName`,`tb_material`.`unitQty1` AS `cap1`,`tb_material`.`unitQty2` AS `cap2`,`tb_material`.`unitQty3` AS `cap3`,`tb_material`.`uname1` AS `unitname1`,`tb_material`.`uname2` AS `unitname2`,`tb_material`.`uname3` AS `unitname3` from (`tb_transactiond` join `tb_material` on(((`tb_transactiond`.`materialID` = `tb_material`.`materialID`) and (`tb_transactiond`.`info_id` = `tb_material`.`info_id`)))) where (`tb_transactiond`.`status_id` = 1) group by `tb_transactiond`.`info_id`,`tb_transactiond`.`materialID`,`tb_transactiond`.`exp_date` order by `tb_transactiond`.`info_id`,`tb_transactiond`.`materialID`,`tb_transactiond`.`exp_date`$$
+
+DELIMITER ;

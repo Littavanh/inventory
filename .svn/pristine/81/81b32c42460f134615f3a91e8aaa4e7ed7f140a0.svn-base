@@ -1,0 +1,37 @@
+<?php
+function seltable_open(){
+	return mysql_query("SELECT count(*) as num  FROM tb_table WHERE  status_id  = 2 ");
+}
+
+function seltable_Free(){
+	return mysql_query("SELECT count(*) as num  FROM tb_table WHERE  status_id  = 1 ");
+}
+
+date_default_timezone_set('Asia/Bangkok');
+$startdate=date('Y-m-d');
+$enddate=date('Y-m-d');
+$whereclause = " WHERE DATE(date_add) BETWEEN '$startdate' AND '$enddate' ";
+
+
+
+// --------------------------------------------------------- Build Paging
+$catcount = nr_execute("SELECT COUNT(*) FROM v_service_sumary $whereclause");
+		
+function Loadservice_sumary($whereclause) {
+	return mysql_query("select * from v_service_sumary $whereclause order by od_no ");
+}
+
+$result = Loadservice_sumary($whereclause);
+
+
+function LoadTableView($groupZone) {
+	return mysql_query("select * from v_open_table WHERE status_id IN (1,2) $groupZone");
+}
+
+
+function CheckUpdateCount($Get_infoID) {
+	return mysql_query("select count(*) from tb_alert where date_update=date(NOW()) and info_id='$Get_infoID' ");
+}
+
+
+if (isset($_SESSION['EDPOSV1user_id']) && $_SESSION['EDPOSV1role_id'] >4) { header("Location: index.php?d=stock/stock"); exit(); }

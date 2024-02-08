@@ -1,0 +1,32 @@
+<?php
+
+
+
+$user_id = $_SESSION["EDPOSV1user_id"];
+
+
+if (isset($_POST["btnSave"])) {
+	$cb_status = mysql_real_escape_string(stripslashes($_POST['cb_status']));
+	$txtDateGet = mysql_real_escape_string(stripslashes($_POST['txtDateGet']));
+	$release = mysql_real_escape_string(stripslashes($_POST['txt_release']));
+
+	$tmp_file_name1 = trim($_FILES["edit_fileUpload"]["tmp_name"]);
+
+	if ($tmp_file_name1 != "") {
+		$name1 = $_FILES["edit_fileUpload"]["name"];
+		
+		copy($_FILES["edit_fileUpload"]["tmp_name"], "dist/image/addjust/" . $name1);
+		sql_execute("UPDATE tb_export_ SET status_get_id='$cb_status',date_get='$txtDateGet',user_add2='$user_id',po_file='$name1' WHERE `release`='$release'");
+		sql_execute("UPDATE tb_transactiond_ SET status_id='1' WHERE `release`='$release'");
+	}
+	else {
+		echo '<script>alert("ກະລຸນາແນບໄຟລເອກະສານ")</script>';
+		
+		
+
+	}
+
+
+}
+
+?>

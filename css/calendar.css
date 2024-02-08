@@ -1,0 +1,119 @@
+#Calendar {
+	width: 95%;
+	margin: 0.3em auto;	
+}
+
+#Calendar td {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	border: outset thin;
+}
+
+#Calendar .cMonth {
+	font-weight:bold;
+	text-align:center;
+}
+
+#Calendar .wDays {
+	width: 103px;
+	height: 10px;
+	font-size: 14px;
+	font-weight:bold;
+	text-align:center;
+	background-color:#f7b03b;
+	padding: 0.5em;
+	opacity: 0.6;
+}
+
+#Calendar .mNav {
+	height: 30px;
+	font-weight:bold;
+	text-align:center;
+	background-color:#CCC;
+}
+#Calendar .mNav:hover {
+	background-color: #6ab8fa;
+}
+#Calendar table td a {
+	text-decoration:none;
+	color:#000;
+}
+
+#Calendar table td a:hover {
+	text-decoration:underline;
+	color: yellow;
+}
+
+
+#Calendar .available {
+	text-align:center;
+	background-color:#f9f9d9;
+	color: #4fc1e7;
+	height:70px;
+}
+
+#Calendar .available:hover {
+	background-color:#fae5ce;
+}
+#Calendar .bookedfirst {
+	text-align:center;
+	font-size:10px;
+	background-color:#f1bd86;
+	color:#FFF;
+}
+#Calendar .booked {
+	text-align:center;
+	font-size:10px;
+	background-color:#fd9d56;
+	color:#FFF;
+}
+#Calendar .overbooked {
+	text-align:center;
+	font-size:10px;
+	background-color:#aabff4;
+	color:#FFF;
+}
+/*--------------------------  the calendar by daily event ------------------------------*/
+#Calendar1 {
+	width: 95%;
+	margin: 0.3em auto;
+	padding-bottom: 50px;
+}
+#Calendar1 table{
+	border-collapse:collapse;
+	border-width: 0px;
+	border-left-width:0px;
+}
+#Calendar1 th {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	border-collapse:collapse;
+	border-width: 1px;
+	border: inset thin;
+	background-color: #facf89;
+}
+#Calendar1 td {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	border: inset thin;
+}
+
+#Calendar1 .cMonth {
+	font-weight:bold;
+	text-align:center;
+}
+
+#Calendar1 .wDays {
+	font-size: 14px;
+	font-weight:bold;
+	text-align:center;
+	background-color:#f7b03b;
+	padding: 0.5em;
+	opacity: 0.6;
+}
+#Calendar1 .mNav {
+	width: 40px;
+	font-weight:bold;
+	text-align:center;
+	background-color:#CCC;
+}

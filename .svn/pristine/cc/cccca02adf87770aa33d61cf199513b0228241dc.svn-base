@@ -1,0 +1,28 @@
+<?php
+
+// $check = loadApprovalSetting($approve_level, $status_approve_id);
+
+// while ($row = mysql_fetch_array($check, MYSQL_ASSOC)) {
+// 	$approve_level = $row['approve_level'];
+// 	$status_approve_id = $row['status_approve_id'];
+// 	$row_userId = $row['userId'];
+// }
+
+$user_id = $_SESSION["EDPOSV1user_id"];
+
+
+
+
+
+
+if (isset($_GET["approve"])) {
+	$release = $_GET["approve"];
+	//   echo '<script>alert("'.$release.'")</script>';
+	
+			sql_execute("UPDATE tb_export_ SET status_get_id=6 WHERE `release`='$release'");
+
+		
+	
+}
+
+?>

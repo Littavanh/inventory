@@ -1,0 +1,157 @@
+<?php htmltage("ລາຍງານການຂາຍ");
+if ( !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] >4) { header("Location: ?d=index"); exit(); }
+ ?>
+<style type="text/css">
+<!--
+.style1 {font-weight: bold}
+-->
+</style>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<section class="content-header">
+    <h1>ລາຍງານການຂາຍ</h1>    
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">				
+				<form method="get">
+				<input type="hidden" name="d" value="report/sum_menu" />
+					<div class="box-body">						
+			            <div class="row">
+			                <div class="col-md-6">
+				                <div class="form-group col-md-6">
+				                  <label>ແຕ່ວັນທີ</label>
+				                  <div class="input-group date">
+					                  	<div class="input-group-addon">
+					                  		<i class="fa fa-calendar"></i>
+					                  	</div>
+				                  	<input type="text" name="startdate" class="form-control pull-right" id="datepicker1" autocomplete="off" data-date-format="yyyy-mm-dd" value = "<?=$_GET['startdate']  ?>">
+				                  	</div>
+				                </div>
+				                <div class="form-group col-md-6">
+				                  <label>ເຖິງວັນທີ</label>
+					                  <div class="input-group date">
+					                  	<div class="input-group-addon">
+					                  		<i class="fa fa-calendar"></i>
+					                  	</div>	
+					                  	<input type="text" name="enddate" class="form-control pull-right" id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd" value = "<?=$_GET['enddate']  ?>">
+					                  </div>
+				                </div>	
+				                <?php if ( $_SESSION['EDPOSV1role_id'] <= '2') { ?>
+				                 <div class="form-group col-md-6">
+					                <label>ບໍລິສັດ</label>
+					                <select class="form-control" name="infoID" >
+										<option value="0">-- ເລືອກທັງໝົດ --</option>
+											<?php 
+												$rs_info = LoadInfo();
+												while ($row_c = mysql_fetch_array($rs_info,MYSQL_ASSOC)) {
+												$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : ""; 
+											?>
+												<option value="<?=  $row_c['info_id'] ?>" <?= $selected ?>><?= encrypt_decrypt('decrypt', $row_c['info_name']) ?></option>
+											<?php } ?>
+									</select>
+					            </div>    	
+				                <?php } else { ?>
+				                	<div class="form-group col-md-6">
+					                <label>ບໍລິສັດ</label>
+					                <select class="form-control" name="infoID" >
+										<option value="<?=$Get_infoID?>"><?=$Get_infoName ?></option>										
+									</select>
+					            </div>    	
+				                <?php } ?>			                
+			                </div>
+			                <div class="col-md-6">
+				                <div class="form-group">
+									<p class="right"><a href="report/ex_sum_menu.php?<?=$params?>" target="_blank">
+				                    <input type="button" value="Export To Excel" />
+				                    </a></p>
+				                    <p class="right"><a href="report/print_sum_menu.php?<?=$params?>" target="_blank">
+				                    <input type="button" value="Print" />
+				                    </a></p>
+				                </div>			                	
+			                </div>			                
+		                </div>
+					</div>
+					<div class="box-footer">
+						<button type="reset" class="btn btn-default" onclick="document.location='?d=report/sum_menu'">ຍົກເລີກ</button>
+		            	<button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>
+		            </div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body pad table-responsive">
+					<table id="example1" class="table table-bordered beautified_report">
+						<thead>
+							<tr>
+							  	<th>ລຳດັບ</th>           
+						        <th>ອາການ ແລະ ເຄື່ອງດື່ມ</th>
+						        <th>ຈໍານວນ</th> 
+						        <th>ລວມ ຂາຍ</th> 
+						        <th>ລວມ ຕົ້ນທຶນ</th>
+						        <th>ລວມ ສ່ວນຕ່າງ</th>  
+							</tr>
+						</thead>
+						<tbody>						
+							<?php 			
+								$i=1;			
+								$sum_total = 0;
+								$sum_cub=0;
+								while ($item = mysql_fetch_array($result)) { 
+								$sum_total = $sum_total + $item['total']; 
+								$sum_total_cost = $sum_total_cost + $item['total_cost']; 
+								$whereGroupID = $item['kf_name'];				
+								?>
+								<tr bgcolor="#00FFFF">
+									<td  class="centered style1">
+							      	<div align="center"><?= ($i+$start) ?></div><div align="center"></div></td>				
+									<td class="centered"><strong><?= $item['kf_name'] ?></strong></td>
+									<td class="centered"><div align="right"><strong><?= $item['qty'] ?></strong></div></td>
+					                <td align="right"><strong><?=number_format($item['total']) ?>&nbsp;&nbsp;</strong></td>                
+					                <td align="right"><strong><?=number_format($item['total_cost']) ?>&nbsp;&nbsp;</strong></td>                
+					                <td align="right"><strong><?=number_format($item['total']-$item['total_cost']) ?>&nbsp;&nbsp;</strong></td>                
+								</tr>    
+								<?php
+									$j=1;				
+									$result_detail = LoadMenuDetail($whereclause, $whereGroupID);	
+
+									while ($itemD = mysql_fetch_array($result_detail)) {
+										if ($itemD['count_cm']==1) {
+											$sum_cub=$sum_cub+$itemD['qty'];
+										}
+										
+
+								?>
+									<tr>
+										<td class="centered"><div align="right"><?= ($i+$start).'.'.$j ?></div></td>				
+										<td class="centered">
+											<div align="left">
+												<?php if ($itemD['remark']!='') { echo $itemD['fd_name'].' | '.$itemD['remark']; }
+														else { echo $itemD['fd_name']; }?>												
+											</div>
+										</td>
+										<td class="centered"><?= $itemD['qty'] ?></td>
+						                <td align="right"><?=number_format($itemD['total']) ?>&nbsp;&nbsp;</td>                
+						                <td align="right"><?=number_format($itemD['total_cost']) ?>&nbsp;&nbsp;</td>                
+						                <td align="right"><?=number_format($itemD['total']-$itemD['total_cost']) ?>&nbsp;&nbsp;</td>                
+									</tr> 				
+							<?php $j++; } 	$i++; } ?>						      
+						</tbody>
+						<tfoot>
+							<tr>
+							  <td colspan="2" class="centered"><strong>ມູນຄ່າລວມ ແຕ່ວັນທີ່ <?=$_GET['startdate']?> ຫາ <?=$_GET['enddate']?></strong></td>
+							  <td align="right"><strong><?=number_format($sum_cub)?>&nbsp;&nbsp;</strong></td>
+							  <td align="right"><strong><?=number_format($sum_total)?>&nbsp;ກີບ&nbsp;</strong></td>
+							  <td align="right"><strong><?=number_format($sum_total_cost)?>&nbsp;ກີບ&nbsp;</strong></td>
+							  <td align="right"><strong><?=number_format($sum_total-$sum_total_cost)?>&nbsp;ກີບ&nbsp;</strong></td>
+					  		</tr> 
+						</tfoot>							
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

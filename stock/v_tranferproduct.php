@@ -1,0 +1,156 @@
+<?php
+session_start();
+ htmltage("ລາຍການສິນຄ້າ");
+ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) ) { header("Location: ?d=index"); }
+$infoIDF=$_SESSION['EDPOSV1TransferProducinfoIDF'];
+$rs_material = selMaterialList1($infoIDF);
+ $jj=5;
+	$kk=($jj%6);
+ 
+$ddd = ($jj-$kk)/6;
+//echo "kkkkkkk:".$ddd.".".$kk;
+ ?>
+
+<div id="cover">
+<div id="dialogparent">
+<div class="mask"></div>
+<div id="dialog">
+<div class="col-md-12">
+	
+</div>
+
+
+
+
+
+<div class="infobox">
+	<center><h4>ເລືອກສິນຄ້າ ຕ້ອງການໂອນ</h4></center>
+</div>
+
+
+
+<div class="searchbox">
+	<form method="get">
+		<input type="hidden" name="d" value="stock/transfer" />
+		<table class="">
+			<tr>
+				<td>ຄົ້ນຫາ: </td>
+				<td>
+					<select name="materialID" onchange="document.location='?d=stock/transfer&materialID='+this.value">
+						<option value="0">-- ເລືອກລາຍການສິນຄ້າ --</option>
+						<?php while ($row_c = mysql_fetch_array($rs_material,MYSQL_ASSOC)) {
+							$selected = $row_c['materialID'] == base64_decode($_GET['materialID']) ? "selected" : ""; 
+						?>
+							<option value="<?= base64_encode($row_c['materialID']) ?>" <?= $selected ?>><?= $row_c['materialName'] ?></option>
+						<?php } ?>
+					</select>
+				</td>
+				<td>ລະຫັດ: </td>
+				<td><input type="text" name="txtBarcode" value="" /></td> 
+				<td>ຊື່ ສິນຄ້າ: </td>
+				<td><input type="text" name="material" value="" /></td> 
+				<td><input type="submit" value="ຄົ້ນຫາ" class="btn3" /></td>
+			</tr>
+		</table>
+	</form>
+	</div>
+<form method = "post" action="?d=stock/transfer" enctype="multipart/form-data">	 
+	<table class = "beautified editable">
+	  <tr>
+	  	<th width="10">ລຳດັບ</th>
+	  	<th>ຊື່ ສິນຄ້າ</th>
+		<th>ຈໍານວນໃນສາງ</th>
+	  	<th>ລາຄາ ທີ່ມີໃນສາງ</th>
+	  	<th>ວັນໝົດອາຍຸ</th>  	  	
+        <!-- <th>ຫົວໜ່ວຍ(1)</th>
+	  	<th>ຈໍານວນ(1)</th>
+        <th>ຫົວໜ່ວຍ(2)</th>
+	  	<th>ຈໍານວນ(2)</th>
+	  	<th>ຫົວໜ່ວຍ(3)</th>
+	  	<th>ຈໍານວນ(3)</th>     	  			
+		<th>ຫົວໜ່ວຍ</th> -->
+	  	<th>ຈໍານວນ</th>   
+	  </tr>		
+	  <?php 
+	  	$rsMaterial2 = LoadMaterialAdd($whereclauseKF);
+	  
+		$i = 1;		
+		while($row = mysql_fetch_array($rsMaterial2, MYSQL_ASSOC)){			
+				$cvgroup11 = 0;
+				$cvgroup12 = 0;
+				$cvgroup21 = 0;
+				$cvgroup22 = 0;
+				if  ($row['cap1'] !=0){
+					$cvgroup11 = $row['unitQty3']%$row['cap1'];
+					$cvgroup12 = ($row['unitQty3']-($cvgroup11))/$row['cap1'];
+					$cvgroup21 = $cvgroup11%$row['cap2'];
+					$cvgroup22 = ($cvgroup11 - $cvgroup21)/$row['cap2'];
+				} else if ($row['cap2'] !=0) {
+					$cvgroup11 = 0;
+					$cvgroup12 = 0;
+					$cvgroup21 = $row['unitQty3']%$row['cap2'];
+					$cvgroup22 = ($row['unitQty3'] - $cvgroup21)/$row['cap2'];					
+				} else if ($row['cap3'] !=0) {
+					$cvgroup11 = 0;
+					$cvgroup12 = 0;
+					$cvgroup21 = $row['unitQty3'];
+					$cvgroup22 = 0;
+				}
+		?>   
+		<tr>
+			<td class ="adjust">
+				<span><?= ($i+$start) ?></span>
+				<input type="hidden" name="type[]" class="type" value="added" />
+				<input type="hidden" name="id[]" value="<?= $row['materialID'] ?>" />
+				<input type="hidden" name="expDate[]" value="<?= $row['exp_date'] ?>" />                
+				<input type="hidden" name="txtprice[]" value="<?= $row['pur_price'] ?>" />   
+				<input type="hidden" name="txtqty3[]" value="<?= $row['unitQty3'] ?>" />
+            </td>
+            <!-- <td><?= $row['materialName'].' '.number_format($cvgroup12).'/'.number_format($cvgroup22).'/'.number_format($cvgroup21) ?></td> -->
+			<td><?= $row['materialName'] ?></td>
+			<td><?= number_format($cvgroup21).' '.$row['unitName3'] ?></td>
+        	<td><?= number_format($row['pur_price'],2) ?></td>
+        	<td><?= $row['exp_date'] ?></td>          
+        	<!-- <?php if ($row['unitName1'] != '') { ?>
+        	<td bgcolor="#00CC66"><?= $row['unitName1'] ?><input type="hidden" name="unitCap1[]" value="<?= $row['cap1'] ?>" /></td>
+			<td><input type="text" name="unitQty1[]" onkeyup ="AddAndRemoveSeparator(this);" class="number" /></td>
+        	<?php } else { ?>
+        	<td bgcolor="#00CC66"><input type="hidden" name="unitCap1[]" value="0" /></td>
+        	<td bgcolor="#666666"><input type="text" name="unitQty1[]" value="0" readonly="true" /></td>
+        	<?php } ?> -->
+
+            
+            <!-- <?php if ($row['unitName2'] != '') { ?>
+            <td bgcolor="#00CC66"><?= $row['unitName2'] ?><input type="hidden" name="unitCap2[]" value="<?= $row['cap2'] ?>" /></td>
+			<td><input type="text" name="unitQty2[]" onkeyup ="AddAndRemoveSeparator(this);" class="number" /></td>
+        	<?php } else { ?>
+        	<td bgcolor="#00CC66"><input type="hidden" name="unitCap2[]" value="0" /></td>
+        	<td bgcolor="#666666"><input type="text" name="unitQty2[]" value="0" readonly="true" /></td>
+        	<?php } ?> -->
+
+            
+            <!-- <?php if ($row['unitName3'] != '') { ?>
+            <td bgcolor="#00CC66"><?= $row['unitName3'] ?><input type="hidden" name="unitCap3[]" value="<?= $row['cap3'] ?>" /></td>
+			<td><input type="text" name="unitQty3[]" onkeyup ="AddAndRemoveSeparator(this);" class="number" /></td>
+        	<?php } else { ?>
+        	<td bgcolor="#00CC66"><input type="hidden" name="unitCap3[]" value="<?= $row['unitQty3'] ?>" /></td>
+        	<td bgcolor="#666666"><input type="text" name="unitQty3[]" value="0" readonly="true" /></td>
+        	<?php } ?> -->
+
+			 <?php if ($row['unitName3'] != '') { ?>           
+			<td><input type="text" name="unitQty3[]" onkeyup ="AddAndRemoveSeparator(this);" class="number" /></td>
+        	<?php } else { ?>        	
+        	<td bgcolor="#666666"><input type="text" name="unitQty3[]" value="0" readonly="true" /></td>
+        	<?php } ?>
+        </tr>        
+        <?php $i++;} ?>	
+	</table>
+	<div class="menubox">				
+		<input type="submit"  name ="btncancel" class = "btn btn-app" value=" ຍົກເລິກ " />
+		<input type="submit" name="btnsaveProduct" class= "btn btn-app" style="color:#FFF; background:#00a65a; border:#008d4c" value = " ບັນທຶກ " />
+	</div>
+
+</form>
+</div>
+</div>
+</div>

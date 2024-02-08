@@ -1,0 +1,237 @@
+<?php
+session_start();
+htmltage("ສົ່ງເຄື່ອງອອກສາງ");
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'])) {
+	header("Location: ?d=index");
+}
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/Action.js"></script>
+<script type="text/javascript" src="js/calculate.js"></script>
+
+<section class="content-header">
+	<h1>ການເບິກຈ່າຍສິນຄ້າ</h1>
+</section>
+<section class="content">
+	<form method="post" id="frmtranD" action="?d=stock/addjust" enctype="multipart/form-data">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<p><?= $success ?></p>
+						<p class="errormessage"><?= $exist ?></p>
+					</div>
+					<div class="box-body">
+						<div class="row">
+
+							<div class="form-group col-md-3">
+								<label>ສາງ</label>
+								<?php if ($_SESSION['EDPOSV1role_id'] <= '2') { ?>
+									<select class="form-control" name="infoID" onChange="document.location='index.php?d=stock/addjust&infoID='+this.value">
+										<?php
+										$rs_info = LoadInfo();
+										while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+											$selected = $row_c['info_id'] == $row['info_id'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+										<?php } ?>
+									</select>
+								<?php } else { ?>
+									<select name="infoID[]" class="form-control" onChange="FindKF(this.value); " required>
+										<option value="<?= $Get_infoID ?>"><?= $Get_infoName ?></option>
+									</select>
+								<?php } ?>
+
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label>ວັນທີ່ສົ່ງອອກ</label>
+								<div class="input-group date">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="text" name="txtDateTran" class="form-control pull-right" id="datepicker1" data-date-format="yyyy-mm-dd" value="<?= $_SESSION['EDPOSV1AddJustDate'] ?>" required autocomplete="off" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label>ຜູ້ສົ່ງອອກ</label>
+								<input type="text" name="txtreciever" class="form-control" value="<?= $_SESSION['EDPOSV1AddJustReciever'] ?>" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-5">
+								<label>ໃບສະເໜີຂໍເບີກ ສິນຄ້າເລກທີ່</label>
+								<input type="text" name="txt_Release" class="form-control" value="<?= $_SESSION['EDPOSV1AddJust_Release'] ?>" required />
+							</div>
+							<div class="form-group col-md-5">
+								<label>ຂະແໜງນຳໃຊ້</label>
+								<input type="text" name="txt_Sector" class="form-control" value="<?= $_SESSION['EDPOSV1AddJust_Sector'] ?>" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>ໝາຍເຫດ</label>
+								<textarea name="txtRemark" class="form-control" cols="50" rows="2"><?= $_SESSION['EDPOSV1AddJustRemark'] ?></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- text centen in table -->
+		<style>
+			th {
+				text-align: center;
+			}
+		</style>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box">
+					<div class="box-body pad table-responsive" style="overflow-x: auto;">
+						<h4><?= $pagedescription ?></h4>
+						<table id="example1" class="table table-bordered table-hover beautified editable">
+							<thead>
+								<tr>
+									<th>ລຳດັບ</th>
+									<th>Barcode</th>
+									<th>ຊື່ ສິ້ນຄ່າ</th>
+									<th>ຈໍານວນໃນສາງ</th>
+									<th>ວັນທີ່ໝົດອາຍຸ</th>
+									<!-- <th>ຈໍານວນ(1)</th>
+									<th>ຈໍານວນ(2)</th>
+									<th>ຈໍານວນ(3)</th> -->
+									<th>ຈໍານວນ</th>
+									<th>ເຫດຜົນ</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php $i = 1;
+								while ($item = mysql_fetch_array($SumResult)) {
+									$whereGroupID = $item['materialID'];
+									$cvgroup11 = 0;
+									$cvgroup12 = 0;
+									$cvgroup21 = 0;
+									$cvgroup22 = 0;
+									if ($item['cap1'] != 0) {
+										$cvgroup11 = $item['unitQty3'] % $item['cap1'];
+										$cvgroup12 = ($item['unitQty3'] - ($cvgroup11)) / $item['cap1'];
+										$cvgroup21 = $cvgroup11 % $item['cap2'];
+										$cvgroup22 = ($cvgroup11 - $cvgroup21) / $item['cap2'];
+									} else if ($item['cap2'] != 0) {
+										$cvgroup11 = 0;
+										$cvgroup12 = 0;
+										$cvgroup21 = $item['unitQty3'] % $item['cap2'];
+										$cvgroup22 = ($item['unitQty3'] - $cvgroup21) / $item['cap2'];
+									} else if ($item['cap3'] != 0) {
+										$cvgroup11 = 0;
+										$cvgroup12 = 0;
+										$cvgroup21 = $item['unitQty3'];
+										$cvgroup22 = 0;
+									}
+								?>
+									<tr>
+										<td class="centered"><?= ($i + $start) ?></td>
+										<td class="centered"><?= $item['mBarcode'] ?></td>
+										<td>
+											<input type="text" name="txtmaterialName[]" value="<?= $item['materialName'] . ' | ' . number_format($item['pur_price']) . ' | ' . $item['cur_name'] ?>" readonly='true' />
+											<input type="hidden" name="txtPurPrice[]" value="<?= $item['pur_price'] ?>" />
+											<label class="hidden"><?= $item['materialName'] ?></label>
+										</td>
+										<!-- <td><strong><input type="hidden" name="type[]" class="type" value="unchanged" />
+												<input type="hidden" name="tranID[]" value="<?= $item['tranID'] ?>" />
+												<input type="hidden" name="addInfoID[]" value="<?= $item['info_id'] ?>" />
+												<input type="hidden" name="txtexp_date[]" value="<?= $item['exp_date'] ?>" />
+												<input type="hidden" name="id[]" value="<?= $item['materialID'] ?>" />
+												<input type="hidden" name="txtSqty1[]" value="<?= $cvgroup12 ?>" />
+												<input type="hidden" name="txtSqty2[]" value="<?= $cvgroup22 ?>" />
+												<input type="hidden" name="txtSqty3[]" value="<?= $cvgroup21 ?>" />
+												<input type="hidden" name="txtcap1[]" value="<?= $item['cap1'] ?>" />
+												<input type="hidden" name="txtcap2[]" value="<?= $item['cap2'] ?>" />
+												<input type="hidden" name="txtcap3[]" value="<?= $item['cap3'] ?>" />
+												<input type="hidden" name="txtStockQTY[]" value="<?= $item['unitQty3'] ?>" />
+												<input type="hidden" name="txtunitname3[]" value="<?= $item['unitName3'] ?>" />
+												<?= $cvgroup12 . $item['unitName1'] . ' / ' . $cvgroup22 . $item['unitName2'] . ' / ' . $cvgroup21 . $item['unitName3'] ?></strong>
+										</td> -->
+										<td><strong><input type="hidden" name="type[]" class="type" value="unchanged" />
+												<input type="hidden" name="tranID[]" value="<?= $item['tranID'] ?>" />
+												<input type="hidden" name="addInfoID[]" value="<?= $item['info_id'] ?>" />
+												<input type="hidden" name="txtexp_date[]" value="<?= $item['exp_date'] ?>" />
+												<input type="hidden" name="id[]" value="<?= $item['materialID'] ?>" />
+												<input type="hidden" name="txtSqty1[]" value="<?= $cvgroup12 ?>" />
+												<input type="hidden" name="txtSqty2[]" value="<?= $cvgroup22 ?>" />
+												<input type="hidden" name="txtSqty3[]" value="<?= $cvgroup21 ?>" />
+												<input type="hidden" name="txtcap1[]" value="<?= $item['cap1'] ?>" />
+												<input type="hidden" name="txtcap2[]" value="<?= $item['cap2'] ?>" />
+												<input type="hidden" name="txtcap3[]" value="<?= $item['cap3'] ?>" />
+												<input type="hidden" name="txtStockQTY[]" value="<?= $item['unitQty3'] ?>" />
+												<input type="hidden" name="txtunitname3[]" value="<?= $item['unitName3'] ?>" />
+												<?= $cvgroup21 . $item['unitName3'] ?></strong>
+										</td>
+										<td class="eqcodecols">
+											<?= $item['exp_date'] ?>
+											<input type="hidden" name="txtExpDate[]" value="<?= $item['exp_date'] ?>">
+										</td>
+										<!-- <?php if ($item['cap1'] > 0) { ?>
+											<td class="eqcodecols">
+												<input type="text" name="txtQTY1[]" size='10%' onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" />
+											</td>
+										<?php } else { ?><td bgcolor="#999999"></td><?php }
+																				if ($item['cap2'] > 0) { ?>
+											<td class="eqcodecols"><input type="text" name="txtQTY2[]" size='10%' onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off"></td>
+										<?php } else { ?><td bgcolor="#999999"></td><?php } ?> -->
+										<?php if ($item['cap3'] > 0) { ?>
+											<td class="eqcodecols"><input type="text" name="txtQTY3[]" size='10%' onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" /></td>
+										<?php } else { ?><td bgcolor="#999999"></td><?php } ?>
+										<td class="eqcodecols">
+											<select name="TranType[]">
+												<?php
+												$rs_TranType = LoadTranType();
+												while ($row_z = mysql_fetch_array($rs_TranType, MYSQL_ASSOC)) {
+													$selected = $row_z['tranType'] == 4 ? "selected" : "";
+												?>
+													<option value="<?= $row_z['tranType'] ?>" <?= $selected ?>><?= $row_z['Typename'] ?></option>
+												<?php } ?>
+											</select>
+										</td>
+									</tr>
+								<?php $i++;
+								}  ?>
+							</tbody>
+						</table>
+						<div class="paging">
+							<?php
+							if ($pagecount > 1) {
+								if ($pagenum > 1) echo "<a href='?d=report/material_instock&$params&start=" . (($pagenum - 2) * $pagesize) . "' $isselected>&lt; ກັບຄືນ</a>";
+								$j = 1;
+								$g_start = 0;
+								if ($_GET['start'] >= $pagesize * 4) $g_start = ($_GET['start'] / $pagesize) - 4;
+
+								for ($i = $g_start; $i < $pagecount; $i++) {
+									if ($i == $pagenum - 1) $isselected = "class='selected'";
+									else $isselected = "";
+
+									if ($j <= 15) {
+										echo "<a href='?d=report/material_instock&$params&start=" . ($i * $pagesize) . "' $isselected>" . ($i + 1) . "</a>";
+									}
+									$j++;
+								}
+								if ($pagenum < $pagecount) echo "<a href='?d=report/material_instock&$params&start=" . ($pagenum * $pagesize) . "' $isselected>ຕໍ່ໄປ  &gt;</a>";
+							}
+							?>
+						</div>
+					</div>
+					<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
+						<div class="box-footer">
+							<input type="submit" class="btn btn-primary" name="btnAddproduct" value="  ບັນທຶກ  " />
+						</div>
+					<?php } ?>
+				</div>
+			</div>
+		</div>
+	</form>
+</section>

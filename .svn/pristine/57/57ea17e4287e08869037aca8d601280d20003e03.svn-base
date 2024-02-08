@@ -1,0 +1,169 @@
+<?php
+date_default_timezone_set("Asia/Bangkok");
+session_start();
+require_once("../config.php");
+require_once("m_receive.php");
+$SumResult = SumMaterial($whereclause, '');
+$date = date('Y-m-d');
+$output_filename = "Receive" . $date . ".xls";
+// Redirect the output to the stream
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename={$output_filename}");
+if (isset($_GET['startdate'])) {
+	$FormDate = $_GET['startdate'];
+} else {
+	$FormDate = date('Y-m-d');
+}
+if (isset($_GET['enddate'])) {
+	$ToDate = $_GET['enddate'];
+} else {
+	$ToDate = date('Y-m-d');
+}
+echo "<h4>ລາຍງານຮັບເຄື່ອງເຂົ້າສາງ  ປະຈໍາວັນທີ່ " . $FormDate . " ຫາ " . $ToDate . "</h4> ";
+echo "<table border='1'> \n";
+?>
+<tr>
+
+	<th>ລຳດັບ</th>
+	<th>ລະຫັດສິນຄ້າ</th>
+	<th>ລາຍລະອຽດສິນຄ້າ</th>
+	<th>ຫົວໜ່ວຍ</th>
+	<th>ລາຄາ</th>
+	<th colspan="2">ຈຳນວນຮັບສິນຄ້າເຂົ້າສາງ</th>
+	<th>ວັນ/ເດືອນ/ປີ</th>
+	<th colspan="3">ໃບບີນສິນຄ້າ</th>
+	<th colspan="2">ໃບຮັບສິນຄ້າເຂົ້າສາງ</th>
+	<th colspan="2">ໃບສັ່ງຊື້ PO</th>
+</tr>
+<tr>
+
+	<th>Items</th>
+	<th>ID</th>
+	<th>Description of Goods</th>
+	<th>Unit</th>
+	<th>Unit Price</th>
+	<th>Quantity</th>
+	<th>Amount</th>
+	<th>dd/mm/yy</th>
+
+	<th>ຜູ້ສົ່ງສິນຄ້າ</th>
+	<th>ເລກທີ</th>
+	<th>ລົງວັນທີ</th>
+
+	<th>ເລກທີ</th>
+	<th>ລົງວັນທີ</th>
+
+	<th>ເລກທີ</th>
+	<th>ລົງວັນທີ</th>
+</tr>
+
+<?php
+$i = 1;
+while ($item = mysql_fetch_array($SumResult)) {
+	$whereGroupID = $item['tranID'];
+?>
+	<!-- <tr>
+								<td class="centered"><?= ($i + $start) ?></td>								
+								<td><div align="center"><strong><?= $item['traDate'] ?></strong></div></td>
+								<td ><div align="left"><strong><?= $item['reciever'] ?></strong></div></td>
+								<td><div align="center"><strong><?= $item['username'] ?></strong></div></td>	
+								<td><div align="center"><strong><?= $item['date_add'] ?></strong></div></td>
+								<td colspan="3"><strong><?= $item['supplierName'] ?></td>
+								<td colspan="4"><strong><?= $item['remark'] ?></td>
+							</tr> -->
+	<?php
+	$j = 1;
+	$sumPriceBill = 0;
+	$sumDiscountBill = 0;
+	$sumTotalPriceBill = 0;
+	$sumGroupQTY1 = 0;
+	$sumGroupQTY2 = 0;
+	$sumGroupQTY3 = 0;
+	$sumGroupPrice = 0;
+
+	$sumGroupUnitName1 = "";
+	$sumGroupUnitName2 = "";
+	$sumGroupUnitName3 = "";
+
+	$result_detail = LoadTable($whereclause, $whereGroupID);
+	//$sumTotalPrice = '0';
+	while ($itemD = mysql_fetch_array($result_detail)) {
+		$convert11 = 0;
+		$convert12 = 0;
+		$convert21 = 0;
+		$convert22 = 0;
+		$sumTotalPrice = $sumTotalPrice + (($itemD['pur_price'] - $itemD['receive_dis']) * $itemD['unitQty3']);
+		$sumDiscount = $sumDiscount + ($itemD['receive_dis'] * $itemD['unitQty3']);
+		$sumPrice = $sumPrice + ($itemD['pur_price'] * $itemD['unitQty3']);
+
+		$sumTotalPriceBill = $sumTotalPriceBill + (($itemD['pur_price'] - $itemD['receive_dis']) * $itemD['unitQty3']);
+		$sumDiscountBill = $sumDiscountBill + ($itemD['receive_dis'] * $itemD['unitQty3']);
+		$sumPriceBill  = $sumPriceBill + ($itemD['pur_price']);
+
+		if ($itemD['cap1'] != 0) {
+			$convert11 = $itemD['unitQty3'] % $itemD['cap1'];
+			$convert12 = ($itemD['unitQty3'] - ($convert11)) / $itemD['cap1'];
+			$convert21 = $convert11 % $itemD['cap2'];
+			$convert22 = ($convert11 - $convert21) / $itemD['cap2'];
+		} else if ($itemD['cap2'] != 0) {
+			$convert11 = 0;
+			$convert12 = 0;
+			$convert21 = $itemD['unitQty3'] % $itemD['cap2'];
+			$convert22 = ($itemD['unitQty3'] - $convert21) / $itemD['cap2'];
+		} else if ($itemD['cap3'] != 0) {
+			$convert11 = 0;
+			$convert12 = 0;
+			$convert21 = $itemD['unitQty3'];
+			$convert22 = 0;
+		}
+		$sumGroupQTY1 = $sumGroupQTY1 + $convert12;
+		$sumGroupQTY2 = $sumGroupQTY2 + $convert22;
+		$sumGroupQTY3 = $sumGroupQTY3 + $convert21;
+		$sumGroupUnitName1 = $itemD['unitName1'];
+		$sumGroupUnitName2 = $itemD['unitName2'];
+		$sumGroupUnitName3 = $itemD['unitName3'];
+		$sumGroupPrice = $sumGroupPrice + $itemD['pur_price'];
+
+	?>
+
+		<tr>
+			
+										<td class="centered"><?= $i ?></td>
+										<td><?= $itemD['mBarcode'] ?></td>
+										<td><?= $itemD['materialName'] ?></td>
+										<td><?= $itemD['unitName3'] ?></td>
+										<td align="right"><?= number_format($itemD['pur_price']) ?></td>
+										<td align="right"><?= number_format($convert21)  ?></td>
+										<td align="right"><?= number_format(($itemD['pur_price'] * $itemD['unitQty3']) - ($itemD['receive_dis'] * $itemD['unitQty3'])) ?></td>
+										<td><?= date('d/m/y', strtotime($itemD['date_add'])) ?></td>
+										<td><?= $itemD['supplierName'] ?></td>
+										<td><?=$itemD['bill_no'] ?></td>
+										<td><?=$itemD['bill_date'] ?></td>
+										<td><?=$itemD['whouse'] ?></td>
+										<td><?=$itemD['whouseDate'] ?></td>
+										<td><?=$itemD['po_no'] ?></td>
+										<td><?=$itemD['po_date'] ?></td>
+			
+		</tr>
+
+	<?php $j++;
+	}  ?>
+	<!-- <tr>
+									<td colspan="8" align="center"><strong>ລວມມູນຄ່າ ວັນທີ <?= $item['date_add'] ?></strong></td>
+									<td align="right"><strong> </strong></td>
+									<td align="right"><strong><?= number_format($sumDiscountBill) ?></strong></td>
+									<td align="right"><strong><?= number_format($sumTotalPriceBill) ?></strong></td>
+									<td align="center"></td>
+								</tr> -->
+
+<?php $i++;
+}  ?>
+<tr style="color:#222" bgcolor="#00FFFF">
+	<td colspan="6" align="center"><strong>ລວມມູນຄ່າ ຮັບເຄື່ອງເຂົ້າສາງ ປະຈໍາວັນທີ່ <?= $_GET['startdate']  ?> - <?= $_GET['enddate']  ?></strong></td>
+	<td align="right"><strong><?= number_format($sumTotalPrice) ?></strong></td>
+</tr>
+
+</table>
+<?php
+mysql_close($conn);
+?>

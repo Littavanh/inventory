@@ -1,0 +1,201 @@
+<?php htmltage("ຮັບ-ຈ່າຍ");
+if ( !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] >4) { header("Location: ?d=index"); exit(); }
+if (isset($_SESSION["EDPOSV1cashdrawer_in"]) && $_SESSION["EDPOSV1cashdrawer_in"] != '') {	include("v_cashin.php"); } 
+ ?>
+  <link type="text/css" rel="stylesheet" href="css/element.css" />
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/Action.js"></script>
+<script type="text/javascript" src="js/calculate.js"></script>
+ 
+<section class="content-header">
+    <h1>ຮັບ-ຈ່າຍ</h1>
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">
+				<div class="box-header with-border">					 
+					<p><?=$success?></p>
+					<p class="errormessage"><?=$exist?></p>
+										<?php if ( $_SESSION['EDPOSV1role_id'] <= '2') { ?>
+				                 <div class="form-group col-md-3">
+					                <label>BU/ຫົວໜ່ວຍທຸລະກິດ</label>
+					                <select class="form-control" name="infoID" onChange="document.location='index.php?d=cashdrawer/cashdrawer&infoID='+this.value">
+										<option value="0">-- ເລືອກທັງໝົດ --</option>
+											<?php 
+												$rs_info = LoadInfo();
+												if ($infoID =='') {
+													$Set_sel = $info_id;
+												} else {
+													$Set_sel = $_GET['infoID'];
+												}
+												while ($row_c = mysql_fetch_array($rs_info,MYSQL_ASSOC)) {
+												$selected = $row_c['info_id'] == $Set_sel ? "selected" : ""; 
+											?>
+												<option value="<?=  $row_c['info_id'] ?>" <?= $selected ?>><?= encrypt_decrypt('decrypt', $row_c['info_name']) ?></option>
+											<?php } ?>
+									</select>
+					            </div>    	
+				                <?php } else { ?>
+				                	<div class="form-group col-md-3">
+					                <label>BU/ຫົວໜ່ວຍທຸລະກິດ</label>
+					                <select class="form-control" name="infoID" >
+										<option value="<?=$Get_infoID?>"><?=$Get_infoName ?></option>										
+									</select>
+					            </div>    	
+				                <?php } ?>	
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<form method="post" id="editable" action="?d=cashdrawer/cashdrawer">
+							<div class="col-md-3">
+								<div class="form-group col-md-12">
+					                <label style="font-size: 20px; ">ຈໍານວນເງີນທີ່ເອົາເຂົ້າ</label>
+					                <input type="text" class = "form-control" name="txtCashIn" style="text-align: right; font-size: 30px; height: 60px;" value="<?=number_format($SumCashIn) ?>"  readonly/>					                
+					            </div>	
+					            <div class="form-group col-md-12">
+					                <label style="font-size: 20px; ">ຍອດຍົກມາຈາກກະກ່ອນ</label>
+					                <input type="text" class = "form-control" name="txtCloseBalance" style="text-align: right; font-size: 30px; height: 60px;" value="<?=number_format($balanceOld) ?>"  readonly/>					                
+					            </div>	
+					            <div class="form-group col-md-12">
+					                <label style="font-size: 20px; ">ຍອດຂາຍໃນກະນີ້</label>
+					                <input type="text" class = "form-control" name="txtCurBalance" style="text-align: right; font-size: 30px; height: 60px;" value="<?=number_format($SumSaleCash_CurBalance) ?>"  readonly/>					                
+					            </div>	
+					          	<div class="form-group col-md-12">
+					                <label style="font-size: 20px; ">ຈໍານວນເງີນທີ່ເອົາອອກ</label>
+					                <input type="text" class = "form-control" name="txtCashOut" style="text-align: right; font-size: 30px; height: 60px;" value="<?=number_format($SumCashOut) ?>"  readonly/>					                
+					            </div>	
+					            <div class="form-group col-md-12">
+					                <label style="font-size: 20px; ">ຍອດລວມ</label>
+					                <input type="text" class = "form-control" name="txtTotalBalance" style="text-align: right; font-size: 30px; height: 60px;" value="<?=number_format($TotalBalance).'ກີບ' ?>"  readonly/>					                
+					            </div>
+					            <?php if ( $_GET['infoID'] != "0" ) { ?>
+						            <div class="col-md-12">
+										<div class="form-group col-md-12">
+											<input type="submit" name="btncashin" value="ຮັບເງິນ" style="color:#FFF; background:#3c8dbc; border:#367fa9; height: 80px; width: 150px; font-size: 24px;" class="btn btn-app" />
+											
+											<input type="submit" name="btnCashOut" value="ຈ່າຍ" style="color:#FFF; background:#00a65a; border:#008d4c; height: 80px; width: 150px; font-size: 24px;" class="btn btn-app" >
+										</div>								
+									</div>
+								<?php } ?>
+							</div>
+							
+						</form>
+						<div class="col-md-9">
+							<div class="row">
+								<div class="box-header with-border">
+									<h3 class="box-title">ລາຍລະອຽດ</h3>
+								</div>
+								<form method="get">
+					<input type="hidden" name="d" value="cashdrawer/cashdrawer" />
+					<div class="box-body">
+						<div class="row">
+			                <div class="form-group col-md-4">
+			                  <label for="exampleInputEmail1">ແຕ່ວັນທີ</label>
+			                  <div class="input-group date">
+				                  	<div class="input-group-addon">
+				                  		<i class="fa fa-calendar"></i>
+				                  	</div>
+			                  	<input type="text" name="startdate" class="form-control pull-right" id="datepicker1"  autocomplete="off"
+			                  			value="<?php if ($_GET['startdate']!='') { echo $_GET['startdate']; } else { echo date('Y-m-d'); }?>" data-date-format="yyyy-mm-dd">
+			                  	</div>
+			                </div>
+			                <div class="form-group col-md-4">
+			                  <label for="exampleInputEmail1">ເຖິງວັນທີ</label>
+				                  <div class="input-group date">
+				                  	<div class="input-group-addon">
+				                  		<i class="fa fa-calendar"></i>
+				                  	</div>	
+				                  	<input type="text" name="enddate" class="form-control pull-right" id="datepicker2"  autocomplete="off"
+				                  	value="<?php if ($_GET['enddate']!='') { echo $_GET['enddate']; } else { echo date('Y-m-d'); }?>" data-date-format="yyyy-mm-dd" >
+				                  </div>
+			                </div>
+		                </div>
+		                <div class="box-footer">
+							<button type="reset" class="btn btn-default" onclick="document.location='?d=cashdrawer/cashdrawer'">ຍົກເລີກ</button>
+			            	<button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>			            	
+			            	<button type="button" class="btn btn-info" onclick="document.location='cashdrawer/ex_cashdrawer.php?<?=$params?>' , '_blank'">Export To Excel</button>
+			            	<!-- <button type="reset" class="btn btn-default" onclick="document.location='cashdrawer/print_cashdrawer.php?<?=$params?>', '_blank'">ພີມ</button> -->
+			            	<p class="right"><a href="cashdrawer/print_cashdrawer.php?<?=$params?>" target="_blank">
+				                    <input type="button" value="Print" />
+				                    </a></p>
+			            </div>
+		                <div class="row">
+		                <div class="box-body pad table-responsive">
+						<table id="example1" class="table table-bordered table-hover beautified editable">
+							<thead>
+								<tr >
+									<th>ລຳດັບ</th>
+								  	<th>ວັນທີ</th>
+								  	<th>ປະເພດ</th>
+								  	<th>ກີບ</th>
+								  	<th>ບາດ</th>
+								  	<th>ໂດລາ</th>								  	
+								  	<th>ລວມມູນຄ່າ</th>
+								  	<th>ຜູ້ບັນທືກ</th>        
+								  	<th>ວັນທີບັນທືກ</th>        							      
+								</tr>
+							</thead>
+							<tbody>						
+							<?php $i=1; $sum_total = 0;
+								while ($item = mysql_fetch_array($result)) { 
+									$sum_lak = $sum_lak + $item['cd_lak'];
+									$sum_thb = $sum_thb + $item['cd_thb'];
+									$sum_usd = $sum_usd + $item['cd_usd'];
+									$sum_total_lak = $sum_total_lak + $item['total_lak'];
+									$sourcedate = $item['date_open'];
+									$dateview = new DateTime($sourcedate);
+    								$dateview = $dateview->format('Y-m-d'); // 31-07-2012
+
+									if ($item['typeid'] == '1') { 
+										$reason= "ຮັບເງິນເຂົ້າ";
+										echo "<tr>";
+								 	} else if ($item['typeid'] == '2') {
+								 		$reason= "ຈ່າຍເງິນອອກ";
+								 		echo "<tr>";
+								 	} else if ($item['typeid'] == '3') {
+								 		$reason= "ຍອດຂາຍ";
+							?>
+							<tr style="cursor:pointer" onclick="document.location='index.php?d=report/cash_log&startdate=<?=$dateview?>&enddate=<?=$dateview?>&infoID=<?=$item['info_id']?>'">	
+							<?php } ?>
+								<td><?= $i  ?></td>
+								<td><?= $item['date_open'] ?></td>
+								<td><?= $item['remark'] ?></td>
+								<td align="right"><?= number_format($item['cd_lak']) ?></td>
+								<td align="right"><?= number_format($item['cd_thb']) ?></td>
+								<td align="right"><?= number_format($item['cd_usd']) ?></td>
+								<td align="right"><?= number_format($item['total_lak']) ?></td>
+								<td><?= $item['user_open'] ?></td>
+								<td><?= $item['date_log'] ?></td>
+							</tr> 					
+							<?php 	$i++; } ?>		
+							</tbody>	
+							<tfoot>
+								<tr>
+									<td colspan="3" align="center"><strong>ລວມຍອດ</strong></td>
+								  	<td align="right"><strong><?=number_format($sum_lak,2) ?></strong></td>                				
+								  	<td align="right"><strong><?=number_format($sum_thb,2) ?></strong></td>          
+								  	<td align="right"><strong><?=number_format($sum_usd,2) ?></strong></td>          
+								  	<td align="right"><strong><?=number_format($sum_total_lak,2) ?></strong></td>          
+								  	<td></td>	
+								  	<td></td>			      
+								</tr>
+							</tfoot>
+					</table>
+			</div>
+		                </div>
+		            </div>
+				</form>		
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+					 
+					 
+				</div>	
+			</div>
+		</div>
+	</div>
+</section>

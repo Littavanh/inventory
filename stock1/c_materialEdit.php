@@ -1,0 +1,299 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+
+if (isset($_POST['btnEditProduct']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {
+	
+	$Mid = mysql_real_escape_string(stripslashes($_POST['txtmaterialID']));
+	$txtBarcode1 = mysql_real_escape_string(stripslashes($_POST['txtBarcode1']));	
+	$txtBarcode2 = mysql_real_escape_string(stripslashes($_POST['txtBarcode2']));
+	$txtBarcode3 = mysql_real_escape_string(stripslashes($_POST['txtBarcode3']));
+	$txtm_name = mysql_real_escape_string(stripslashes($_POST['txtm_name']));				
+	$status_id = mysql_real_escape_string(stripslashes(trim($_POST['txtstatus_id'])));	
+	$unit1 = mysql_real_escape_string(stripslashes($_POST['unit1']));
+	$unitNameQty1 =  str_replace(",","",$_POST['unitNameQty1']);
+	$unit2 = mysql_real_escape_string(stripslashes($_POST['unit2']));
+	$unitNameQty2 = str_replace(",","",$_POST['unitNameQty2']);
+	$unit3 = mysql_real_escape_string(stripslashes($_POST['unit3']));
+	$unitNameQty3 = str_replace(",","",$_POST['unitNameQty3']);
+	$txtm_Remark = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark'])));	
+	$txtm_Remark1 = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark1'])));	
+	$txtm_Remark2 = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark2'])));
+	$min_stock = str_replace(",","",$_POST['min_stock']);
+	$minUnitID = mysql_real_escape_string(stripslashes($_POST['minUnitID']));
+	$cbIngredient = mysql_real_escape_string(stripslashes(trim($_POST['cbIngredient'])));
+	$mOpenStock = mysql_real_escape_string(stripslashes(trim($_POST['mOpenStock'])));
+	$txtfdID1 = mysql_real_escape_string(stripslashes(trim($_POST['txtfdID1'])));	
+	$txtfdID2 = mysql_real_escape_string(stripslashes(trim($_POST['txtfdID2'])));
+	$txtfdID3 = mysql_real_escape_string(stripslashes(trim($_POST['txtfdID3'])));
+	$txtrecieveID1 = mysql_real_escape_string(stripslashes(trim($_POST['txtrecieveID1'])));
+	$txtrecieveID2 = mysql_real_escape_string(stripslashes(trim($_POST['txtrecieveID2'])));
+	$txtrecieveID3 = mysql_real_escape_string(stripslashes(trim($_POST['txtrecieveID3'])));
+
+	$kf_id = mysql_real_escape_string(stripslashes($_POST['kf_id']));
+	$txtprice1 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice1'])));
+	$txtprice12 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice12'])));
+	$txtprice2 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice2'])));
+	$txtprice22 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice22'])));
+	$txtprice3 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice3'])));
+	$txtprice32 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice32'])));
+	//$infoID = mysql_real_escape_string(stripslashes($_POST['infoID']));
+	$infoID =$Get_infoID;
+	//$infoID_OLD = mysql_real_escape_string(stripslashes($_POST['txtinfoIDOLD']));
+	$infoID_OLD = $Get_infoID;
+	$CurPrice1 = mysql_real_escape_string(stripslashes($_POST['CurPrice1']));
+	$CurPrice2 = mysql_real_escape_string(stripslashes($_POST['CurPrice2']));
+	$CurPrice3 = mysql_real_escape_string(stripslashes($_POST['CurPrice3']));	
+
+
+	$success = "";
+	$exist = "";
+	// if (!is_numeric ($txtprice1)) {
+	// 	$exist ="ລາຄາຂາຍ 1 ຂາບຍ່ອຍ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// } 
+	// if (!is_numeric ($txtprice12)) {
+	// 	$exist ="ລາຄາຂາຍ 1 ຂາຍຍົກ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// }
+	
+	// if (!is_numeric ($txtprice2) ) {
+	// 	$exist .="ລາຄາຂາຍ 2 ຂາບຍ່ອຍ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// } 
+	// if (!is_numeric ($txtprice22) ) {
+	// 	$exist .="ລາຄາຂາຍ 2 ຂາຍຍົກ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// } 
+
+	// if (!is_numeric ($txtprice3) ) {
+	// 	$exist .="ລາຄາຂາຍ 3 ຂາບຍ່ອຍ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// } 
+	
+	// if (!is_numeric ($txtprice32) ) {
+	// 	$exist .="ລາຄາຂາຍ 3 ຂາຍຍົກ ເປັນໄດ້ພຽງໂຕເລກເທົ່ານັ້ນ....!";	
+	// } 
+	
+	unset($_SESSION["EDPOSV1MADD_infoID"]);
+	unset($_SESSION["EDPOSV1MADD_Mid"]);
+	unset($_SESSION["EDPOSV1MADD_txtBarcode1"]);
+	unset($_SESSION["EDPOSV1MADD_txtBarcode2"]);
+	unset($_SESSION["EDPOSV1MADD_txtBarcode3"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_name"]);	
+	unset($_SESSION["EDPOSV1MADD_kf_id"]);	
+	unset($_SESSION["EDPOSV1MADD_unit1"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty1"]);
+	unset($_SESSION["EDPOSV1MADD_unit2"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty2"]);
+	unset($_SESSION["EDPOSV1MADD_unit3"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty3"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark"]);	
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark1"]);	
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark2"]);	
+	unset($_SESSION["EDPOSV1MADD_min_stock"]);
+	unset($_SESSION["EDPOSV1MADD_minUnitID"]);
+	unset($_SESSION["EDPOSV1MADD_Ingredient"]);
+	unset($_SESSION["EDPOSV1MADD_mOpenStock"]);
+	unset($_SESSION["EDPOSV1MADD_cy_id1"]);
+	unset($_SESSION["EDPOSV1MADD_cy_id2"]);
+	unset($_SESSION["EDPOSV1MADD_cy_id3"]);
+
+	$_SESSION["EDPOSV1MADD_Mid"]=$Mid;
+	$_SESSION["EDPOSV1MADD_txtBarcode1"]=$txtBarcode1;	
+	$_SESSION["EDPOSV1MADD_txtBarcode2"]=$txtBarcode2;	
+	$_SESSION["EDPOSV1MADD_txtBarcode3"]=$txtBarcode3;	
+	$_SESSION["EDPOSV1MADD_txtm_name"]=$txtm_name;	
+	$_SESSION["EDPOSV1MADD_kf_id"]=$kf_id;	
+	// $_SESSION["EDPOSV1MADD_txtprice1"]=$txtprice1;	
+	// $_SESSION["EDPOSV1MADD_txtprice2"]=$txtprice12;	
+	// $_SESSION["EDPOSV1MADD_txtprice2"]=$txtprice2;
+	// $_SESSION["EDPOSV1MADD_txtprice22"]=$txtprice22;	
+	// $_SESSION["EDPOSV1MADD_txtprice3"]=$txtprice3;	
+	// $_SESSION["EDPOSV1MADD_txtprice32"]=$txtprice32;	
+
+	$_SESSION["EDPOSV1MADD_txtprice1"]="0";	
+	$_SESSION["EDPOSV1MADD_txtprice2"]="0";	
+	$_SESSION["EDPOSV1MADD_txtprice2"]="0";
+	$_SESSION["EDPOSV1MADD_txtprice22"]="0";	
+	$_SESSION["EDPOSV1MADD_txtprice3"]="0";	
+	$_SESSION["EDPOSV1MADD_txtprice32"]="0";	
+
+	$_SESSION["EDPOSV1MADD_status_id"]=$status_id;	
+	$_SESSION["EDPOSV1MADD_unit1"]=$unit1;
+	$_SESSION["EDPOSV1MADD_unitNameQty1"]=$unitNameQty1;
+	$_SESSION["EDPOSV1MADD_unit2"]=$unit2;
+	$_SESSION["EDPOSV1MADD_unitNameQty2"]=$unitNameQty2;
+	$_SESSION["EDPOSV1MADD_unit3"]=$unit3;
+	$_SESSION["EDPOSV1MADD_unitNameQty3"]=$unitNameQty3;
+	$_SESSION["EDPOSV1MADD_txtm_Remark"]=$txtm_Remark;	
+	$_SESSION["EDPOSV1MADD_min_stock"]=$min_stock;
+	$_SESSION["EDPOSV1MADD_minUnitID"]=$minUnitID;
+	$_SESSION["EDPOSV1MADD_Ingredient"]=$cbIngredient;
+	$_SESSION["EDPOSV1MADD_infoID"]=$Get_infoID;
+	$_SESSION["EDPOSV1MADD_cy_id1"]=$CurPrice1;
+	$_SESSION["EDPOSV1MADD_cy_id2"]=$CurPrice2;
+	$_SESSION["EDPOSV1MADD_cy_id3"]=$CurPrice3;
+		
+	if ($txtprice1 > 0 && $txtprice12 ==0) {  $txtprice12=$txtprice1; } 
+	if ($txtprice2 > 0 && $txtprice22 ==0) {  $txtprice22=$txtprice2; } 
+	if ($txtprice3 > 0 && $txtprice32 ==0) {  $txtprice32=$txtprice3; } 
+	
+	if ($txtprice1 > 0 && $txtBarcode1 =="") {  $exist ="5.3 Barcode unit 3 empty ...!"; } 
+	if ($txtprice2 > 0 && $txtBarcode2 =="") {  $exist ="5.2 Barcode unit 2 empty ...!"; } 
+	if ($txtprice3 > 0 && $txtBarcode3 =="") {  $exist ="5.1 Barcode unit 1 empty ...!"; } 
+
+ if ($exist =="") { 
+
+ 	if ($txtBarcode3 != '') {
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_material_ WHERE status_id IN (3) and mBarcode = '$txtBarcode3' and materialID != '$Mid' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode3." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+
+		} else { $exist =''; }
+		$GetFoodID = nr_execute("SELECT fd_id FROM v_recipe_ WHERE materialID='$Mid' and info_id='$infoID' ");
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_ WHERE status_id IN (8) and fd_Barcode = '$txtBarcode3' and fd_id !='$GetFoodID' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode3." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+		} else { $exist =''; }
+	}
+ 	if ($txtBarcode2 != '') {
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_material_ WHERE status_id IN (3) and mBarcode = '$txtBarcode2' and materialID != '$Mid' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode2." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+
+		} else { $exist =''; }
+		$GetFoodID = nr_execute("SELECT fd_id FROM v_recipe_ WHERE materialID='$Mid' and info_id='$infoID' ");
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_ WHERE status_id IN (8) and fd_Barcode = '$txtBarcode2' and fd_id !='$GetFoodID' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode2." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+		} else { $exist =''; }
+	}
+ 	if ($txtBarcode1 != '') {
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_material_ WHERE status_id IN (3) and mBarcode = '$txtBarcode1' and materialID != '$Mid' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode1." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+
+		} else { $exist =''; }
+		$GetFoodID = nr_execute("SELECT fd_id FROM v_recipe_ WHERE materialID='$Mid' and info_id='$infoID' ");
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_ WHERE status_id IN (8) and fd_Barcode = '$txtBarcode1' and fd_id !='$GetFoodID' and info_id='$infoID' ")) != 0) {
+			$exist = "1.1 ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode1." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+		} else { $exist =''; }
+	}
+ 
+	if (mysql_num_rows(mysql_query("SELECT * FROM tb_material_ WHERE status_id IN (3) and  materialName = '$txtm_name' and info_id='$infoID_OLD' and  materialID != '$Mid' ")) != 0) {
+		$exist = " ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtm_name." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+	} else { $exist =''; }
+
+	if ( $exist=='' && $txtprice3>0) {
+		// insert to material
+		sql_execute("UPDATE tb_material_ SET mBarcode='$txtBarcode3', materialName='$txtm_name', materialRemark='$txtm_Remark', uname1='$unit1', 
+					unitQty1='$unitNameQty1', uname2='$unit2', unitQty2='$unitNameQty2', uname3='$unit3', unitQty3='$unitNameQty3',user_edit='$user_id',
+					date_edit=NOW(), min_stock='$min_stock', kf_id='$kf_id', info_id='$infoID' , materialRemark1='$txtm_Remark1', 
+					materialRemark2='$txtm_Remark2'
+					WHERE materialID='$Mid' and info_id='$infoID_OLD' ");	
+ 
+		if ($cbIngredient == "1") {
+			sql_execute("DELETE  FROM tb_recipe_ WHERE materialID ='$Mid' and fd_id IN ('$txtfdID1','$txtfdID2','$txtfdID3') and info_id='$infoID_OLD'  ");			
+			sql_execute("DELETE  FROM tb_food_drink_ WHERE fd_id IN ('$txtfdID1','$txtfdID2','$txtfdID3') and info_id='$infoID_OLD'  ");	
+		} else {
+			//======= update tb_food_drink_ 1
+			// Verify if exits
+			$newItemName1 = $txtm_name.' '.$unit1;
+			if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_  WHERE fd_id= '$txtfdID1' and info_id='$infoID_OLD' ")) <= 0) {
+				if ($txtprice1>0) {
+					sql_execute("INSERT INTO tb_food_drink_(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+							VALUES('$infoID','$kf_id', '$txtBarcode1', '$newItemName1', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
+					// GET food ID
+						$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink_ WHERE info_id='$infoID'");
+					// insert receipe
+					sql_execute("INSERT INTO tb_recipe_(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+							VALUES('$infoID','$GetMaxFoodID', '$Mid', '$unitNameQty1','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice1','$txtprice12','0','1', '$CurPrice1' ) ");	
+				}	else {
+					sql_execute("DELETE  FROM tb_recipe_ WHERE materialID ='$Mid' and fd_id ='$txtfdID1' and info_id='$infoID_OLD'  ");			
+					sql_execute("DELETE  FROM tb_food_drink_ WHERE fd_id ='$txtfdID1' and info_id='$infoID_OLD'  ");	
+				}			
+			} else {
+				sql_execute("UPDATE tb_food_drink_ SET fd_Barcode = '$txtBarcode1', fd_name='$newItemName1', detail1='$txtm_Remark', detail2='$txtm_Remark1', detail3='$txtm_Remark2', 
+						user_edit='$user_id',date_edit=NOW() WHERE fd_id= '$txtfdID1' and info_id='$infoID_OLD'  ");	
+				//======= update tb_recipe_ 1			 
+			sql_execute("UPDATE tb_recipe_ SET recipeCapacity='$unitNameQty1',remark='$txtm_Remark',user_edit='$user_id',date_edit=NOW(), price='$txtprice1', price2='$txtprice12', cy_id='$CurPrice1'  
+						WHERE recipeID= '$txtrecieveID1' and info_id='$infoID_OLD'  ");	
+			}						
+			//======= update tb_food_drink_ 2
+			$newItemName2 = $txtm_name.' '.$unit2;
+			if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_  WHERE fd_id= '$txtfdID2' and info_id='$infoID_OLD' ")) <= 0)  {
+				if ($txtprice2>0) {
+					sql_execute("INSERT INTO tb_food_drink_(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+							VALUES('$infoID','$kf_id', '$txtBarcode2', '$newItemName2', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
+					// GET food ID
+						$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink_ WHERE info_id='$infoID'");
+					// insert receipe
+					sql_execute("INSERT INTO tb_recipe_(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+						VALUES('$infoID','$GetMaxFoodID', '$Mid', '$unitNameQty2','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice2','$txtprice22','0','2', '$CurPrice1' ) ");
+				}	else {
+					sql_execute("DELETE  FROM tb_recipe_ WHERE materialID ='$Mid' and fd_id ='$txtfdID2' and info_id='$infoID_OLD'  ");			
+					sql_execute("DELETE  FROM tb_food_drink_ WHERE fd_id ='$txtfdID2' and info_id='$infoID_OLD'  ");	
+				}			
+			} else {
+				sql_execute("UPDATE tb_food_drink_ SET fd_Barcode = '$txtBarcode2', fd_name='$newItemName2', detail1='$txtm_Remark', detail2='$txtm_Remark1', detail3='$txtm_Remark2', 
+							user_edit='$user_id',date_edit=NOW() WHERE fd_id= '$txtfdID2' and info_id='$infoID_OLD'  ");								
+				//======= update tb_recipe_ 2			 
+			sql_execute("UPDATE tb_recipe_ SET recipeCapacity='$unitNameQty2',remark='$txtm_Remark',user_edit='$user_id',date_edit=NOW(), price='$txtprice2', price2='$txtprice22', cy_id='$CurPrice2'  
+						WHERE recipeID= '$txtrecieveID2' and info_id='$infoID_OLD'  ");	
+			}
+			
+			//======= update tb_food_drink_ 3
+			$newItemName3 = $txtm_name;
+			if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink_  WHERE fd_id= '$txtfdID3' and info_id='$infoID_OLD' ")) <= 0)  {
+				if ($txtprice3>0) {
+					sql_execute("INSERT INTO tb_food_drink_(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+							VALUES('$infoID','$kf_id', '$txtBarcode3', '$newItemName3', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");	
+				// GET food ID
+					$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink_ WHERE info_id='$infoID'");
+				// insert receipe
+				sql_execute("INSERT INTO tb_recipe_(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+						VALUES('$infoID','$GetMaxFoodID', '$Mid', '$unitNameQty3','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice3','$txtprice32','0', '3', '$CurPrice1' ) ");
+				}	else {
+					sql_execute("DELETE  FROM tb_recipe_ WHERE materialID ='$Mid' and fd_id ='$txtfdID3' and info_id='$infoID_OLD'  ");			
+					sql_execute("DELETE  FROM tb_food_drink_ WHERE fd_id ='$txtfdID3' and info_id='$infoID_OLD'  ");	
+				}			
+			} else {
+				sql_execute("UPDATE tb_food_drink_ SET fd_Barcode = '$txtBarcode3', fd_name='$newItemName3', detail1='$txtm_Remark', detail2='$txtm_Remark1', detail3='$txtm_Remark2', 
+							user_edit='$user_id',date_edit=NOW() WHERE fd_id= '$txtfdID3' and info_id='$infoID_OLD'  ");	
+				//======= update tb_recipe_ 3			 
+				sql_execute("UPDATE tb_recipe_ SET recipeCapacity='$unitNameQty3',remark='$txtm_Remark',user_edit='$user_id',date_edit=NOW(), price='$txtprice3', price2='$txtprice32', cy_id='$CurPrice3'  
+							WHERE recipeID= '$txtrecieveID3' and info_id='$infoID_OLD'  ");				
+			}
+						
+		}
+	
+		$success = "ບັນທຶກຂໍ້ມູນສໍາເລັດແລ້ວ ";	
+		
+		unset($_SESSION["EDPOSV1MADD_infoID"]);
+		unset($_SESSION["EDPOSV1MADD_Mid"]);
+		unset($_SESSION["EDPOSV1MADD_txtBarcode"]);	
+		unset($_SESSION["EDPOSV1MADD_txtm_name"]);	
+		unset($_SESSION["EDPOSV1MADD_kf_id"]);	
+		unset($_SESSION["EDPOSV1MADD_unit1"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty1"]);
+		unset($_SESSION["EDPOSV1MADD_unit2"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty2"]);
+		unset($_SESSION["EDPOSV1MADD_unit3"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty3"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark"]);	
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark1"]);	
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark2"]);	
+		unset($_SESSION["EDPOSV1MADD_min_stock"]);
+		unset($_SESSION["EDPOSV1MADD_minUnitID"]);
+		unset($_SESSION["EDPOSV1MADD_Ingredient"]);
+		unset($_SESSION["EDPOSV1MADD_mOpenStock"]);
+		unset($_SESSION["EDPOSV1MADD_cy_id1"]);
+		unset($_SESSION["EDPOSV1MADD_cy_id2"]);
+		unset($_SESSION["EDPOSV1MADD_cy_id3"]);
+		
+		unset($_SESSION["EDPOSV1MADD_txtFDID1"]);
+		unset($_SESSION["EDPOSV1MADD_txtFDID2"]);
+		unset($_SESSION["EDPOSV1MADD_txtFDID3"]);
+		unset($_SESSION["EDPOSV1MADD_txtRecieve1"]);
+		unset($_SESSION["EDPOSV1MADD_txtRecieve2"]);
+		unset($_SESSION["EDPOSV1MADD_txtRecieve3"]);
+		
+		
+		header("Location: ?d=stock1/material");
+	}
+ }
+
+}
+
+ 
+

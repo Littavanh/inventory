@@ -1,0 +1,170 @@
+<?php
+session_start();
+require_once("../config.php");
+require_once("m_receive.php");
+$SumResult = SumMaterial($whereclause, '');
+$date = date('Y-m');
+$output_filename = "Receive" . $date . ".xls";
+// Redirect the output to the stream
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename={$output_filename}");
+if (isset($_GET['startdate'])) {
+	$FormDate = $_GET['startdate'];
+} else {
+	$FormDate = date('Y-m-d');
+}
+if (isset($_GET['enddate'])) {
+	$ToDate = $_GET['enddate'];
+} else {
+	$ToDate = date('Y-m-d');
+}
+echo "<h4>ລາຍງານ ສິນຄ້າຄົງເຫລືອ  ປະຈໍາເດຶອນ " . $FormDate . "</h4> ";
+echo "<table border='1'> \n";
+?>
+<tr>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລຳດັບ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Barcode</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລາຍລະອຽດສິນຄ້າ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຫົວໜ່ວຍ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລາຄາ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ສະກຸນເງິນ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຍອດຍົກມາ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຮັບສິນຄ້າເຂົ້າ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຈ່າຍສິນຄ້າອອກ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຍອດຄົງເຫລືອທ້າຍເດືອນ</th>
+</tr>
+<tr>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Items</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ID</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Description of Goods</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Unit</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Unit Price</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">Currency</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+	<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+</tr>
+</thead>
+<tbody>
+	<?php
+	$i = 1;
+	while ($item = mysql_fetch_array($SumResult)) {
+		$whereGroupID = $item['tranID'];
+	?>
+
+		<?php
+		$j = 1;
+		$sumQTY1 = 0;
+		$sumQTY2 = 0;
+		$sumQTY3 = 0;
+		$sumQTY4 = 0;
+		$sumPrice1 = 0;
+		$sumPrice2 = 0;
+		$sumPrice3 = 0;
+		$sumPrice4 = 0;
+		$sumPriceBill = 0;
+		$sumDiscountBill = 0;
+		$sumTotalPriceBill = 0;
+		// ຍອດທີ່ຍັງເຫຼືອທ້າຍເດືອນ
+		$totalRemain_start = 0;
+		$totalRemain_end = 0;
+
+		// ລວມຍອດເງິນ
+		$total_purpice_KIP = 0;
+		$total_purpice_THB = 0;
+		$total_purpice_USA = 0;
+
+		$result_detail = LoadTableV2($whereclause, $whereGroupID);
+
+		while ($itemD = mysql_fetch_array($result_detail)) {
+
+
+
+
+			if (SumMaterial1($itemD['mBarcode'], $whereLess) == null) {
+				$totalRemain_start = 0;
+			} else {
+				$totalRemain_start = SumMaterial1($itemD['mBarcode'], $whereLess);
+			}
+			// sum by currency
+			if ($itemD['Cur_name'] == 'ກີບ') {
+				$total_purpice_KIP = $total_purpice_KIP + ($itemD['pur_price'] * $itemD['unitQty3']);
+			} else if ($itemD['Cur_name'] == 'ບາດ') {
+				$total_purpice_THB = $total_purpice_THB + ($itemD['pur_price']  * $itemD['unitQty3']);
+			} elseif ($itemD['Cur_name'] == 'ໂດລາ') {
+				$total_purpice_USA = $total_purpice_USA + ($itemD['pur_price']  * $itemD['unitQty3']);
+			}
+
+			$sumQTY1 = $sumQTY1 + $totalRemain_start;
+			$sumQTY2 = $sumQTY2 + $itemD['unitQty3'];
+			$sumQTY3 = $sumQTY3 + $itemD['Out_unitQty3'];
+			$sumQTY4 = $sumQTY4 + (($totalRemain_start + $itemD['unitQty3']) - $itemD['Out_unitQty3']);
+
+			$sumPrice1 = ($sumPrice1 + ($totalRemain_start * $itemD['pur_price']));
+			$sumPrice2 = ($sumPrice2 + ($itemD['unitQty3'] * $itemD['pur_price']));
+			$sumPrice3 = ($sumPrice3 + ($itemD['Out_unitQty3'] * $itemD['Out_purPice']));
+			$sumPrice4 = ($sumPrice4 + ((($totalRemain_start + $itemD['unitQty3']) - $itemD['Out_unitQty3']) * $itemD['pur_price']));
+			// $sumPrice4 = ($sumPrice4 + ($itemD['unitQty3'] * $itemD['pur_price']));
+		?>
+			<tr>
+				<td><?= $j ?></td>
+				<td align="center"><?= $itemD['mBarcode'] ?></td>
+				<td><?= $itemD['materialName'] ?></td>
+				<td><?= $itemD['unitName3'] ?></td>
+				<td align="right"><?= number_format($itemD['pur_price']) ?></td>
+				<td align="center"><?= $itemD['Cur_name'] ?></td>
+				<td align="right"><?= number_format($totalRemain_start) ?></td>
+				<td align="right"><?= number_format($totalRemain_start * $itemD['pur_price']) ?></td>
+				<td align="right"><?= number_format($itemD['unitQty3']) ?></td>
+				<td align="right"><?= number_format($itemD['unitQty3'] * $itemD['pur_price']) ?></td>
+				<td align="right"><?= number_format($itemD['Out_unitQty3']) ?></td>
+				<td align="right"><?= number_format($itemD['Out_unitQty3'] * $itemD['Out_purPice']) ?></td>
+				<td align="right"><?= ($totalRemain_start + $itemD['unitQty3']) -  $itemD['Out_unitQty3'] ?></td>
+				<td align="right"><?= number_format((($totalRemain_start + $itemD['unitQty3']) - $itemD['Out_unitQty3']) * $itemD['pur_price']) ?></td>
+			</tr>
+
+		<?php $j++;
+		}
+		?>
+	<?php $i++;
+	} ?>
+</tbody>
+<tfoot>
+	<tr>
+		<td colspan="6" align="right"><strong>ລວມ</strong></td>
+		<td align="right"><strong><?= number_format($sumQTY1) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumPrice1) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumQTY2) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumPrice2) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumQTY3) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumPrice3) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumQTY4) ?></strong></td>
+		<td align="right"><strong><?= number_format($sumPrice4) ?></strong></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ເງີນກີບ</strong></td>
+		<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_KIP) ?></strong></td>
+		<td colspan="9"></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ເງີນບາດ</strong></td>
+		<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_THB) ?></strong></td>
+		<td colspan="9"></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ໂດລາ</strong></td>
+		<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_USA) ?></strong></td>
+		<td colspan="9"></td>
+	</tr>
+
+
+	</table>
+	<?php
+	echo "<h4>ສໍາລັບລາຍລະອຽດຂອງການ ຮັບເຂົ້າ ແລະ ຈ່າຍອອກ ສິນຄ້າແມ່ນຕາມເອກະສານທີ່ໄດ້ຄັດຕິດມາພ້ອມນີ້:</h4> ";
+	mysql_close($conn);
+	?>

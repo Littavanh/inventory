@@ -1,0 +1,29 @@
+<? htmltage("ຈັດການຂໍ້ມູນພື້ນຖານ");?>
+<div class="contentpage">
+<h1 class="h1">ຈັດການຂໍ້ມູນພື້ນຖານ</h1>
+<div class="indexpage centered">
+	<ul class="titles centered">
+		<h2>ຈັດການຂໍ້ມູນໂຕະ, ລາຄາ, ປະເພດອາຫານ ແລະ ເຄື່ອງດື່ມ</h2>
+		<a href="?d=manage/zone"><li><img src="img/zone.png" /><div class="titlenames">ໂຊນ ຮ້ານ</div></li></a>
+		<a href="?d=manage/table"><li><img src="img/table_list.jpg" /><div class="titlenames">ລາຍການໂຕະ</div></li></a>
+		<a href="?d=manage/kind_of_food_and_drink"><li><img src="img/food_drink_setting.png" /><div class="titlenames">ໝວດອາຫານ<br/>ແລະເຄື່ອງດື່ມ</div></li></a>		
+		<a href="?d=manage/price_setting"><li><img src="img/food_and_drink.png" /><div class="titlenames">ຕັ້ງລາຄາ ອາຫານ<br/>ແລະເຄື່ອງດື່ມ</div></li></a>		
+	</ul>
+</div>
+<div class="indexpage centered">
+	<h2>ຈັດການຂໍ້ມູນຜູ້ໃຊ້ໂປແກຼມ ແລະ ກໍານົດການເບີກຈ່າຍ</h2>
+	<ul class="titles centered">
+		<? if ($_SESSION["EDPOSV1role_id"] <= 3) { ?>
+			<a href="?d=manage/info"><li><img src="img/restaurant.png" /><div class="titlenames">ຂໍ້ມູນສາງ</div></li></a>
+			<a href="?d=manage/user"><li><img src="img/user_256.png" /><div class="titlenames">ຜູ້ໃຊ້ລະບົບ</div></li></a>
+			<?php } ?>
+			
+		<a href="?d=stock/setting"><li><img src="img/permit.jpg" /><div class="titlenames">ກໍານົດ ການເບິກ</div></li></a>
+		
+        <? if ($_SESSION["EDPOSV1user_id"] == 1) { ?>	
+		
+		<a href="?d=manage/reg"><li><img src="img/regkey.png" /><div class="titlenames">ລົງທະບຽນ</div></li></a>
+        <? } ?>
+	</ul>
+</div>
+</div>

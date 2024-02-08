@@ -1,0 +1,102 @@
+<?php
+error_reporting(E_ALL & !E_NOTICE);
+$conn = mysql_connect('192.168.100.28', 'inv', '123') or die('Connection fail: '.mysql_error());
+// $conn = mysql_connect('localhost', 'root', '56588965') or die('Connection fail: '.mysql_error());
+mysql_set_charset('utf8',$conn);
+mysql_select_db('db_inventory_n');
+// mysql_select_db('db_inventory');
+/*----------- function Execute query --------------*/
+
+//mysql_query("SET NAMES 'utf8'");
+/**
+ * Query from the database and returns the result in array or associative array based on a primary key
+ * 
+ * @param string $qry Query to be executed. For example, "SELECT * FROM product"
+ * @param string $pkname [optional] The name of a Primary Key to be used as an associative array's key. For example "ID"
+ * @return array Result of the query if format $result[RowNumber][ColumnName]=Value or $result[PrimaryKey][ColumnName]=Value. Returns a blank array if there are no result.   
+ */
+ 
+/*----------- API Path --------------*/
+
+$api_url = 'http://192.168.100.21:8449/api/';
+
+$passKey = "7386t189-58c0-c495-8ff0-d0fnov0a29ta";
+
+
+function callAPI($jsonArray, $api_url)
+{
+        $message = '';
+
+        $ch = curl_init($api_url);
+        $payload = json_encode($jsonArray);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,  2);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $arr = json_decode($result, true);
+
+        $_SESSION['StatusCode'] = $arr['StatusCode'];
+        $_SESSION['ModelErrors'] = $arr['ModelErrors'];
+        $_SESSION['IsSuccess'] = $arr['IsSuccess'];
+        $_SESSION['CommonErrors'] = $arr['CommonErrors'];
+        // $_SESSION['message'] = $arr['message'];
+		
+        if (isset($arr['ResultObject']) && $arr['StatusCode'] == "200") {
+                $arr = $arr['ResultObject'];
+		
+        } else {
+                $arr = null;
+        }
+        return $arr;
+}
+
+
+ function nr_query($qry, $pkname = null){
+	$res = mysql_query($qry);
+	if ($res != null){
+		$tables = array();   
+		while ($row = mysql_fetch_array($res, MYSQL_ASSOC)){
+			if ($pkname)
+				$tables[$row[$pkname]] = $row;
+			else
+				$tables[] = $row;
+		}
+	}
+	return $tables;
+	
+}
+/*----------------- Normal Function */
+function sql_execute($qry){
+	$res = mysql_query($qry);
+	//echo $qry;
+	if ($res == false){
+		echo "MySQL Error: " . mysql_error();
+		return;
+	}
+	if ($res != null){
+		$row = @mysql_fetch_row($res);	
+		if ($row != null){
+			return $row[0];
+		}
+	}
+}
+
+/**
+ * Execute a query and return the first value
+ * 
+ * @param string $qry Query to be executed. For example, "SELECT name FROM product WHERE id=1"
+ * @return mixed the first value (the first row & column) returned from the query. returns null if there is no result or incorrect query     
+ */
+function nr_execute($qry){
+	$res = mysql_query($qry);
+	if ($res != null){
+		$row = @mysql_fetch_row($res);
+		if ($row != null){
+			return $row[0];
+		}
+	}
+}

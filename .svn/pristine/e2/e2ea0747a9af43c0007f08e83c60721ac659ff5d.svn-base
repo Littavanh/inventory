@@ -1,0 +1,58 @@
+<?php
+session_start();
+require_once("../config.php");
+require_once("m_food_and_drink.php");
+
+$date = date('d-m-Y');
+$output_filename = "kind_food_and_drink".$date.".xls";
+// Redirect the output to the stream
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename={$output_filename}");
+
+echo "<h4>ລາຍການອາຫານ ແລະ ເຄື່ອງດື່ມ  ປະຈໍາວັນທີ່ ".$_GET['startdate']." ຫາ ".$_GET['enddate']."</h4> ";
+echo "<table border='1'> \n";
+?>
+		<tr bgcolor='#8EE5EE' >
+	  	<th>ລຳດັບ</th>
+	  	<th>ປະເພດອາຫານ ແລະ ເຄື່ອງດື່ມ</th>
+	  	<th>ສະຖານະ/ລາຄາ</th>	  	
+        <th>ຜູ້ເພີ່ມ</th>
+        <th>ວັນທີເພີ່ມ</th>     
+        <th>ຜູ້ແກ້ໄຂ</th>
+        <th>ວັນທີແກ້ໄຂ</th>  
+        </tr>           	  	
+	  <?php 		
+	  		$result_kf = Loadkin_food($whereclause);	
+			$i=1;
+			while ($item = mysql_fetch_array($result_kf)) { ?>
+			<tr bgcolor="#00FFCC">
+				<td class="centered"><?= ($i+$start) ?></td>
+				<td><?= $item['kf_name'] ?></td>
+				<td><?= $item['status_text'] ?></td>
+				<td class="centered"><?= $item['user_add_name'] ?></td>
+				<td><?= $item['date_add'] ?></td>
+				<td><?= $item['user_edit_name'] ?></td>
+				<td><?= $item['date_edit'] ?></td>
+			</tr>
+            <? 
+		    	 $whereclause_kind_food = " WHERE kf_id = ".$item['kf_id']." AND  status_id IN (8,9)" ;
+				 $result_food_drink = Loadfood_drink($whereclause_kind_food);				
+	 			 $j = 1;
+	             while ($row_cc = mysql_fetch_array($result_food_drink)) {			 
+			?>
+			<tr>
+			  <td align="right"><?=$i.".".$j ?>&nbsp;</td>
+				<td><?= $row_cc['fd_name'] ?></td>
+                <td align="right"><?=number_format($row_cc['price']) ?></td>
+				<td class="centered"><?= $item['user_add_name'] ?></td>
+				<td><?= $row_cc['date_add'] ?></td>
+				<td><?= $row_cc['user_edit_name'] ?></td>
+				<td><?= $row_cc['date_edit'] ?></td>
+	  </tr>          
+		<?php 
+			$j++; }
+			$i++; } ?>
+	</table>
+<?php
+mysql_close($conn);
+ ?>

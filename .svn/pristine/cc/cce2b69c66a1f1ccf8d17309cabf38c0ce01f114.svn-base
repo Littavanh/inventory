@@ -1,0 +1,164 @@
+<?php
+include_once("config.php");
+$log_id = $_SESSION['EDPOSV1user_id'];
+//echo encrypt_decrypt("encrypt", "multi");
+ob_start(); // Turn on output buffering
+system('ipconfig /all'); //Execute external program to display output
+$mycom = ob_get_contents(); // Capture the output into a variable
+ob_clean(); // Clean (erase) the output buffer
+
+$findme = "Physical";
+$pmac = strpos($mycom, $findme); // Find the position of Physical text
+$mac = substr($mycom, ($pmac + 36), 17); // Get Physical Address
+
+$_SESSION['EDPOSV1macadd'] = $mac;
+
+
+
+function CheckCurStatusStock($info_id)
+{
+    $sql = " select * from v_opendate WHERE  status_id IN (1,2) and info_id='$info_id'  order by openID DESC LIMIT 1 ";
+    $result = mysql_query($sql);
+    return $result;
+}
+
+function CoutnAlert($info_id)
+{
+    $Get_countAlert = nr_execute(" select count(*) from tb_alert where date_update=date(NOW()) and info_id='$info_id' ");
+    if ($Get_countAlert > 0) {
+        $_SESSION['EDPOSV1CountMinStock'] = nr_execute(" select min_count from tb_alert where date_update=date(NOW()) and info_id='$info_id' ");
+        $_SESSION['EDPOSV1StockEXP'] = nr_execute(" select Expire_count from tb_alert where date_update=date(NOW()) and info_id='$info_id' ");
+    } else {
+        $_SESSION['EDPOSV1CountMinStock'] = nr_execute(" select  COUNT(*) as num_list from v_min_stock where info_id='$info_id' and totalQTY<=min_stock ");
+        $_SESSION['EDPOSV1StockEXP'] = nr_execute(" select  COUNT(*) as num_EXP from v_stock_exp WHERE exp_date <= '$dateView' and info_id='$info_id' ");
+    }
+    sql_execute("UPDATE tb_alert SET  Expire_count='" . $_SESSION['EDPOSV1StockEXP'] . "', min_count='" . $_SESSION['EDPOSV1CountMinStock'] . "', date_update=NOW() where info_id='$info_id' ");
+    return $result;
+}
+function checkRole($userId)
+{
+	
+	return mysql_query("select * from tb_user where user_id='$userId' ");
+}
+
+function checkLogin($passKey, $UserName, $UserPassword, $Device_token, $webToken, $api_url)
+{
+    $message = '';
+   
+    $ch = curl_init($api_url . 'User/Login');
+
+    $jsonData = array(
+        //The JSON data.
+        "Passkey" => $passKey,
+        "UserName" => $UserName,
+        "UserPassword" => $UserPassword,
+        "Device_token" => $Device_token,
+        "webToken" => $webToken
+
+    );
+    $payload = json_encode($jsonData);
+
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    curl_close($ch);
+  
+ 
+    $arr = json_decode($result, true);
+   
+    $_SESSION['StatusCode'] = $arr['StatusCode'];
+    $_SESSION['ModelErrors'] = $arr['ModelErrors'];
+    $_SESSION['IsSuccess'] = $arr['IsSuccess'];
+    $_SESSION['CommonErrors'] = $arr['CommonErrors'];
+   
+    if (isset($arr['ResultObject']) && $arr['StatusCode'] == "200") {
+
+       
+
+        foreach ($arr['ResultObject'] as $data) {
+            
+           
+            $_SESSION['EDPOSV1user_id'] = $data['UserId'];
+            $_SESSION['EDPOSV1user_name'] = $data['userEmail'];
+            $checkR = checkRole($data['UserId']);
+            $rowR = mysql_fetch_array($checkR);
+
+            $_SESSION['EDPOSV1role_id'] = $rowR['role_id'];
+            $_SESSION['EDPOSV1isEmpInventory'] = $rowR['isEmpInventory'];
+            $_SESSION['EDPOSV1TokenKey'] = $data['TokenKey'];
+            $_SESSION['EDPOSV1lao_fullname'] = $data['lao_fullname'];
+            $_SESSION['EDPOSV1emp_dep'] = $data['emp_dep'];
+            $_SESSION['EDPOSV1emp_mobile'] = $data['emp_mobile'];
+            $_SESSION['EDPOSV1emp_position'] = $data['emp_position'];
+          
+
+
+            header("Location: index.php");
+            exit();
+        }
+     
+    }
+   
+}
+function licenseCheck($macaddress, $getUsername, $getPass)
+{ 
+    date_default_timezone_set("Asia/Vientiane");
+    $GetSetDate = "2025-11-20";
+    $GetDateNow = date('Y-m-d');
+    if ($GetDateNow > $GetSetDate) {
+
+        break;
+        exite();
+    } else {
+        $message = '';
+        $passmd5 = md5($getPass . '505uK5@v@y' . $getUsername);
+        $sql = " SELECT *, date(date_add) as dateadd FROM  v_user  WHERE  username='$getUsername' and password='$passmd5'  " or die(mysql_error());
+        $result = mysql_query($sql);
+        @$row = mysql_fetch_array($result, MYSQL_ASSOC);
+        if (mysql_num_rows($result) != 0) {
+            $_SESSION['EDPOSV1user_id'] = $row["user_id"];
+            $_SESSION['EDPOSV1user_name'] = $row["username"];
+            $_SESSION['EDPOSV1role_id'] = $row["role_id"];
+            $_SESSION['EDPOSV1first_name'] = $row["first_name"];
+            $_SESSION['EDPOSV1last_name'] = $row["last_name"];
+            $_SESSION['EDPOSV1dateuser_add'] = $row["dateadd"];
+            $_SESSION['EDPOSV1user_pic'] = $row["pic"];
+            $_SESSION['EDPOSV1info_id'] = $row["info_id"];
+            $_SESSION['EDPOSV1info_name'] = $row["info_name"];
+            $_SESSION['EDPOSV1info_addr'] = $row["info_addr"];
+            $_SESSION['EDPOSV1info_tel'] = $row["info_tel"];
+            $_SESSION['EDPOSV1info_owner'] = $row["info_owner"];
+            $_SESSION['EDPOSV1info_logo'] = $row["info_logo"];
+            $_SESSION['EDPOSV1bill_no'] = $row['bill_no'];
+            $_SESSION['EDPOSV1bill_date'] = $row['bill_date'];
+            $_SESSION['EDPOSV1ReceivePrint'] = $row['printReceive'];
+            $_SESSION['EDPOSV1info_EXP_num'] = $row['exp_num'];
+            $_SESSION['EDPOSV1SaveInfoCus'] = $row['saveInfoCus'];
+            $_SESSION['EDPOSV1ShopType'] = $row['shopType'];
+            $_SESSION['EDPOSV1notification1'] = 'yes';
+            $_SESSION['EDPOSV1notification2'] = 'yes';
+            $_SESSION['EDPOSV1PriceSale'] = $row['pricesaleID'];
+            $_SESSION['EDPOSV1expire_day'] = $row['expire_day'];
+            $_SESSION['EDPOSV1interfaceUI'] = $row['interfaceUI'];
+            $_SESSION['EDPOSV1touchscreen'] = $row['touchscreen'];
+            $_SESSION['EDPOSV1SaleInfoID'] = $row["info_id"];
+
+            if ($row["role_id"] <= '4') {
+                header("Location: index.php");
+            } else if ($row["role_id"] == '5') {
+                header("Location: index.php?d=stock/stock");
+            }
+
+            exit();
+        } else {
+            $message = "&#3722;&#3767;&#3784;&#3740;&#3769;&#3785;&#3779;&#3722;&#3785; &#3755;&#3749;&#3767; &#3749;&#3760;&#3755;&#3761;&#3732;&#3740;&#3784;&#3762;&#3737;&#3738;&#3789;&#3784;&#3734;&#3767;&#3713;&#3733;&#3785;&#3757;&#3719;";
+        }
+        return $message;
+    }
+
+}
+
+
+?>

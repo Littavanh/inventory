@@ -1,0 +1,49 @@
+<?php
+session_start();
+require_once("../config.php");
+require_once("m_service_detail.php");
+
+$date = date('Y-m-d');
+$output_filename = "service_detail".$date.".xls";
+// Redirect the output to the stream
+header("Content-type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename={$output_filename}");
+
+echo "<h4>ລາຍລະອຽດການບໍລິການ  ເລກທີ ".$_GET['od_no']."</h4> ";
+echo "<table border='1'> \n";
+?>
+		<tr bgcolor='#8EE5EE' >
+	  	<th>ລຳດັບ</th>
+	  	<th>ຊື່ ອາຫານ ແລະ ສິນຄ້າດື່ມ</th>	  	 
+        <th>ລາຄາ</th>               
+		<th>ຈໍານວນ</th>         
+        <th>ຜູ້ເພີ່ມ</th>
+        <th>ວັນທີເພີ່ມ</th> 
+        <th>ມູນຄ່າລວມ</th>
+        </tr>             	  	
+	 <?php 			
+			$i=1;
+			$sum_total = 0;
+			while ($item = mysql_fetch_array($result)) { 
+			$sum_total = $sum_total + $item['total']; ?>
+			<tr>
+				<td class="centered"><?= ($i+$start) ?></td>
+				<td><?php if ($item['remark']!='') { echo $item['fd_name'].' | '.$item['remark']; }
+												else { echo $item['fd_name']; }
+										?></td>				
+				<td align="right"><?=number_format($item['price']) ?>&nbsp;&nbsp;</td>
+                <td align="right"><?=number_format($item['qty']) ?>&nbsp;&nbsp;</td>
+				<td class="centered"><?= $item['user_add_name'] ?></td>
+                <td class="centered"><?= $item['date_add'] ?></td>
+                <td align="right"><?=number_format($item['total']) ?>&nbsp;&nbsp;</td>                
+			</tr>    
+		<?php 
+			$i++; } ?>
+			<tr>
+			  <td colspan="6" class="centered"><strong>ມູນຄ່າລວມ</strong></td>
+			  <td align="right"><strong><?=number_format($sum_total)?>&nbsp;ກີບ&nbsp;</strong></td>
+	  </tr>   
+	</table>
+<?php
+mysql_close($conn);
+ ?>

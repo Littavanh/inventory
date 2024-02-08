@@ -1,0 +1,257 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+$info_id = $_SESSION["EDPOSV1info_id"];
+
+if (isset($_POST['btncancel']) && $_SESSION['EDPOSV1role_id'] <=4) {
+	$_SESSION["EDPOSV1promotion_condition"] = "";
+ 	$_SESSION["EDPOSV1promotion_item"] = "";
+ 	$_SESSION["EDPOSV1promotion_free"] = "";
+}
+
+ if (isset($_GET['proID']) && $_GET['proID'] != "" && $_GET['infoID'] != "" &&  $_GET['typeid'] != "") { 	 		  	
+ 	$_SESSION["EDPOSV1promotion_proID"] = mysql_real_escape_string(stripslashes($_GET['proID']));
+	$_SESSION["EDPOSV1promotion_infoID"] = mysql_real_escape_string(stripslashes($_GET['infoID']));
+	$_SESSION["EDPOSV1promotion_typeid"] = mysql_real_escape_string(stripslashes($_GET['typeid']));
+	$url="Location: ?d=promotion/new&proID=".$_SESSION["EDPOSV1promotion_proID"]."&infoID=".$_SESSION["EDPOSV1promotion_infoID"]."&typeid=".$_SESSION["EDPOSV1promotion_typeid"];
+ 	if ($_GET['condition'] == "1") {
+ 		$_SESSION["EDPOSV1promotion_condition"] = "Add_condition";
+	 	$_SESSION["EDPOSV1promotion_item"] = "";
+	 	$_SESSION["EDPOSV1promotion_free"] = "";	 	
+
+	 	$_SESSION["EDPOSV1promotion_b_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_f_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_point"] = "";	 		 
+		header($url);		
+ 	} else if ($_GET['item'] == "1") {
+ 		$_SESSION["EDPOSV1promotion_condition"] = "";
+	 	$_SESSION["EDPOSV1promotion_item"] = "Add_item";
+	 	$_SESSION["EDPOSV1promotion_free"] = "";	
+
+	 	$_SESSION["EDPOSV1promotion_b_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_f_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_point"] = ""; 	 	
+		header($url);	
+ 	} else if ($_GET['free'] == "1") {
+ 		$_SESSION["EDPOSV1promotion_condition"] = "";
+	 	$_SESSION["EDPOSV1promotion_item"] = "";
+	 	$_SESSION["EDPOSV1promotion_free"] = "Add_free";
+
+	 	$_SESSION["EDPOSV1promotion_b_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxQTY"] = "";	
+		$_SESSION["EDPOSV1promotion_b_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_minAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_b_maxAmount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_QTY"] = "";	
+		$_SESSION["EDPOSV1promotion_f_Amount"] = "";	
+		$_SESSION["EDPOSV1promotion_f_point"] = "";		 	 
+		header($url);
+ 	} 
+
+ 	// Edit ==================
+ 	if (isset($_GET["edit_id"]) && $_SESSION['EDPOSV1role_id'] <= 3)  {
+ 		if ($_GET["con_edit"] == '1') {
+	 		$_SESSION["EDPOSV1promotion_condition"] = "Edit_condition";
+		 	$_SESSION["EDPOSV1promotion_item"] = "";
+		 	$_SESSION["EDPOSV1promotion_free"] = "";
+		 	$GetSelProConID = mysql_real_escape_string(stripslashes($_GET["edit_id"]));
+
+		 	// Load data
+		 	$SelproCon = LoadProCon($infoID, $proID, $GetSelProConID);
+			while($row = mysql_fetch_array($SelproCon, MYSQL_ASSOC)) {
+				$_SESSION["EDPOSV1promotion_pc_id"] = $GetSelProConID;
+				$_SESSION["EDPOSV1promotion_b_QTY"] = $row['b_QTY'];
+				$_SESSION["EDPOSV1promotion_b_minQTY"] = $row['b_minQTY'];
+				$_SESSION["EDPOSV1promotion_b_maxQTY"] = $row['b_maxQTY'];
+				$_SESSION["EDPOSV1promotion_b_Amount"] = $row['b_Amount'];
+				$_SESSION["EDPOSV1promotion_b_minAmount"] = $row['b_minAmount'];
+				$_SESSION["EDPOSV1promotion_b_maxAmount"] = $row['b_maxAmount'];
+				$_SESSION["EDPOSV1promotion_f_QTY"] = $row['f_QTY'];
+				$_SESSION["EDPOSV1promotion_f_Amount"] = $row['f_Amount'];
+				$_SESSION["EDPOSV1promotion_f_point"] = $row['f_point'];
+			}
+
+		 	header($url);	
+ 		} 
+ 	}
+
+ 	/*======   Delete ========*/
+ 	if (isset($_GET["del_id"]) && $_SESSION['EDPOSV1role_id'] <= 3 ) { 		
+		$Get_proID = $_SESSION["EDPOSV1promotion_proID"];
+		$Get_infoID = $_SESSION["EDPOSV1promotion_infoID"];
+		$Get_typeid = $_SESSION["EDPOSV1promotion_typeid"];			
+		$pc_id = mysql_real_escape_string(stripslashes($_GET['del_id']));
+		
+		
+		if ($_GET['con_del'] == "1") {
+			$sql = "UPDATE tb_pro_con SET status_id = 20, user_edit = '$user_id', date_edit = NOW() 
+					WHERE pc_id ='$pc_id'  and pro_id='$Get_proID' and info_id ='$Get_infoID'";
+		} else if ($_GET['con_del'] == "2") {
+			$sql = "UPDATE tb_item_condition SET status_id = 20, user_edit = '$user_id', date_edit = NOW() 
+					WHERE con_id ='$pc_id'  and pro_id='$Get_proID' and info_id ='$Get_infoID'";
+		} else if ($_GET['con_del'] == "3") {
+			$sql = "UPDATE tb_item_premium SET status_id = 20, user_edit = '$user_id', date_edit = NOW() 
+					WHERE premium_id ='$pc_id'  and pro_id='$Get_proID' and info_id ='$Get_infoID'";
+		}
+			  
+		$result = mysql_query($sql, $conn);	
+		
+		if($result){			 
+			header($url);	
+		}else{
+			echo "<center><h2>ERROR Delete</h2></center>";
+		}
+ 	}
+
+ }
+
+if (isset($_POST['btnSaveCon']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {
+	$Get_proID = $_SESSION["EDPOSV1promotion_proID"];
+	$Get_infoID = $_SESSION["EDPOSV1promotion_infoID"];
+	$Get_typeid = $_SESSION["EDPOSV1promotion_typeid"];	 
+	$txtpcID =  mysql_real_escape_string(stripslashes($_POST['txtpcID']));
+	$txtb_QTY =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_QTY'])));
+	$txtb_minQTY =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_minQTY'])));
+	$txtb_maxQTY =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_maxQTY'])));
+	$txtb_Amount =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_Amount'])));
+	$txtb_minAmount =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_minAmount'])));
+	$txtb_maxAmount =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtb_maxAmount'])));
+	$f_QTY =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['f_QTY'])));
+	$f_Amount =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['f_Amount'])));
+	$f_point =  str_replace(",","",mysql_real_escape_string(stripslashes($_POST['f_point'])));
+
+	if ($f_QTY == '') $f_QTY =0; 
+	if ($f_Amount == '') $f_Amount =0;
+	if ($f_point == '') $f_point =0;
+
+	if ($_SESSION["EDPOSV1promotion_condition"] == "Add_condition" ) {
+		if ($Get_typeid == "1" && $txtb_QTY > '0' && $txtb_minQTY > '0' && $txtb_maxQTY > '0' ) {
+			sql_execute("INSERT INTO tb_pro_con(pro_id, info_id, b_QTY, b_Amount, b_minQTY, b_minAmount, b_maxQTY, b_maxAmount, f_QTY, f_Amount, status_id, user_add, date_add, f_point) 
+				VALUES('$Get_proID','$Get_infoID', '$txtb_QTY', '0', '$txtb_minQTY', '0', '$txtb_maxQTY', '0','$f_QTY', '$f_Amount','1','$user_id',NOW(), '$f_point') ");		 
+		} else if ($Get_typeid == "2" && $txtb_Amount > '0' && $txtb_minAmount > '0' && $txtb_maxAmount > '0') {
+			sql_execute("INSERT INTO tb_pro_con(pro_id, info_id, b_QTY, b_Amount, b_minQTY, b_minAmount, b_maxQTY, b_maxAmount, f_QTY, f_Amount, status_id, user_add, date_add, f_point) 
+				VALUES('$Get_proID','$Get_infoID', '0', '$txtb_Amount', '0', '$txtb_minAmount', '0', '$txtb_maxAmount','$f_QTY', '$f_Amount','1','$user_id',NOW(), '$f_point') ");
+		}
+	} else if ($_SESSION["EDPOSV1promotion_condition"] == "Edit_condition") {
+		if ($Get_typeid == "1" && $txtb_QTY > '0' && $txtb_minQTY > '0' && $txtb_maxQTY > '0' && $txtpcID >'0') {
+			sql_execute("UPDATE tb_pro_con SET b_QTY='$txtb_QTY', b_minQTY='$txtb_minQTY', b_maxQTY='$txtb_maxQTY', f_QTY='$f_QTY', f_Amount='$f_Amount', f_point='$f_point', user_edit='$user_id', date_edit=NOW()  
+				WHERE pc_id ='$txtpcID'  and pro_id='$Get_proID' and info_id ='$Get_infoID' ");		 
+		} else if ($Get_typeid == "2" && $txtb_Amount > '0' && $txtb_minAmount > '0' && $txtb_maxAmount > '0' && $txtpcID >'0') {
+			sql_execute("UPDATE tb_pro_con SET  b_Amount='$txtb_Amount',  b_minAmount='$txtb_minAmount', b_maxAmount='$txtb_maxAmount', f_QTY='$f_QTY', f_Amount='$f_Amount', f_point='$f_point', user_edit='$user_id', date_edit=NOW()
+				WHERE pc_id ='$txtpcID'  and pro_id='$Get_proID' and info_id ='$Get_infoID'  ");
+		}		
+	}
+	
+	$_SESSION["EDPOSV1promotion_condition"] = "";
+
+	$url="Location: ?d=promotion/new&proID=".$_SESSION["EDPOSV1promotion_proID"]."&infoID=".$_SESSION["EDPOSV1promotion_infoID"]."&typeid=".$_SESSION["EDPOSV1promotion_typeid"]; 
+	header($url);	
+
+}		 
+
+
+if (isset($_POST['btnSaveItem']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {
+	if (isset($_POST['type']) ) {
+		for ($i = 0; $i < count($_POST['type']); $i++) {
+			$fd_id = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$fd_barcode = mysql_real_escape_string(stripslashes($_POST['fd_barcode'][$i]));
+			$fd_name = mysql_real_escape_string(stripslashes($_POST['fd_name'][$i]));
+			$get_fd_id = $_POST['cbSel'][$i];
+			$Get_proID = $_SESSION["EDPOSV1promotion_proID"];
+			$Get_infoID = $_SESSION["EDPOSV1promotion_infoID"];
+			$Get_typeid = $_SESSION["EDPOSV1promotion_typeid"];	 
+			
+			if ($get_fd_id !='') {
+				sql_execute(" insert into tb_item_condition (pro_id, info_id, fd_id, status_id, user_add, date_add)
+							VALUES ('$Get_proID', '$Get_infoID', '$get_fd_id', '1', '$user_id', NOW())  ");				
+			} 				
+
+		}
+	}
+
+	$_SESSION["EDPOSV1promotion_item"] = "";
+
+	$url="Location: ?d=promotion/new&proID=".$_SESSION["EDPOSV1promotion_proID"]."&infoID=".$_SESSION["EDPOSV1promotion_infoID"]."&typeid=".$_SESSION["EDPOSV1promotion_typeid"]; 
+	header($url);	
+}
+
+if (isset($_POST['btnSaveFree']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {
+	if (isset($_POST['type']) ) {
+		for ($i = 0; $i < count($_POST['type']); $i++) {
+			$fd_id = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$fd_barcode = mysql_real_escape_string(stripslashes($_POST['fd_barcode'][$i]));
+			$fd_name = mysql_real_escape_string(stripslashes($_POST['fd_name'][$i]));
+			$get_fd_id = $_POST['cbSel'][$i];
+			$Get_proID = $_SESSION["EDPOSV1promotion_proID"];
+			$Get_infoID = $_SESSION["EDPOSV1promotion_infoID"];
+			$Get_typeid = $_SESSION["EDPOSV1promotion_typeid"];	 
+			
+			if ($get_fd_id !='') {
+				sql_execute(" insert into tb_item_premium (pro_id, info_id, fd_id, status_id, user_add, date_add)
+							VALUES ('$Get_proID', '$Get_infoID', '$get_fd_id', '1', '$user_id', NOW())  ");				
+			} 				
+
+		}
+	}
+
+	$_SESSION["EDPOSV1promotion_free"] = "";
+
+	$url="Location: ?d=promotion/new&proID=".$_SESSION["EDPOSV1promotion_proID"]."&infoID=".$_SESSION["EDPOSV1promotion_infoID"]."&typeid=".$_SESSION["EDPOSV1promotion_typeid"]; 
+	header($url);	
+}
+
+if (isset($_POST['btnSavePromotion']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {		 
+	$txtpro_code = mysql_real_escape_string(stripslashes($_POST['txtpro_code']));
+	$txtpro_name = mysql_real_escape_string(stripslashes($_POST['txtpro_name']));
+	$txtpro_descript = mysql_real_escape_string(stripslashes($_POST['txtpro_descript']));
+	$startdate = mysql_real_escape_string(stripslashes($_POST['startdate']));
+	$enddate = mysql_real_escape_string(stripslashes($_POST['enddate']));
+	$status_id = mysql_real_escape_string(stripslashes($_POST['status_id']));
+	$Get_proID = $_SESSION["EDPOSV1promotion_proID"];
+	$Get_infoID = $_SESSION["EDPOSV1promotion_infoID"];
+	$Get_typeid = $_SESSION["EDPOSV1promotion_typeid"];	 
+
+	if ($status_id >"0") {
+		sql_execute(" UPDATE tb_promotion SET pro_name='$txtpro_name', pro_descript='$txtpro_descript', startDate='$startdate', endDate='$enddate', user_edit='$user_id', date_edit=NOW(), status_id='$status_id'
+					WHERE pro_id='$Get_proID' and info_id='$Get_infoID' ");	
+	} else {
+		sql_execute(" UPDATE tb_promotion SET pro_name='$txtpro_name', pro_descript='$txtpro_descript', startDate='$startdate', endDate='$enddate', user_edit='$user_id', date_edit=NOW(), status_id='1'
+					WHERE pro_id='$Get_proID' and info_id='$Get_infoID' ");	
+	}
+					 
+		 
+
+	$url="Location: ?d=promotion/new&proID=".$_SESSION["EDPOSV1promotion_proID"]."&infoID=".$_SESSION["EDPOSV1promotion_infoID"]."&typeid=".$_SESSION["EDPOSV1promotion_typeid"]; 
+	header($url);	
+}
+
+$rs_promotion = LoadProHeader($infoID, $proID);
+while ($item = mysql_fetch_array($rs_promotion)) {
+	$Get_pro_code = $item['pro_code'];
+	$Get_pro_name = $item['pro_name'];
+	$Get_pro_descript = $item['pro_descript'];
+	$Get_type_id = $item['type_id'];
+	$Get_proTypeText = $item['proTypeText'];
+	$Get_startDate = $item['startDate'];
+	$Get_endDate = $item['endDate'];
+	$Get_con_qty = $item['con_qty'];
+	$Get_con_amount = $item['con_amount'];
+	$Get_pre_qty = $item['pre_qty'];
+	$Get_pre_amount = $item['pre_amount'];
+	$Get_status_id = $item['status_id'];
+}
+
+ 
+

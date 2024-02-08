@@ -1,0 +1,224 @@
+*{	
+	margin: 0;
+	padding: 0;
+	font-family: Saysettha OT, Arial, Helvetica, sans-serif;
+}
+
+table{
+	border-collapse: collapse;
+	width: 14.8cm;
+}
+
+th{
+	/*
+	color: #FFFFFF;
+	background-color: #000000;
+	*/
+	padding: 0.2em;
+	
+}
+
+td{
+	height: 0.1cm;
+}
+.item_ct{
+	font-weight: lighter;
+}
+.tb_h{
+	font-weight: bold;
+	text-align: center;
+	background-color: #cbcbcb;
+}
+#tbl_content .tb_h td{
+	padding-top: 0.8em;
+}
+
+
+
+#pagesize{
+	margin: 0 auto;
+	width: 4cm;
+	height: 3cm;
+	/*height: 100%; */
+	/* padding: 0.1cm; */
+}
+
+#headbox{
+
+	height: 1cm;
+	position: relative;
+	
+}
+#headbox table{
+	width: 98%;
+}
+
+#logo{
+	position: relative;
+}
+
+#logo img{
+	width: 100%;
+	height: 120px;
+}
+#PDR{
+	position: absolute;
+	width: 100%;
+	top: 8em;
+}
+#PDR p{
+	text-align: center;
+}
+
+#topic{	
+	text-align: center;
+	left: 0;
+	right: 0;
+	top: 0em;
+	position: relative;
+}
+
+#topic h1{
+	font-size: 10pt;
+	text-decoration: underline;
+	font-weight: bolder;
+	
+}
+#topic p{
+	font-family: Times New Roman;
+}
+#to_control{
+	top: 0em;
+	position: relative;
+}
+#to {
+	
+	border: 2px solid;
+	border-radius: 20px;
+	height: 8em;
+	width: 36em;
+	padding: 0.5em;
+}
+
+
+#docno{
+	border: 2px solid;
+	border-radius: 20px;
+	height: 8em;
+	width: 100%;
+	padding: 0.5em;
+	/*position: relative
+	right: 0;
+	top: 1.5cm;
+	;*/
+	
+}
+
+#detail{
+	height: 2.7cm;
+	position: relative;
+	margin: 0.2cm auto;	
+}
+#wdetail{
+	left:0;
+	position: absolute;
+	
+}
+#wdetail p{
+	padding-bottom: 0.1cm;
+	font-size: 11pt;
+}
+#wcode{	
+	right: 0;
+	
+	width: 35%;
+	height: 2.7cm;
+	position: absolute;
+}
+
+#tbl_content{
+	position: relative;
+	top: 10.5em;
+}
+
+#tbl_content table{
+	position: relative;
+	width: 100%;
+	margin: 0 auto;
+}
+
+#signature{
+	margin: 0.2cm auto;	
+	position: relative;
+	top: 17.5em;
+}
+#signature table{
+	margin: 0 auto;	
+	width: 100%;
+}
+#signature div{
+	border: 2px solid;
+}
+#remark{
+	border-radius: 10px;
+	height: 4em;
+	width: 30em;
+	padding: 0.5em
+}
+#character{
+	border-radius: 10px;
+	height: 2em;
+	width: 30em;
+	padding: 0.5em
+}
+#total{
+	border-radius: 10px 0px 0px 10px;
+	height: 100%;
+	width: 8em;
+	padding: 0.5em;
+}
+#cost{
+	border-radius: 0px 10px 10px 0px;
+	height: 100%;
+	width: 8em;
+	padding: 0.5em;
+}
+
+#footerprint{
+	position: relative;
+	font-size: 8pt;
+	padding: 0.2em;
+	color: #FFFFFF;
+	text-align:center;
+	background-color: #000000;
+}
+.doc_code{
+	border-bottom: dotted thin;
+	padding: 0 0.5cm;
+	
+}
+.doc_date{
+	border-bottom: dotted thin;
+	padding: 0 0.5cm;
+}
+.textdetail{
+	border-bottom: dotted thin;
+	padding: 0 2.5cm;
+}
+.centered{
+	text-align: center;
+}
+
+.signature{
+	height: 2.2cm;
+	width: 6.5cm;
+}
+
+.bold{
+	font-weight: bold;
+}
+.cost {
+	text-align: right;
+}
+
+

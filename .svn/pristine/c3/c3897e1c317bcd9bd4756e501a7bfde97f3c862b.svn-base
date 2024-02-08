@@ -1,0 +1,34 @@
+<? htmltage("ຈັດການຂໍ້ມູນພື້ນຖານ");
+	//======== Unset addproduct
+	unset($_SESSION['EDPOSV1AddProduct']);	
+	unset($_SESSION['EDPOSV1tmpProductID']);	
+	unset($_SESSION['EDPOSV1AddProducttxtDate']);
+	unset($_SESSION['EDPOSV1AddProducttxtexp']);
+	unset($_SESSION['EDPOSV1AddProducttxtreciever']); 
+	unset($_SESSION['EDPOSV1AddProducttxtRemark']);
+	//======== Unset adjust
+	unset($_SESSION['EDPOSV1AddjustProduct']);
+	unset($_SESSION['EDPOSV1AddjustProducttxtDate']); 
+	unset($_SESSION['EDPOSV1AddjustProducttxtexp']); 
+	unset($_SESSION['EDPOSV1AddjustProducttxtreciever']); 
+	unset($_SESSION['EDPOSV1AddjustProducttxtRemark']);
+?>
+<div class="contentpage">
+<h1 class="h1">ສາງ</h1>
+<div class="indexpage centered">
+	<h2>ຈັດການສາງ</h2>
+	<ul class="titles centered">
+		<?php if ($_SESSION['EDPOSV1CurStockStatus'] != 2) {?>	
+			<a href="?d=stock/recieve"><li><img src="img/recieve.jpg" /><div class="titlenames">ການຮັບສິນຄ້າ</div></li></a>		
+			<a href="?d=stock/addjust"><li><img src="img/shelf-life-of-food.jpg" /><div class="titlenames">ຊໍາລະເຄື່ອງເສຍຫາຍ</div></li></a>
+		<?php } ?>
+	</ul>
+</div>
+<div class="indexpage centered">
+	<h2>ເຄື່ອງປຸງ ແລະ ຫົວໜ່ວຍ</h2>
+	<ul class="titles centered">
+		<a href="?d=stock/material"><li><img src="img/Robbiesfood1.jpg" /><div class="titlenames">ວັດຖຸດິບ</div></li></a>
+		<a href="?d=stock/unit"><li><img src="img/package.jpg" /><div class="titlenames">ຫົວໜ່ວຍ</div></li></a>
+	</ul>
+</div>
+</div>

@@ -1,0 +1,248 @@
+<?php htmltage("ລາຍງານຮັບເຄື່ອງເຂົ້າສາງ"); ?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<section class="content-header">
+	<h1>ລາຍງານ ສິນຄ້າຄົງເຫລືອ</h1>
+</section>
+
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-primary">
+				<form method="get">
+					<input type="hidden" name="d" value="report/receive" />
+					<div class="box-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group col-md-6">
+									<label>ລາຍງານຂອງເດືອນ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<!-- <input type="month" name="startdate" class="form-control pull-right"  autocomplete="off" data-date-format="yyyy-mm" value="<?= $_GET['startdate']  ?>"> -->
+										<input type="month" name="startdate" class="form-control pull-right" autocomplete="off" data-date-format="yyyy-mm" value="<?= $_GET['startdate']  ?>" max="<?= date('Y-m') ?>">
+
+
+									</div>
+								</div>
+								<!-- <div class="form-group col-md-6">
+									<label>ເຖິງວັນທີ</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="month" name="enddate" class="form-control pull-right"  autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['enddate']  ?>">
+									</div>
+								</div> -->
+
+								<div class="form-group col-md-6">
+									<label>ສາງ</label>
+									<select class="form-control" name="infoID">
+										<option value="0">-- ເລືອກທັງໝົດ --</option>
+										<?php
+										$rs_info = LoadInfo();
+										while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+											$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+										<?php } ?>
+									</select>
+								</div>
+
+								<!-- <div class="form-group col-md-6">
+									<label>ຜູ້ສະໜອງ</label>
+									<select name="supplierID" class="form-control">
+										<option value="">-- ເລືອກຜູ້ສະໜອງ --</option>
+										<?php
+										$rsSupplier = LoadSupplier();
+										while ($row_c = mysql_fetch_array($rsSupplier, MYSQL_ASSOC)) {
+											$selected = $row_c['supplierID'] == $_GET['supplierID'] ? "selected" : "";
+										?>
+											<option value="<?= $row_c['supplierID'] ?>" <?= $selected ?>><?= $row_c['supplierName'] . '|' . $row_c['ContactName'] . '|' . $row_c['tel'] ?></option>
+										<?php } ?>
+									</select>
+								</div> -->
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<p class="right">
+										<a href="report/ex_receive.php?<?= $params ?>" target="_blank">
+											<input type="button" value="Export To Excel" />
+										</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<button type="reset" class="btn btn-default" onclick="document.location='?d=report/receive'">ຍົກເລີກ</button>
+						<button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box">
+				<div class="box-body pad table-responsive">
+					<table id="example1" class="table table-bordered beautified_report">
+						<thead>
+							<tr>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລຳດັບ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລະຫັດສິນຄ້າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລາຍລະອຽດສິນຄ້າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຫົວໜ່ວຍ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລາຄາ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ສະກຸນເງິນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຍອດເຫລືອຕົ້ນເດືອນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຮັບສິນຄ້າເຂົ້າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຈ່າຍສິນຄ້າອອກ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;" colspan="2">ຍອດຄົງເຫລືອທ້າຍເດືອນ</th>
+							</tr>
+							<tr>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">Items</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ID</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">Description of Goods</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">Unit</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">Unit Price</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">Currency</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ຈຳນວນ</th>
+								<th style="white-space: nowrap; overflow: hidden; text-align: center;">ລວມມູນຄ່າ</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							$i = 1;
+							while ($item = mysql_fetch_array($SumResult)) {
+								$whereGroupID = $item['tranID'];
+							?>
+
+								<?php
+								$j = 1;
+								$sumQTY1 = 0;
+								$sumQTY2 = 0;
+								$sumQTY3 = 0;
+								$sumQTY4 = 0;
+								$sumPrice1 = 0;
+								$sumPrice2 = 0;
+								$sumPrice3 = 0;
+								$sumPrice4 = 0;
+								$sumPriceBill = 0;
+								$sumDiscountBill = 0;
+								$sumTotalPriceBill = 0;
+								// ຍອດທີ່ຍັງເຫຼືອທ້າຍເດືອນ
+								$totalRemain_start = 0;
+								$totalRemain_end = 0;
+
+								// ລວມຍອດເງິນ
+								$total_purpice_KIP = 0;
+								$total_purpice_THB = 0;
+								$total_purpice_USA = 0;
+
+								$result_detail = LoadTableV2($whereclause, $whereGroupID);
+
+								while ($itemD = mysql_fetch_array($result_detail)) {
+
+
+									
+
+									if (SumMaterial1($itemD['mBarcode'], $whereLess) == null) {
+										$totalRemain_start = 0;
+									} else {
+										$totalRemain_start = SumMaterial1($itemD['mBarcode'], $whereLess);
+									}
+									// sum by currency
+									if ($itemD['Cur_name'] == 'ກີບ') {
+										$total_purpice_KIP = $total_purpice_KIP + ($itemD['pur_price'] * $itemD['unitQty3']);
+									} else if ($itemD['Cur_name'] == 'ບາດ') {
+										$total_purpice_THB = $total_purpice_THB + ($itemD['pur_price']  * $itemD['unitQty3']);
+									} elseif ($itemD['Cur_name'] == 'ໂດລາ') {
+										$total_purpice_USA = $total_purpice_USA + ($itemD['pur_price']  * $itemD['unitQty3']);
+									}
+
+									$sumQTY1 = $sumQTY1 + $totalRemain_start;
+									$sumQTY2 = $sumQTY2 + $itemD['unitQty3'];
+									$sumQTY3 = $sumQTY3 + $itemD['Out_unitQty3'];
+									$sumQTY4 = $sumQTY3 (($totalRemain_start + $itemD['unitQty3']) - $itemD['Out_unitQty3']);
+
+								?>
+									<tr>
+
+										<td><?= $j ?></td>
+										<td><?= $itemD['mBarcode'] ?></td>
+										<td><?= $itemD['materialName'] ?></td>
+										<td><?= $itemD['unitName3'] ?></td>
+										<td><?= number_format($itemD['pur_price']) ?></td>
+										<td><?= $itemD['Cur_name'] ?></td>
+
+										<td><?= number_format($totalRemain_start) ?></td>
+
+										<td><?= number_format($totalRemain_start * $itemD['pur_price']) ?></td>
+
+										<td><?= number_format($itemD['unitQty3']) ?></td>
+										<td><?= number_format($itemD['unitQty3'] * $itemD['pur_price']) ?></td>
+										<td><?= number_format($itemD['Out_unitQty3']) ?></td>
+										<td><?= number_format($itemD['Out_unitQty3'] * $itemD['Out_purPice']) ?></td>
+										<td><?= ($totalRemain_start + $itemD['unitQty3']) -  $itemD['Out_unitQty3'] ?></td>
+										<td><?= number_format((($totalRemain_start + $itemD['unitQty3']) -  $itemD['Out_unitQty3']) * $itemD['pur_price']) ?></td>
+
+									</tr>
+
+								<?php $j++;
+								}
+
+								?>
+
+							<?php $i++;
+							} ?>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><?=number_format($sumQTY1)?></td>
+								<td><?=number_format($sumPrice1)?></td>
+								<td><?=number_format($sumQTY2)?></td>
+								<td><?=number_format($sumPrice2)?></td>
+								<td><?=number_format($sumQTY3)?></td>
+								<td><?=number_format($sumPrice3)?></td>
+								<td><?=number_format($sumQTY4)?></td>
+								<td><?=number_format($sumPrice4)?></td>
+							 
+								 
+							</tr>
+
+							<tr>
+								<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ເງີນກີບ</strong></td>
+								<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_KIP) ?></strong></td>
+								<td colspan="9"></td>							 
+							</tr>
+							<tr >
+								<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ເງີນບາດ</strong></td>
+								<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_THB) ?></strong></td>
+								<td colspan="9"></td>
+							</tr>
+							<tr>
+								<td colspan="4" align="right" style="color:#222" bgcolor="#999999"><strong>ລວມມູນຄ່າ ໂດລາ</strong></td>
+								<td align="right" style="color:#222" bgcolor="#999999"><strong><?= number_format($total_purpice_USA) ?></strong></td>
+								<td colspan="9"></td>
+							</tr>
+							
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

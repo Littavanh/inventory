@@ -1,0 +1,320 @@
+<?php 
+session_start();
+htmltage("ເງື່ອນໄຂ");
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] ==4 || $_GET['proID']=='' || $_GET['infoID']=='' || $_GET['typeid']=='') { header("Location: index.php?d=promotion/list"); }
+if (isset($_SESSION["EDPOSV1promotion_condition"]) && ($_SESSION["EDPOSV1promotion_condition"] == 'Add_condition' || $_SESSION["EDPOSV1promotion_condition"] == 'Edit_condition' )) {	include("v_condition.php"); } 
+if (isset($_SESSION["EDPOSV1promotion_item"]) && ($_SESSION["EDPOSV1promotion_item"] == 'Add_item' || $_SESSION["EDPOSV1promotion_item"] == 'Edit_item')) {	include("v_item.php"); } 
+if (isset($_SESSION["EDPOSV1promotion_free"]) && ($_SESSION["EDPOSV1promotion_free"] == 'Add_free' || $_SESSION["EDPOSV1promotion_free"] == 'Edit_free')) {	include("v_free.php"); } 
+?>
+  <link type="text/css" rel="stylesheet" href="css/element.css" />
+  <script type="text/javascript" src="js/calculate.js"></script> 
+<script language="javascript" type="text/javascript">
+  function getXMLHTTP() { //fuction to return the xml http object
+        var xmlhttp=false;  
+        try{
+            xmlhttp=new XMLHttpRequest();
+        }
+        catch(e)    {       
+            try{            
+                xmlhttp= new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch(e){
+                try{
+                xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }
+                catch(e1){
+                    xmlhttp=false;
+                }
+            }
+        }
+            
+        return xmlhttp;
+    }
+/*******************/
+    function FindKF(GetInfoID) {      
+        //alert("Problem while using XMLHTTP (Account List):\n" );
+        var strURL="function/findKF.php?GetInfoID="+GetInfoID;
+        var req = getXMLHTTP();       
+        if (req) {            
+            req.onreadystatechange = function() {
+                if (req.readyState == 4) {
+                    // only if "OK"
+                    if (req.status == 200) {                        
+                        document.getElementById('selKFID').innerHTML=req.responseText;
+                        '<option>Select City</option>'+
+                        '</select>';                        
+                    } else {
+                        alert("Problem while using XMLHTTP (Account List):\n" + req.statusText);
+                    }
+                }               
+            }           
+            req.open("GET", strURL, true);
+            req.send(null);
+        }       
+    } 
+
+    
+   
+</script>  
+<section class="content-header">
+    <h1>ເງື່ອນໄຂ</h1>    
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h4>Promotion</h4>
+					<p><?=$success?></p>
+					<p class="errormessage"><?=$exist?></p>
+				</div>
+				<form method="post" id="proInfo" action="?d=promotion/new&proID=<?=$_SESSION["EDPOSV1promotion_proID"]?>&infoID=<?=$_SESSION["EDPOSV1promotion_infoID"]?>&typeid=<?=$_SESSION["EDPOSV1promotion_typeid"]?>" enctype="multipart/form-data">
+					<div class="box-body">
+						<div class=" form-group">	
+							<label>BU/ຫົວໜ່ວຍທຸລະກິດ</label>
+							<select  name="infoID" class="form-control">
+								<option value="<?=$infoID?>"><?=$Get_infoName ?></option>										
+							</select>											        
+						</div>
+						<div class="form-group">
+				           	<label>ປະເພດ</label>
+					            <input type="text" name="txtTypeID" maxlength="50" class="form-control" autocomplete="off" value="<?=$Get_proTypeText ?>" readonly />	
+					    </div>	
+						<div class="form-group">
+				           	<label>ລະຫັດ</label>
+				           	<input type="hidden" name="txtpro_id"  value="<?=$proID ?>" />	
+					        <input type="text" name="txtpro_code" maxlength="50" class="form-control" autocomplete="off" value="<?=$Get_pro_code ?>" readonly />	
+					    </div>
+					    <div class="form-group">
+				           	<label>ຊື່ ໂປຼໂມຊັນ</label>
+					        <input type="text" name="txtpro_name" maxlength="50" class="form-control" autocomplete="off" value="<?=$Get_pro_name ?>" />	
+					    </div>
+					    <div class="form-group">
+				           	<label>ລາຍລະອຽດ</label>
+					        <textarea name="txtpro_descript" rows="4" cols="50" class="form-control" ><?=$Get_pro_descript ?></textarea>	
+					    </div>
+					    <div class="form-group">
+				           	<label>ວັນທີ່ເລີ່ມ</label>
+					        <div class="input-group date">
+					           	<div class="input-group-addon">
+					           		<i class="fa fa-calendar"></i>
+					           	</div>
+				           		<input type="text" name="startdate" class="form-control pull-right" id="datepicker1" autocomplete="off" data-date-format="yyyy-mm-dd" value = "<?=$Get_startDate  ?>">
+				           	</div>
+					    </div>
+					    <div class="form-group">
+				           	<label>ວັນທີໝົດກໍານົດ</label>
+					        <div class="input-group date">
+					        	<div class="input-group-addon">
+					           		<i class="fa fa-calendar"></i>
+					           	</div>	
+					           	<input type="text" name="enddate" class="form-control pull-right" id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd" value = "<?=$Get_endDate  ?>">
+					        </div>
+					    </div>
+						<div class="form-group">
+				           	<label>ເວລາເລີ່ມ</label>
+					        <input type="time" name="txtTimeStart" />
+					    </div>	
+						<div class="form-group">
+				           	<label>ເວລາໝົດກໍານົດ</label>
+					        <input type="time" name="txtTimeStop" />
+					    </div>							
+					    <div class="form-group">
+					    	<div class="form-check-inline">
+						      <label class="form-check-label" for="check1">
+						        <input type="checkbox" class="form-check-input" id="check1" name="status_id" value="4" <?php if ($Get_status_id=="4") { echo "checked"; }?>>ຢຸດການນໍາໃຊ້
+						      </label>
+						    </div>
+					    </div>					 								
+					</div>			 					
+					<div class="box-footer">
+						<input type="reset" id="reset" class = "btn btn-default" name="btnCancel" value="  ກັບຄືນ  " onclick="document.location='?d=promotion/list'"/>
+						<?php if ($Get_status_id =="1" || $Get_status_id=="4") { ?>
+					    	<button type="submit" name="btnSavePromotion" class="btn btn-primary">ບັນທຶກ</button>
+					    <?php } ?>
+					</div>		
+					
+				</form>	
+			</div>
+		</div>
+
+
+
+
+
+		<div class="col-md-9">
+			<?php if ($Get_type_id == "1" || $Get_type_id == "2") { ?>
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h4>ລາຍລະອຽດ ແລະ ເງື່ອນໄຂ</h4>
+						<p><?=$success1?></p>
+						<p class="errormessage"><?=$exist1?></p>
+					</div>
+					<form method="post" id="frmProCondition" action="?d=promotion/new" enctype="multipart/form-data">
+						<div class="box-body">
+							<?php if ($Get_status_id =="1" || $Get_status_id=="4") { ?>
+								<button type="button" class="btn btn-default" onclick="document.location='?d=promotion/new&proID=<?=$_GET['proID']?>&infoID=<?=$_GET['infoID']?>&typeid=<?=$_GET['typeid']?>&condition=1'">ເພີ່ມຂໍ້ມູນ</button>
+							<?php } ?>
+							<div class="box-body pad table-responsive">
+								<table id="example3" class="table table-bordered table-hover beautified editable">
+									<thead>
+										<tr>
+											<th>ລຳດັບ</th>
+											<?php if ($Get_type_id == "1") { ?>
+												<th>ຈ/ນ ສິນຄ້າກໍານົດ</th>
+												<th>ຈ/ນ ສິນຄ້າເລີ່ມ</th>
+												<th>ຈ/ນ ສິນຄ້າຫຼາຍສຸດ</th>
+											<?php } else if ($Get_type_id == "2"){ ?>
+												<th>ຈ/ນ ເງິນກໍານົດ</th>
+												<th>ຈ/ນ ເງິນເລີ່ມ</th>
+												<th>ຈ/ນ ເງິນຫຼາຍສຸດ</th>
+											<?php } ?>
+											<th>ຈ/ນ ສິນຄ້າ ແຖມ</th>	
+											<th>ສ່ວນຫຼຸດ</th>  
+											<th>ຄະແນນ</th>  
+											<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<th>ແກ້ໄຂ</th>
+												<th>ລຶບ</th>
+											<?php } ?>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $i = 1; 
+											$rs_proCon = LoadProCon($infoID, $proID, "");
+											while($row = mysql_fetch_array($rs_proCon, MYSQL_ASSOC)){ ?>
+										<tr>
+											<td class ="centered">
+												<span><?= ($i+$start) ?></span>
+												<input type="hidden" name="type[]" class="type" value="unchanged" />
+												<input type="hidden" name="id[]"  value="<?=$row['pc_id']?>" />
+												<input type="hidden" name="txtpro_id[]"  value="<?=$row['pro_id']?>" />
+												<input type="hidden" name="txtinfo_id[]"  value="<?=$row['info_id']?>" />
+											</td>		
+											<?php if ($Get_type_id == "1") { ?>
+												<td><?=number_format($row['b_QTY']) ?></td>
+												<td><?=number_format($row['b_minQTY']) ?></td>
+												<td><?=number_format($row['b_maxQTY']) ?></td>
+											<?php } else { ?>
+												<td><?=number_format($row['b_Amount']) ?></td>
+												<td><?=number_format($row['b_minAmount']) ?></td>
+												<td><?=number_format($row['b_maxAmount']) ?></td>
+											<?php } ?>																
+											<td><?=number_format($row['f_QTY']) ?></td>	
+											<td><?=number_format($row['f_Amount']) ?></td>	
+											<td><?=number_format($row['f_point']) ?></td>	
+											<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<td class="centered" >
+										            <a href ="?d=promotion/new&edit_id=<?=$row["pc_id"] ?>&infoID=<?=$row['info_id'] ?>&proID=<?=$row['pro_id']?>&typeid=<?=$_GET['typeid']?>&con_edit=1" >
+										          	<i class="fa fa-pencil"></i></a> </td>												 
+												<td class="centered" >
+													<a href ="?d=promotion/new&del_id=<?=$row["pc_id"] ?>&infoID=<?=$row['info_id']?>&proID=<?=$row['pro_id']?>&typeid=<?=$_GET['typeid']?>&con_del=1" onclick="return confirm('ທ່ານຕ້ອງການລຶບແທ້ບໍ...?')"><i class="fa fa-trash-o"></i></a> </td>						
+											<?php } ?>
+										</tr>
+										<?php $i++;} ?>	
+									</tbody>	
+								</table>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			<?php } ?>
+			<!-- ================================================= -->
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h4>ກໍານົດປະເພດສິນຄ້າທີ່ຂາຍ</h4>
+						<p><?=$success1?></p>
+						<p class="errormessage"><?=$exist1?></p>
+					</div>
+					<form method="post" id="frmItemSale" action="?d=promotion/new" enctype="multipart/form-data">
+						<div class="box-body">
+							<?php if ($Get_status_id =="1" || $Get_status_id=="4") { ?>
+								<button type="button" class="btn btn-default" onclick="document.location='?d=promotion/new&proID=<?=$_GET['proID']?>&infoID=<?=$_GET['infoID']?>&typeid=<?=$_GET['typeid']?>&item=1'">ເພີ່ມຂໍ້ມູນ</button>
+							<?php } ?>
+							<div class="box-body pad table-responsive">
+								<table id="example1" class="table table-bordered table-hover beautified editable">
+									<thead>
+										<tr >
+											<th>ລຳດັບ</th>
+										  	<th>Barcode</th>
+										 	<th>ຊື່ສິນຄ້າ</th>
+										 	<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<th>ລຶບ</th>
+											<?php } ?>
+										</tr>
+										</thead>
+									<tbody>						
+									<?php $i=1; 
+										$rs_ItemCon = LoadItemCon($infoID, $proID, "");
+										while($row = mysql_fetch_array($rs_ItemCon, MYSQL_ASSOC)){	
+									?>
+										<tr>											
+											<td><?= $i  ?></td>
+											<td><?= $row['fd_Barcode'] ?></td>
+											<td><?= $row['fd_name'] ?></td>	
+											<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<td class="centered" >
+													<a href ="?d=promotion/new&del_id=<?=$row["con_id"] ?>&infoID=<?=$row['info_id']?>&proID=<?=$row['pro_id']?>&typeid=<?=$_GET['typeid']?>&con_del=2" onclick="return confirm('ທ່ານຕ້ອງການລຶບແທ້ບໍ...?')"><i class="fa fa-trash-o"></i></a> </td>						
+											<?php } ?>		
+										</tr> 					
+										<?php 	$i++; } ?>		
+									</tbody>												
+								</table>
+							</div>
+						</div>						
+					</form>
+				</div>
+
+			<!-- ================================================= -->
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h4>ກໍານົດປະເພດສິນຄ້າທີ່ແຖມ</h4>
+						<p><?=$success1?></p>
+						<p class="errormessage"><?=$exist1?></p>
+					</div>
+					<form method="post" id="frmItemPro" action="?d=promotion/new" enctype="multipart/form-data">
+						<div class="box-body">
+							<?php if ($Get_status_id =="1" || $Get_status_id=="4") { ?>
+								<button type="button" class="btn btn-default" onclick="document.location='?d=promotion/new&proID=<?=$_GET['proID']?>&infoID=<?=$_GET['infoID']?>&typeid=<?=$_GET['typeid']?>&free=1'">ເພີ່ມຂໍ້ມູນ</button>
+							<?php } ?>
+							<div class="box-body pad table-responsive">
+								<table id="example3" class="table table-bordered table-hover beautified editable">
+									<thead>
+										<tr >
+											<th>ລຳດັບ</th>
+										  	<th>Barcode</th>
+										 	<th>ຊື່ສິນຄ້າ</th>
+										 	<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<th>ລຶບ</th>
+											<?php } ?>
+										</tr>
+										</thead>
+									<tbody>						
+									<?php $i=1; 
+										$rs_ItemCon = LoadItemFree($infoID, $proID, "");
+										while($row = mysql_fetch_array($rs_ItemCon, MYSQL_ASSOC)){
+									?>
+										<tr>											
+											<td><?= $i  ?></td>
+											<td><?= $row['fd_Barcode'] ?></td>
+											<td><?= $row['fd_name'] ?></td>	
+											<?php if($_SESSION['EDPOSV1role_id'] <=3){ ?>
+												<td class="centered" >
+													<a href ="?d=promotion/new&del_id=<?=$row["premium_id"] ?>&infoID=<?=$row['info_id']?>&proID=<?=$row['pro_id']?>&typeid=<?=$_GET['typeid']?>&con_del=3" onclick="return confirm('ທ່ານຕ້ອງການລຶບແທ້ບໍ...?')"><i class="fa fa-trash-o"></i></a> </td>						
+											<?php } ?>		
+										</tr> 					
+										<?php 	$i++; } ?>		
+									</tbody>	
+								</table>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+
+ 
+
+		</div>
+	</div>
+</section>
+ 

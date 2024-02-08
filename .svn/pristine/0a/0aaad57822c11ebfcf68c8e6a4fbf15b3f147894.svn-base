@@ -1,0 +1,112 @@
+<?php
+date_default_timezone_set('Asia/Vientiane'); // set your timezone
+$Get_infoID = $_SESSION['EDPOSV1info_id'];
+$Get_infoName = $_SESSION['EDPOSV1info_name'];
+
+$infoID = mysql_real_escape_string(stripslashes($_GET['infoID']));
+$startdate = mysql_real_escape_string(stripslashes($_GET['startdate']));
+$enddate = mysql_real_escape_string(stripslashes($_GET['enddate']));
+$supplierID = mysql_real_escape_string(stripslashes($_GET['supplierID']));
+
+// functions to subtract one month
+$less_startdate = date('Y-m', strtotime('-1 month', strtotime($startdate)));
+
+
+list($start_year, $start_month, $start_day) = explode('-', $startdate);
+// list($less_year, $less_month, $less_day) = explode('-', $less_startdate);
+
+
+// buld where clause
+
+$whereLess = "";
+if ($less_startdate != null) {
+	// $whereLess .= "(DATE(date_create) BETWEEN '$less_startdate' AND '$less_enddate') and info_id= $Get_infoID ";
+	$whereLess .= "YEAR(Date_tran) =  '$start_year'  and MONTH(Date_tran) < $start_month and info_id= '$infoID' ";
+}
+
+//===============	
+//------------------------------------------------ Building search clause // 	
+$whereclause = "";
+
+if ($startdate != NULL) {
+	// $whereclause .= "(DATE(v_transaction.date_tran) BETWEEN '$startdate' AND '$enddate') AND ";
+	$whereclause .= "(YEAR(v_transaction.date_tran) = '$start_year' AND MONTH(v_transaction.date_tran) = $start_month ) AND v_transaction.dstatus_id =1 AND ";
+} else {
+	// $whereclause .= "(DATE(v_transaction.date_tran) BETWEEN '$startdate' AND DATE(NOW())) AND ";
+	$whereclause .= "(DATE(v_transaction.date_tran) = DATE(NOW())) AND v_transaction.dstatus_id =1 AND ";
+}
+
+
+if ($supplierID != NULL) {
+	// $whereclause .= " supplierID='$supplierID' AND ";
+}
+if ($infoID != '0') $whereclause .= "v_transaction.info_id='$infoID' AND ";
+if ($whereclause != "") $whereclause = "WHERE  " . substr($whereclause, 0, strlen($whereclause) - 5);
+
+
+$params = "";
+if ($startdate != NULL) {
+	$params .= "startdate=$startdate&enddate=$enddate&infoID=$infoID&";
+}
+if ($supplierID != NULL) {
+	// $params .= "supplierID=$supplierID&";
+}
+
+function LoadTable($whereclause, $whereGroupID)
+{
+
+	return mysql_query("select * from v_transaction $whereclause and tranID = '$whereGroupID' and active_id IN (1,2) and tranType = 1  ORDER BY tranID, date_add");
+}
+
+//=======SUM material by material ID
+function SumMaterial($whereclause)
+{
+
+	return mysql_query("SELECT tranID, traDate, reciever, remark, username, date_add, supplierName
+							from v_transaction $whereclause and  active_id IN (1,2) and tranType IN (1,15)  GROUP BY tranID LIMIT 1");
+}
+
+function LoadInfo()
+{
+	return mysql_query("select distinct info_id, info_name from tb_info WHERE status_id IN (1)  ");
+}
+
+function LoadSupplier()
+{
+	return mysql_query(" select * from tb_supplier WHERE status_id=1 ");
+}
+
+$SumResult = SumMaterial($whereclause);
+
+// selete show data
+function LoadTableV2($whereclause, $whereGroupID)
+{
+
+	return mysql_query("
+	SELECT 
+	v_transaction.mBarcode AS mBarcode,
+	v_transaction.materialName AS materialName,
+	v_transaction.unitName3 AS unitName3,
+	v_transaction.unitQty3 AS unitQty3,
+	v_transaction.pur_price AS pur_price,
+	v_transaction.tranID AS tranID,
+	`v_transaction`.`cur_name` AS Cur_name,
+	(SELECT COALESCE(SUM(`v_outwarehouse`.`unitQTY3`),0) FROM `v_outwarehouse` WHERE `v_outwarehouse`.`lot_no` = `v_transaction`.`lot_no` AND v_outwarehouse.`materalID` = `v_transaction`.`materialID` AND v_outwarehouse.`info_id` = `v_transaction`.`info_id` ) AS Out_unitQty3,
+	(SELECT COALESCE(`v_outwarehouse`.`pur_price`,0) FROM `v_outwarehouse` WHERE `v_transaction`.`lot_no` = `v_transaction`.`lot_no` AND v_outwarehouse.`materalID` = `v_transaction`.`materialID` AND v_outwarehouse.`info_id` = `v_transaction`.`info_id`  LIMIT 1) AS Out_purPice
+	FROM v_transaction
+	LEFT JOIN `v_outwarehouse` ON `v_transaction`.`materialID` = `v_outwarehouse`.`materalID` AND `v_outwarehouse`.`lot_no` = `v_transaction`.`lot_no`  AND `v_transaction`.`info_id` = `v_outwarehouse`.`info_id` 
+	$whereclause 
+	GROUP BY `v_transaction`.`materialID`, `v_transaction`.`info_id`,`v_transaction`.`lot_no`
+	");
+}
+
+function SumMaterial1($Barcode, $whereLess)
+{
+	$result = mysql_query("
+	SELECT COALESCE(SUM(unitQty3), 0) AS unitQty3 
+	FROM v_stock_movement 
+	WHERE $whereLess
+ 	 AND mBarcode = '$Barcode'
+	GROUP BY materialID,info_id");
+	return mysql_fetch_array($result)['unitQty3'];
+}

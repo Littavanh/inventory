@@ -1,0 +1,221 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+$info_id = $_SESSION["EDPOSV1info_id"];
+if (isset($_POST["btnSaveTransfer"]) && isset($_SESSION['EDPOSV1role_id'])) {
+	if (isset($_POST['type'])) {
+
+		$trantmp = $_SESSION['EDPOSV1tmpProductID_t'];
+		$FStoc_infoID = $_SESSION['EDPOSV1TransferProducinfoIDF'];
+		$Stoc_infoID = $_SESSION['EDPOSV1TransferProducinfoIDT'];
+		$txttransfer = $_SESSION['EDPOSV1TransferProducttxttransfer'];
+		$txtRemark = $_SESSION['EDPOSV1TransferProducttxtRemark'];
+		$txtDate = $_SESSION['EDPOSV1TransferProducttxtDate'];
+
+		if (trim($_FILES["edit_fileUpload"]["tmp_name"]) != "") {
+			$file_name = date('Ymd') . $_FILES["edit_fileUpload"]["name"];
+			copy($_FILES["edit_fileUpload"]["tmp_name"], "doc/" . $file_name);
+		}
+
+
+
+		//============= INSERT HEADER		
+		if (nr_execute("SELECT COUNT(*) FROM tb_transactiond WHERE tranID = '$trantmp' and info_id='$Stoc_infoID' and status_id=15 ") > 0) {
+
+			$sql = "INSERT INTO tb_transactionh (tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id, filename, cur_id) 
+        VALUES ('$trantmp', '$txtDate', '$txttransfer', '$txtRemark', '1', '$user_id', NOW(), 1, '0', '$FStoc_infoID', '$Stoc_infoID', '$file_name',
+          (SELECT `tb_transactiond`.`cur_id` AS cur_id FROM `tb_transactiond` WHERE `traDID`='$trantmp'))";
+			$resultH = mysql_query($sql, $conn);
+		}
+		//============ INSERT Detail
+		if ($resultH) {
+			// update old stock
+			sql_execute(" UPDATE tb_transactiond SET status_id = 15  WHERE transferID='$trantmp' and info_id='$FStoc_infoID' ");
+			//update new stock 
+			//sql_execute(" UPDATE tb_transactiond SET status_id = 1  WHERE tranID='$trantmp' and info_id='$Stoc_infoID' ");	
+
+
+
+			$success = " ໂອນສິນຄ້າສໍາເລັດແລ້ວ ...!";
+			// delete from tmp
+			sql_execute("DELETE FROM tmp_transaction WHERE traID='$trantmp' and info_id='$Stoc_infoID'");
+			sql_execute("DELETE FROM tmp_transactiond WHERE tranID='$trantmp' and info_id='$Stoc_infoID' ");
+			//=========== Unset SESSION
+			unset($_SESSION['EDPOSV1TransferProducinfoIDT']);
+			unset($_SESSION['EDPOSV1TransferProducinfoIDF']);
+			unset($_SESSION['EDPOSV1TransferProducttxtDate']);
+			unset($_SESSION['EDPOSV1TransProducttxtexp']);
+			unset($_SESSION['EDPOSV1TransferProducttxttransfer']);
+			unset($_SESSION['EDPOSV1TransferProducttxtRemark']);
+			unset($_SESSION['EDPOSV1tmpProductID_t']);
+			unset($_SESSION['EDPOSV1TransferProductSupllier']);
+		} else {
+			$exist = "ໂອນສິນຄ້າ ບໍ່ສໍາເລັດ...!";
+		}
+	}
+}
+
+
+
+if (isset($_POST["btnTransferproduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
+	$_SESSION['EDPOSV1TransferProduct'] = "TransferProduct";
+	$infoIDF = mysql_real_escape_string(stripslashes($_POST['infoIDF']));
+	$txtinfoIDT = mysql_real_escape_string(stripslashes($_POST['txtinfoIDT']));
+	$txtDate = mysql_real_escape_string(stripslashes($_POST['txtDate']));
+	$txtexp = mysql_real_escape_string(stripslashes($_POST['txtexp']));
+	$txttransfer = mysql_real_escape_string(stripslashes($_POST['txttransfer']));
+	$txtSupplier = mysql_real_escape_string(stripslashes($_POST['supplierID']));
+	$txtRemark = mysql_real_escape_string(stripslashes($_POST['txtRemark']));
+	$txtprice = mysql_real_escape_string(stripslashes(trim($_POST['txtprice'])));
+	$file_tmp_name = trim($_FILES["fileUpload"]["tmp_name"]);
+	$file_name = trim($_FILES["fileUpload"]["name"]);
+
+	$_SESSION['EDPOSV1TransferProducinfoIDF'] = $infoIDF;
+	$_SESSION['EDPOSV1TransferProducinfoIDT'] = $txtinfoIDT;
+	$_SESSION['EDPOSV1TransferProducttxtDate'] = $txtDate;
+	$_SESSION['EDPOSV1TransferProducttxttransfer'] = $txttransfer;
+	$_SESSION['EDPOSV1TransferProductSupllier'] = $txtSupplier;
+	$_SESSION['EDPOSV1TransferProducttxtRemark'] = $txtRemark;
+	$_SESSION['EDPOSV1TransferProductExpDate'] = $txtexp;
+	$_SESSION['EDPOSV1TransferProductPricePur'] = $txtprice;
+
+	if (!isset($_SESSION['EDPOSV1tmpProductID_t']) && $_SESSION['EDPOSV1tmpProductID_t'] == '') {
+		$_SESSION['EDPOSV1tmpProductID_t'] = nr_execute("SELECT CONCAT (DATE_FORMAT(now(), '%Y%m%d'), RAND()*1000) as trantmp");
+	}
+	$trantmp = $_SESSION['EDPOSV1tmpProductID_t'];
+	//sql_execute("DELETE FROM tmp_transaction WHERE DATE_FORMAT(date_add, '%Y%m%d')  < DATE_FORMAT(now(), '%Y%m%d') and info_id = '$infoID' ");
+	//sql_execute("DELETE FROM tmp_transactiond WHERE DATE_FORMAT(date_add, '%Y%m%d') < DATE_FORMAT(now(), '%Y%m%d') and info_id = '$infoID' ");
+	header("Location: ?d=stock/transfer");
+}
+
+if (isset($_POST["btncancel"]) && isset($_SESSION['EDPOSV1role_id'])) {
+	unset($_SESSION['EDPOSV1TransferProduct']);
+	header("Location: ?d=stock/transfer");
+}
+
+if (isset($_POST["btnsaveProduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
+	if (isset($_POST['type'])) {
+		for ($i = 0; $i < count($_POST['type']); $i++) {
+			$tranID = $_SESSION['EDPOSV1tmpProductID_t'];
+			$exp_date = mysql_real_escape_string(stripslashes($_POST['expDate'][$i]));
+			$materialID = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitID1 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty1 = str_replace(",", "", $_POST['unitQty1'][$i]);
+			$unitCap1 = str_replace(",", "", $_POST['unitCap1'][$i]);
+			$unitID2 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty2 = str_replace(",", "", $_POST['unitQty2'][$i]);
+			$unitCap2 = str_replace(",", "", $_POST['unitCap2'][$i]);
+			$unitID3 = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
+			$unitQty3 = str_replace(",", "", $_POST['unitQty3'][$i]);
+
+			$unitCap3 = str_replace(",", "", $_POST['unitCap3'][$i]);
+			$txtprice = str_replace(",", "", $_POST['txtprice'][$i]);
+			$txtdiscount = str_replace(",", "", $_POST['txtdiscount'][$i]);
+			$txtqty3 = str_replace(",", "", $_POST['txtqty3'][$i]);
+			$txtLocation = mysql_real_escape_string(stripslashes($_POST['txtLocation'][$i]));
+			$FStoc_infoID = $_SESSION['EDPOSV1TransferProducinfoIDF'];
+			$Stoc_infoID = $_SESSION['EDPOSV1TransferProducinfoIDT'];
+			$txttransfer = $_SESSION['EDPOSV1TransferProducttxttransfer'];
+			$txtRemark = $_SESSION['EDPOSV1TransferProducttxtRemark'];
+			$txtDate = $_SESSION['EDPOSV1TransferProducttxtDate'];
+
+
+			if (($unitQty1 > 0) || ($unitQty2 > 0) || ($unitQty3 > 0)) {
+				switch ($_POST['type'][$i]) {
+					case "added":
+						break;
+					case "edited":
+
+						//=====  Convert Unit
+						//======= unit3
+						if ($unitCap2 > 0) {
+							$convert3 = ($unitQty3 % $unitCap2);
+							$convert2 = $unitQty2 + (($unitQty3 - $convert3) / $unitCap2);
+							//========== check cap1
+							if ($unitCap1 > 0) {
+								$unitQty2 = ($convert2 % ($unitCap1 / $unitCap2));
+								$unitQty1 = $unitQty1 + (($convert2 - $unitQty2) / ($unitCap1 / $unitCap2));
+							} else {
+								$unitQty2 = $convert2;
+								$unitQty1 = 0;
+							}
+						} else {
+							$convert3 = $unitQty3;
+						}
+
+						if ($txtqty3 < (($unitQty1 * $unitCap1) + ($unitQty2 * $unitCap2) + $convert3)) {
+							$exist = "1.0 ຈໍານວນສິນຄ້າໃນສາງບໍ່ພຽງພໍທີ່ຈະໂອນ,<br>ຈໍານວນໃນສາງ: " . $txtqty3 . "<br>ຈໍານວນຕ້ອງການໂອນ: " . (($unitQty1 * $unitCap1) + ($unitQty2 * $unitCap2) + $convert3);
+							break;
+						}
+						// insert into transactiond waiting for cut from old stock
+						sql_execute("INSERT INTO tb_transactiond(info_id, tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
+					 					Dremark, staffName,transferID, pur_price, sale_price, info_idF, cnID, cur_id,lot_no) 
+										select 	'$FStoc_infoID', tranID, NOW(), exp_date, materialID, '-$convert3', '14','$user_id',NOW() ,15, '$txtRemark', 
+										'$txttransfer', '$tranID', pur_price, pur_price as sale_price, '$FStoc_infoID',cur_id,cur_id,lot_no ''
+										from v_transaction WHERE info_id='$FStoc_infoID' and materialID='$materialID' and active_id = 1  and exp_date='$exp_date' 
+											and pur_price='$txtprice'  LIMIT 0,1 ");
+						$GetMaxTranID_OLD = nr_execute("SELECT MAX(traDID) FROM tb_transactiond WHERE info_id='$FStoc_infoID' and status_id=15 ");
+						// check header 
+						/*	if (nr_execute("SELECT COUNT(tranID) FROM tb_transactionh WHERE tranID='$tranID' and info_id='$Stoc_infoID' and status_id=1 ") <= 0) {
+							$sql="INSERT INTO tb_transactionh(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id) 
+									VALUES('$tranID', '$txtDate', '$txttransfer', '$txtRemark', '1','$user_id',NOW(),1,'0', '$FStoc_infoID', '$Stoc_infoID') ";
+							$resultH = mysql_query($sql, $conn);							
+						}	
+					*/
+						// insert into transactiond waiting for insert tonew stock
+						sql_execute("INSERT INTO tb_transactiond(info_id, tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
+					 					Dremark, staffName,transferID, pur_price, sale_price, info_idF, cnID,cur_id,lot_no) 
+										select 	'$Stoc_infoID', '$tranID', NOW(), exp_date, materialID, '$convert3', '15','$user_id',NOW() ,15, '$txtRemark', 
+										'$txttransfer', '$tranID', pur_price, pur_price as sale_price, '$FStoc_infoID', '$GetMaxTranID_OLD',cur_id, lot_no
+										from v_transaction WHERE info_id='$FStoc_infoID' and materialID='$materialID' and active_id = 1  and exp_date='$exp_date' 
+											and pur_price='$txtprice'  LIMIT 0,1 ");
+						$GetMaxTranID_NEW = nr_execute("SELECT MAX(traDID) FROM tb_transactiond WHERE info_id='$Stoc_infoID' and status_id=15 ");
+						// insert into tmp_transactiond for show
+						sql_execute("INSERT INTO tmp_transactiond(tranID, exp_date,materialID, traTypeID, unitID1, unitQty1, unitID2, unitQty2, unitID3, unitQty3, 
+										user_add, date_add,pur_price,sale_price, receive_dis, location_addr, info_id, tranOld, tranNew) 
+									SELECT '$tranID' as tranID, '$exp_date', materialID, 14 as traTypeID,  '0', '$unitQty1', '0', '$unitQty2', '0', 
+											'$convert3', '$user_id', NOW(), '$txtprice', 0 as sale_price, 0 as receive_dis, '' as location_addr,'$Stoc_infoID',
+											'$GetMaxTranID_OLD','$GetMaxTranID_NEW'
+									from v_material2 
+									WHERE info_id='$FStoc_infoID' and  materialID='$materialID' LIMIT 0,1 ");
+
+
+
+
+						break;
+				}
+			}
+			//======================================= Unset SESSION
+			unset($_SESSION['EDPOSV1TransferProduct']);
+		}
+	}
+}
+
+
+if (isset($_GET["del_id"]) && isset($_SESSION['EDPOSV1role_id'])) {
+	$id = mysql_real_escape_string(stripslashes(base64_decode($_GET['del_id'])));
+	$id = substr($id, 0, strlen($id) - 11);
+	$delinfoid = mysql_real_escape_string(stripslashes(($_GET['delinfoid'])));
+	$tranOld = mysql_real_escape_string(stripslashes(($_GET['tranOld'])));
+	$tranNew = mysql_real_escape_string(stripslashes(($_GET['tranNew'])));
+
+	sql_execute("DELETE FROM tb_transactiond WHERE traDID ='$tranOld' ");
+	sql_execute("DELETE FROM tb_transactiond WHERE traDID ='$tranNew' ");
+
+	$sql = "DELETE FROM tmp_transactiond WHERE traDID ='$id' and info_id = '$delinfoid' ";
+
+	$result = mysql_query($sql, $conn);
+	if ($result) {
+		unlink("photos/" . $image_name);
+		header("Location: ?d=stock/transfer");
+	} else {
+		echo "<center><h2>ERROR Delete</h2></center>";
+	}
+}
+
+$infoIDT = $_SESSION['EDPOSV1TransferProducinfoIDT'];
+$whereclause = " WHERE info_id = '$infoIDT' ";
+$result = LoadPrice_setting($whereclause);
+
+$infoID_count = $_SESSION['EDPOSV1TransferProducinfoIDT'];
+// --------------------------------------------------------- Build Paging
+$catcount = nr_execute("SELECT COUNT(*) FROM v_tmp_transactiond where info_id = '$infoID_count' ");

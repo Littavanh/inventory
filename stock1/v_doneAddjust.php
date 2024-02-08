@@ -1,0 +1,313 @@
+<?php
+session_start();
+htmltage("ສຳເລັດເບີກສິນຄ້າ");
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] == 4) {
+	header("Location: ?d=index");
+}
+
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/Action.js"></script>
+<script type="text/javascript" src="js/calculate.js"></script>
+
+<section class="content-header">
+    <h1>ສຳເລັດເບີກສິນຄ້າ</h1>
+</section>
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="box-body pad table-responsive">
+                            <h4>
+                                <?= $pagedescription ?>
+                            </h4>
+
+                            <table id="example1" class="table table-bordered table-hover beautified editable">
+                                <thead>
+                                    <tr>
+                                        <th>ລຳດັບ</th>
+
+                                        <th>ໃບເບີກເລກທີ</th>
+                                        <th>ວັນທີຂໍເບີກ</th>
+                                        <th>ຜູ້ຂໍເບີກ</th>
+                                        <th>ພາກສ່ວນ</th>
+                                        <th>ໝາຍເຫດ</th>
+                                        <th>ວັນທີ່ຕ້ອງການ</th>
+                                        <th>ຜູ້ອະນຸມັດ</th>
+                                        <!-- <th>Status</th> -->
+                                        <th>File</th>
+                                        <th>View Data</th>
+                                        <th>Print</th>
+
+                                        <th>Status Get Product</th>
+                                        <th></th>
+                                        <th>ວັນທີ່ຮັບສິນຄ້າ</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+									$load = loadAddjustHistory();
+									$i = 1;
+									while ($row = mysql_fetch_array($load, MYSQL_ASSOC)) {
+
+										?>
+
+                                    <div class="modal fade" id="modal-lg-Image<?= $i ?>" data-backdrop="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title ">ໄຟລແນບ</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+
+                                                    <?php
+														$imagePath = "dist/image/addjust/" . $row['po_file'];
+														if (!file_exists($imagePath) || $row['po_file'] == '') {
+															$imagePath = "dist/image/addjust/notfound.png";
+														}
+														?>
+                                                    <embed src="<?=$imagePath?>" width="100%" height="800px" />
+
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="modal fade" id="modal-lg-doneAddjust<?= $i ?>" data-backdrop="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title ">ອັບເດບສະຖານະ</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form method="post" action="?d=stock1/doneAddjust"
+                                                    enctype="multipart/form-data">
+                                                    <div class="modal-body">
+
+                                                        <div class="row">
+                                                            <input hidden type="text" name="txt_transferID" id=""
+                                                                value="<?= $row['transferID'] ?>">
+                                                            <div class="form-group col-md-4">
+                                                                <label>ເລືອກສະຖານະ</label>
+                                                                <select class="form-control" name="cb_status">
+
+                                                                    <?php
+																		$loadStatus = LoadStatus();
+
+																		while ($row1 = mysql_fetch_array($loadStatus, MYSQL_ASSOC)) {
+																			$selected = $row['status_get_id'] == $row1['id'] ? "selected" : "";
+																			?>
+                                                                    <option value="<?= $row1['id'] ?>" <?= $selected ?>>
+                                                                        <?= $row1['statusText'] ?>
+                                                                    </option>
+                                                                    <?php }
+																		?>
+                                                                </select>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4">
+                                                                <label>ວັນທີສາມາດຮັບສິນຄ້າ</label>
+                                                                <div class="input-group date">
+                                                                    <div class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </div>
+                                                                    <input type="date" name="txtDateGet"
+                                                                        class="form-control pull-right"
+                                                                        data-date-format="yyyy-mm-dd" value="" required
+                                                                        autocomplete="off" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-8">
+                                                                <label>ແນບໄຟລ</label>
+                                                                <input name="edit_fileUpload" class="form-control"
+                                                                    type="file" value="">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="button" class="btn btn-default"
+                                                            data-dismiss="modal">ປິດ</button>
+                                                        <button type="submit" name="btnSave"
+                                                            class="btn btn-primary">ບັນທືກ</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal fade" id="modal-lg-Reject<?= $i ?>" data-backdrop="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title ">ໝາຍເຫດ</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form method="post" action="?d=stock1/doneAddjust"
+                                                    enctype="multipart/form-data">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="txtRelease"
+                                                            value="<?= $row['release'] ?>">
+                                                        <div class="row">
+                                                            <div class="row col-md-12 ">
+                                                                <div class="form-group col-md-10">
+
+                                                                    <textarea name="txtRemarkReject"
+                                                                        class="form-control" cols="50"
+                                                                        rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="button" class="btn btn-default"
+                                                            data-dismiss="modal">ປິດ</button>
+                                                        <button type="submit" name="btnReject"
+                                                            class="btn btn-danger">ຢືນຢັນ</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <tr>
+                                        <td class="centered">
+                                            <?= $i ?>
+                                        </td>
+                                        <!-- <td class="centered">
+												<?= $row['tranID'] ?>
+											</td>
+											<td class="centered">
+												<?= $row['traDate'] ?>
+											</td> -->
+                                        <td class="centered">
+                                            <?= $row['release'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['date_tran'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['first_name'] ?>
+                                            <?= $row['last_name'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['info_name'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['Dremark'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['date_want'] ?>
+                                        </td>
+                                        <td class="centered">
+                                            <?= $row['approve_name'] ?>
+                                            <?= $row['approve_lastName'] ?>
+                                        </td>
+                                        <!-- <td class="centered">
+											<span class="label label-warning ">
+													<?= $row['text'] ?>
+												</span>
+											</td> -->
+                                        <td class="centered">
+                                            <a href="#"><i data-toggle="modal"
+                                                    data-target="#modal-lg-Image<?= $i ?>">ໄຟລແນບ</i></a>
+                                        </td>
+                                        <td class="centered">
+                                            <a
+                                                href="index.php?d=stock1/doneAddjustDetail&bId=<?= $row['transferID'] ?>"><i>ເບິ່ງລາຍລະອຽດ</i></a>
+                                        </td>
+                                        <td class="centered">
+
+
+
+
+                                            <a class="btn btn-warning"
+                                                href="print/approveAddjustPrint_.php?d=stock1&transferID=<?= $row['transferID'] ?>"
+                                                target="_blank" role="button"><i class="fa fa-print"></i>
+                                            </a>
+
+                                        </td>
+
+                                        <?php
+
+											if ($row['status_get_id'] != NULL) {
+												?>
+                                        <td class="centered">
+                                            <h4><span class="label label-primary "
+                                                    <?php if($row['status_get_id'] < 4){ ?> data-toggle="modal"
+                                                    data-target="#modal-lg-doneAddjust<?= $i ?>" <?php } ?>>
+                                                    <?= $row['statusGet'] ?> <i <?php if($row['status_get_id'] < 4){ ?>
+                                                        class="glyphicon glyphicon-collapse-down" <?php } ?>></i>
+                                                </span></h4>
+
+                                        </td>
+
+                                        <?php
+											}
+											?>
+
+                                        <td class="centered">
+                                            <?php
+
+											if ($row['status_get_id'] == 1) {
+												?>
+                                            <a class="btn btn-danger" href="#"><i data-toggle="modal"
+                                                    data-target="#modal-lg-Reject<?= $i ?>">ບໍ່ອະນຸມັດ</a>
+                                            <?php
+											}
+											?>
+                                        </td>
+
+                                        <td class="centered">
+                                            <?= $row['date_get'] ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+										$i++;
+									}
+									?>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

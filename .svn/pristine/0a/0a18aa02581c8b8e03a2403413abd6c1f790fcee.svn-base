@@ -1,0 +1,51 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+$info_id = $_SESSION["EDPOSV1info_id"];
+if(isset($_POST["btnDuplicateData"]) && $_SESSION['EDPOSV1role_id'] <='2' ) {
+	$infoIDF = mysql_real_escape_string(stripslashes($_POST['infoIDF'])); 
+	$infoIDT = mysql_real_escape_string(stripslashes($_POST['txtinfoIDT'])); 
+	$txtRemarkF = mysql_real_escape_string(stripslashes($_POST['txtRemarkF'])); 
+ 
+	if ($infoIDF >0 && $infoIDT>0 ) {
+		// Truncate 
+		sql_execute(" 	DELETE FROM tb_kind_food WHERE info_id='$infoIDT' ");		
+		sql_execute(" 	DELETE FROM tb_material WHERE info_id='$infoIDT' ");
+		sql_execute(" 	DELETE FROM tb_food_drink WHERE info_id='$infoIDT'");
+		sql_execute(" 	DELETE FROM tb_recipe WHERE info_id='$infoIDT' ");
+		
+
+		// tb_kind_food
+		sql_execute(" insert into tb_kind_food (kf_id, info_id, status_id, kf_name, printerNo, user_add, date_add, user_edit, date_edit, edit_to, CountMaterial, dbc, viewOrder)
+						SELECT 	kf_id, '$infoIDT', status_id, kf_name, printerNo, '$user_id', NOW(), 0, '0000-00-00 00:00:00', '', CountMaterial, 1, viewOrder
+						FROM tb_kind_food   WHERE info_id='$infoIDF' ");
+		// material
+		sql_execute(" insert into tb_material (materialID, info_id, kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, 
+						uname1, unitQty1, uname2, unitQty2, uname3, unitQty3, min_stock, status_id, 
+						user_add, date_add, user_edit, date_edit, edit_to, mpic, ingredient, mOpenStock, dbch)
+					SELECT  materialID, '$infoIDT', kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, 
+						uname1, unitQty1, uname2, unitQty2, uname3, unitQty3, min_stock, status_id, 
+						'$user_id', NOW(), 0, '0000-00-00 00:00:00', '', mpic, ingredient, mOpenStock, 1
+					FROM tb_material WHERE info_id='$infoIDF' ");
+		// food and drink
+		sql_execute(" insert into tb_food_drink (fd_id, info_id, fd_barcode, status_id, kf_id, fd_name, detail1, detail2, detail3, price, photo, user_add, 
+						date_add, user_edit, date_edit, edit_to, price_to, price1, price2, NewPro, ProStartDate, ProEndDate, dbch, print_barcode)
+					SELECT fd_id, '$infoIDT', fd_barcode, status_id, kf_id, fd_name, detail1, detail2, detail3, price, photo, '$user_id', 
+						NOW(), 0, '0000-00-00 00:00:00', '', price_to, price1, price2, NewPro, ProStartDate, ProEndDate, 1, print_barcode
+					FROM tb_food_drink  WHERE info_id='$infoIDF' ");
+		// recipe
+		sql_execute(" insert into tb_recipe (recipeID, info_id, fd_id, recipeName, materialID, recipeCapacity, remark, status_id, user_add, date_add, 
+						user_edit, date_edit, edit_to, price, price2, price3, price_cost, dbch)
+					SELECT 	 recipeID, '$infoIDT', fd_id, recipeName, materialID, recipeCapacity, remark, status_id, '$user_id', NOW(), 
+						user_edit, date_edit, edit_to, price, price2, price3, price_cost, 1
+		 			FROM tb_recipe  WHERE info_id='$infoIDF' ");
+		// Insert log
+		sql_execute(" insert into tb_duplicate (info_id_f, info_id_T, remark, user_add, date_add)
+						VALUES ('$infoIDF', '$infoIDT', '$txtRemarkF', '$user_id', NOW()) ");
+
+
+		$success="ກ໋ອບປີ້ ຂໍ້ມູນສີນຄ້າ ສໍາເລັດແລ້ວ";	
+	}
+}
+
+
+ 

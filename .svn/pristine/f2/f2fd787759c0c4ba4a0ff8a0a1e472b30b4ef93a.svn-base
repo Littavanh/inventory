@@ -1,0 +1,262 @@
+<?php
+session_start();
+htmltage("ເພີ່ມສິນຄ້າ");
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] == 4) {
+	header("Location: ?d=index");
+}
+
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<script type="text/javascript" src="js/calculate.js"></script>
+<script language="javascript" type="text/javascript">
+	function getXMLHTTP() { //fuction to return the xml http object
+		var xmlhttp = false;
+		try {
+			xmlhttp = new XMLHttpRequest();
+		} catch (e) {
+			try {
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+				try {
+					xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+				} catch (e1) {
+					xmlhttp = false;
+				}
+			}
+		}
+
+		return xmlhttp;
+	}
+	/*******************/
+	function FindKF(GetInfoID) {
+		//alert("Problem while using XMLHTTP (Account List):\n" );
+		var strURL = "function/findKF.php?GetInfoID=" + GetInfoID;
+		var req = getXMLHTTP();
+		if (req) {
+			req.onreadystatechange = function() {
+				if (req.readyState == 4) {
+					// only if "OK"
+					if (req.status == 200) {
+						document.getElementById('selKFID').innerHTML = req.responseText;
+						'<option>Select City</option>' +
+						'</select>';
+					} else {
+						alert("Problem while using XMLHTTP (Account List):\n" + req.statusText);
+					}
+				}
+			}
+			req.open("GET", strURL, true);
+			req.send(null);
+		}
+	}
+</script>
+<section class="content-header">
+	<h1>ເພີ່ມສິນຄ້າ</h1>
+
+
+
+</section>
+<section class="content">
+	<div class="row">
+		<div class="box box-primary">
+			<form method="post" id="frmPriceSetting" action="?d=stock/materialAdd" enctype="multipart/form-data">
+				<div class="box-header with-border">
+					<p><?= $success ?></p>
+					<p class="errormessage"><?= $exist ?></p>
+				</div>
+				<div class="box-body">
+
+					<div class="row col-md-12">
+						<div class=" form-group col-md-4">
+							<label>ສາງ</label>
+							
+							<?php if ($_SESSION['EDPOSV1role_id'] <= '2') { ?>
+								<select name="infoID" class="form-control" onChange="FindKF(this.value); " required>
+									<?php
+									$rs_info = LoadInfo();
+									while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+										$selected = $row_c['info_id'] == $row['info_id'] ? "selected" : "";
+									?>
+										<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
+									<?php } ?>
+								</select>
+							<?php } else { ?>
+								<select name="infoID[]"  class="form-control" onChange="FindKF(this.value); " required>
+									<option value="<?= $Get_infoID ?>"><?= $Get_infoName ?></option>
+								</select>
+							<?php } ?>
+						</div>
+					</div>
+
+					<div class="row col-md-12">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>ຊື່ສິນຄ້າ</label>
+								<input type="text" name="txtm_name" value="<?= $_SESSION["EDPOSV1MADD_txtm_name"] ?>" class="form-control" autocomplete="off" required />
+							</div>
+							<div class="form-group" id="selKFID">
+								<label>ໝວດສີນຄ້າ</label>
+								<select name="kf_id" class="form-control" required>
+									<option value="">ເລືອກກຸ່ມສິນຄ້າ</option>
+									<?php
+									if ($_SESSION['EDPOSV1role_id'] != '0') {
+										$SetInfoID = $_SESSION['EDPOSV1info_id'];
+										$rs_kf = selkindfood($SetInfoID);
+										while ($row_c = mysql_fetch_array($rs_kf, MYSQL_ASSOC)) {
+											$selected = $row_c['kf_id'] == $_SESSION["EDPOSV1MADD_kf_id"] ? "selected" : "";
+									?>
+											<option value="<?= $row_c['kf_id'] ?>" <?= $selected ?>><?= $row_c['kf_name'] ?></option>
+									<?php }
+									} ?>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>ລາຍລະອຽດສິນຄ້າ</label>
+								<input type="text" name="txtm_Remark" maxlength="50" class="form-control" autocomplete="off" value="<?= $_SESSION["EDPOSV1MADD_txtm_Remark"] ?>" />
+							</div>
+							<div class="form-group">
+								<label>ລາຍລະອຽດສິນຄ້າ</label>
+								<input type="text" name="txtm_Remark1" maxlength="50" class="form-control" autocomplete="off" value="<?= $_SESSION["EDPOSV1MADD_txtm_Remark1"] ?>" />
+							</div>
+							<!-- <div class="form-group">
+				                <label>ລາຍລະອຽດສິນຄ້າ</label>
+				                <input type="text" name="txtm_Remark2" maxlength="50" class="form-control" autocomplete="off" value="<?= $_SESSION["EDPOSV1MADD_txtm_Remarkw"] ?>" />
+				            </div> -->
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group col-md-3">
+							<label>Barcode Code 1</label>
+							<input type="text" name="txtBarcode1" value="<?= $_SESSION["EDPOSV1MADD_txtBarcode1"] ?>" class="form-control" autocomplete="off" disabled />
+						</div>
+						<div class="form-group col-md-2" id="selUnit1">
+							<label>ຫົວໜ່ວຍ(1)</label>
+							<input type="text" name="unit1" maxlength="50" class="form-control" value="<?= $_SESSION["EDPOSV1MADD_unit1"] ?>" disabled />
+						</div>
+						<div class="form-group col-md-1">
+							<label>ຈໍານວນ(1)</label>
+							<input type="text" class="form-control number" name="unitNameQty1" value="<?= number_format($_SESSION["EDPOSV1MADD_unitNameQty1"], 2) ?>" onkeyup="AddAndRemoveSeparator(this);" disabled />
+						</div>
+						<!-- <div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 1 ຂາຍຍ່ອຍ</label>
+				            <input type="text" name="txtprice1" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice1"]) ?>"  onkeyup ="AddAndRemoveSeparator(this);" />
+				        </div>
+						<div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 1 ຂາຍຍົກ</label>
+				            <input type="text" name="txtprice12" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice12"]) ?>"  onkeyup ="AddAndRemoveSeparator(this);" />
+				        </div>
+						<div class="form-group col-md-2 ">
+							<label>ສະກຸນເງິນ</label>
+							<select name="CurPrice1" class="form-control" >
+								<?php
+								$rs_cy = LoadCurrentcy();
+								while ($row_c = mysql_fetch_array($rs_cy, MYSQL_ASSOC)) {
+									$selected = $row_c['cy_id'] == $_SESSION["EDPOSV1MADD_cy_id1"] ? "selected" : "";
+								?>
+									<option value="<?= $row_c['cy_id'] ?>" <?= $selected ?>><?= $row_c['cy_text2'] ?></option>
+								<?php  } ?>										
+							</select>
+						</div>						 -->
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group col-md-3">
+							<label>Barcode Code 2</label>
+							<input type="text" name="txtBarcode2" value="<?= $_SESSION["EDPOSV1MADD_txtBarcode2"] ?>" class="form-control" autocomplete="off" disabled />
+						</div>
+						<div class="form-group col-md-2" id="selUnit2">
+							<label>ຫົວໜ່ວຍ(2)</label>
+							<input type="text" name="unit2" maxlength="50" class="form-control" value="<?= $_SESSION["EDPOSV1MADD_unit2"] ?>" disabled />
+						</div>
+						<div class="form-group col-md-1">
+							<label>ຈໍານວນ(2)</label>
+							<input type="text" name="unitNameQty2" value="<?= number_format($_SESSION["EDPOSV1MADD_unitNameQty2"], 2) ?>" onkeyup="AddAndRemoveSeparator(this);" class="number form-control" disabled />
+						</div>
+						<!-- <div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 2 ຂາຍຍ່ອຍ</label>
+				            <input type="text" name="txtprice2" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice2"]) ?>" onkeyup ="AddAndRemoveSeparator(this);"  />
+				        </div>
+						<div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 2 ຂາຍຍົກ</label>
+				            <input type="text" name="txtprice22" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice22"]) ?>" onkeyup ="AddAndRemoveSeparator(this);" />
+				        </div>
+						<div class="form-group col-md-2 ">
+							<label>ສະກຸນເງິນ</label>
+							<select name="CurPrice2" class="form-control" >
+								<?php
+								$rs_cy = LoadCurrentcy();
+								while ($row_c = mysql_fetch_array($rs_cy, MYSQL_ASSOC)) {
+									$selected = $row_c['cy_id'] == $_SESSION["EDPOSV1MADD_cy_id2"] ? "selected" : "";
+								?>
+									<option value="<?= $row_c['cy_id'] ?>" <?= $selected ?>><?= $row_c['cy_text2'] ?></option>
+								<?php  } ?>		
+							</select>
+						</div>						 -->
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group col-md-3">
+							<label>Barcode Code 3</label>
+							<input type="text" name="txtBarcode3" value="<?= $_SESSION["EDPOSV1MADD_txtBarcode3"] ?>" class="form-control" autocomplete="off" required />
+						</div>
+						<div class="form-group col-md-2" id="selUnit2">
+							<label>ຫົວໜ່ວຍ(3)</label>
+							<input type="text" name="unit3" maxlength="50" class="form-control" value="<?= $_SESSION["EDPOSV1MADD_unit3"] ?>" />
+						</div>
+						<div class="form-group col-md-1">
+							<label>ຈໍານວນ(3)</label>
+							<input type="text" name="unitNameQty11111" value="1" class="number form-control" readonly />
+						</div>
+						<!-- <div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 3 ຂາຍຍ່ອຍ</label>
+							<input type="text" name="txtprice3" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice3"]) ?>" onkeyup ="AddAndRemoveSeparator(this);"  required />				            
+				        </div>
+						<div class="form-group col-md-2">
+				            <label>ລາຄາຂາຍ 3 ຂາຍຍົກ</label>
+							<input type="text" name="txtprice32" class="form-control number" autocomplete="off" value="<?= number_format($_SESSION["EDPOSV1MADD_txtprice32"]) ?>" onkeyup ="AddAndRemoveSeparator(this);" />				            
+				        </div>
+						<div class="form-group col-md-2 ">
+							<label>ສະກຸນເງິນ</label>
+							<select name="CurPrice3" class="form-control" >
+								<?php
+								$rs_cy = LoadCurrentcy();
+								while ($row_c = mysql_fetch_array($rs_cy, MYSQL_ASSOC)) {
+									$selected = $row_c['cy_id'] == $_SESSION["EDPOSV1MADD_cy_id3"] ? "selected" : "";
+								?>
+									<option value="<?= $row_c['cy_id'] ?>" <?= $selected ?>><?= $row_c['cy_text2'] ?></option>
+								<?php  } ?>		
+							</select>
+						</div>						 -->
+					</div>
+					<div class="row col-md-12">
+						<div class="form-group col-md-2">
+							<label>Min stock</label>
+							<input type="hidden" name="unitNameQty3" value="1" readonly="true" />
+							<input type="text" name="min_stock" value="<?= number_format($_SESSION["EDPOSV1MADD_min_stock"], 2) ?>" onkeyup="AddAndRemoveSeparator(this);" class="number form-control" />
+						</div>
+						<?php if ($_SESSION['EDPOSV1ShopType'] == 1) { ?>
+							<div class="form-group col-md-2">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="cbIngredient" value="1"> ສ່ວນປະກອບ
+									</label>
+								</div>
+							</div>
+							<div class="form-group col-md-2">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="mOpenStock" value="1">ເບີກປະຈໍາວັນ
+									</label>
+								</div>
+							</div>
+						<?php } ?>
+					</div>
+				</div>
+				<div class="box-footer">
+					<input type="reset" id="reset" class="btn btn-default" name="btnCancel" value="  ກັບຄືນ  " onclick="document.location='?d=stock/material'">
+					<button type="submit" name="btnSaveProduct" class="btn btn-primary">ບັນທຶກ</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,34 @@
+<?php
+
+
+
+if (isset($_GET["approve"])) {
+    $tranID = $_GET["approve"];
+
+    $sql = "INSERT INTO tb_transactionh_(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file) 
+    SELECT tranID, NOW(), reciever, remark, '1',user_add,NOW(),1,openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file FROM tb_import_ WHERE tranID='$tranID' ";
+    $resultH = mysql_query($sql, $conn);
+    // echo '<script>alert("'.$resultH.'")</script>';
+    if ($resultH) {
+        sql_execute("INSERT INTO tb_transactiond_(tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
+        staffName, Dremark, pur_price,sale_price, receive_dis, location_addr, info_id,
+        bill_no, bill_date, whouse_no, whouse_date, po_no, po_date, cur_id, lot_no,po_file) 
+    select 	tranID, NOW(), exp_date, materialID, unitQty3, tranType, user_add, NOW(),status_id, 
+        staffName, Dremark, pur_price,sale_price, receive_dis, location_addr, info_id,
+        bill_no, bill_date, whouse_no, whouse_date, po_no, po_date, cur_id, lot_no,po_file
+    from tb_import_detail_ WHERE tranID='$tranID'");
+
+        sql_execute("UPDATE tb_import_ SET statusApprove_id='1' WHERE tranID='$tranID'");
+        sql_execute("UPDATE tb_import_detail_ SET statusApprove_id='1' WHERE tranID='$tranID'");
+        //    echo '<script>alert("ss")</script>';
+    }
+}
+if (isset($_POST["btnSave"])) {
+    $tranID = $_POST['txtTranID'];
+    $remarkReject = $_POST['txtRemarkReject'];
+
+        sql_execute("UPDATE tb_import_ SET statusApprove_id='4',remark_reject='$remarkReject' WHERE tranID='$tranID'");
+        sql_execute("UPDATE tb_import_detail_ SET statusApprove_id='4' WHERE tranID='$tranID'");
+  
+}
+?>

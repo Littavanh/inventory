@@ -1,0 +1,354 @@
+<?php
+date_default_timezone_set('Asia/Vientiane');
+session_start();
+htmltage("ການຮັບສິນຄ້າ");
+
+if (isset($_SESSION['EDPOSV1AddProduct']) && $_SESSION['EDPOSV1tmpProductID'] != '') {
+    include("v_addproduct.php");
+}
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['role_id'] == 4) {
+    header("Location: ?d=index");
+}
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/Action.js"></script>
+<script type="text/javascript" src="js/calculate.js"></script>
+
+<section class="content-header">
+    <h1>ການຮັບສິນຄ້າ</h1>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h2 style="color:red;" align="center">
+                        <?= $success ?>
+                    </h2>
+                </div>
+                <form method="post" id="frmtranH" action="?d=stock/recieve" enctype="multipart/form-data">
+                    <div class="box-body">
+                        <!-- <div class="row">
+                            <div class="form-group col-md-3"> -->
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>BU/ຫົວໜ່ວຍທຸລະກິດ:</label>
+                                <select class="form-control" name="infoID">
+                                    <?php
+                                    $rs_info = LoadInfo();
+                                    while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+                                        $selected = $row_c['info_id'] == $_SESSION['EDPOSV1AddProducinfoID'] ? "selected" : "";
+                                        ?>
+                                        <option value="<?= $row_c['info_id'] ?>" <?= $selected ?>>
+                                            <?= $row_c['info_name'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="form-group col-md-3"> -->
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ວັນທີ່ຮັບ:</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="date" name="txtDate" class="form-control pull-right" autocomplete="off"
+                                        data-date-format="yyyy-mm-dd"
+                                        value="<?= $_SESSION['EDPOSV1AddProducttxtDate'] ?>" required>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="form-group col-md-4"> -->
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ຜູ້ຮັບ</label>
+                                <input type="text" readonly name="txtreciever" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1lao_fullname'] ?>" required />
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="form-group col-md-4"> -->
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ຜູ້ສະໜອງ</label>
+                                <select name="supplierID" class="form-control" id="select22" required>
+                                    <option value="" selected>-- ກະລຸນາເລືອກ --</option>
+                                    <?php
+                                    $rsSupplier = LoadSupplier();
+                                    while ($row_c = mysql_fetch_array($rsSupplier, MYSQL_ASSOC)) {
+                                        $selected = $row_c['supplierID'] == $_SESSION['EDPOSV1AddProductSupllier'] ? "selected" : "";
+                                        ?>
+                                        <option value="<?= $row_c['supplierID'] ?>" <?= $selected ?>>
+                                            <?= $row_c['supplierName'] . ' | ' . $row_c['ContactName'] . ' | ' . $row_c['tel'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="form-group col-md-6"> -->
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ໝາຍເຫດ</label>
+                                <textarea name="txtRemark" class="form-control" cols="50"
+                                    rows="1"><?= $_SESSION['EDPOSV1AddProducttxtRemark'] ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ຜູ້ມອບສິນຄ້າ</label>
+                                <select class="form-control" id="select2" name="txtOrderer" >
+                                    <option value="0">-- ກະລຸນາເລືອກ --</option>
+                                    <?php
+                                    $loadUser = LoadUser();
+
+
+                                    while ($row_u = mysql_fetch_array($loadUser, MYSQL_ASSOC)) {
+                                        $selected = $row_u['user_id'] == $_SESSION['EDPOSV1Orderer'] ? "selected" : "";
+                                        ?>
+                                        <option value="<?= $row_u['user_id'] ?>" <?= $selected ?>>
+                                            <?= $row_u['first_name'] ?>
+                                            <?= $row_u['last_name'] ?>
+                                        </option>
+                                    <?php }
+                                    ?>
+                                </select>
+                                <!-- <input type="text" name="txtOrderer" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1Orderer'] ?>" required /> -->
+                            </div>
+                        </div>
+                        <!-- info product -->
+
+                        <!-- Bill -->
+
+                        <div class="row col-md-12 ">
+                            <div class="form-group col-md-2">
+                                <label>ເລກທີ ໃບບີນສິນຄ້າ</label>
+                                <input type="text" name="txtBillNo" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1AddProduct_txtBillNo'] ?>" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>ລົງວັນທີ</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="date" name="txtBill_date" class="form-control pull-right"
+                                        id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd"
+                                        value="<?= $_SESSION['EDPOSV1AddProduct_txtBillDate'] ?>">
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <!-- Warehouse -->
+                        <div class="row col-md-12 ">
+                            <div class="form-group col-md-2">
+                                <label>ເລກທີ ໃບຮັບສິນຄ້າ</label>
+                                <input type="text" name="txtWhouse_no" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1AddProduct_txtWhouseNo'] ?>" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>ລົງວັນທີ</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="date" name="txtDate_whouse_date" class="form-control pull-right"
+                                        id="TimepickerWhouse" autocomplete="off" data-date-format="yyyy-mm-dd"
+                                        value="<?= $_SESSION['EDPOSV1AddProduct_WhouseDate']; ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PO -->
+                        <div class="row col-md-12 ">
+                            <div class="form-group col-md-2">
+                                <label>ເລກທີ ໃບສັ່ງຊື້ (PO)</label>
+                                <input type="text" name="txtPo_no" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1AddProduct_txtPoNo'] ?>" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>ລົງວັນທີ</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="date" name="txtPo_date" class="form-control pull-right"
+                                        id="TimepickerPo" autocomplete="off" data-date-format="yyyy-mm-dd"
+                                        value="<?= $_SESSION['EDPOSV1AddProduct_PoDate']; ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- lot -->
+                        <div class="row col-md-12 ">
+                            <div class="form-group col-md-4">
+                                <label>ຄັ້ງທີ</label>
+
+                                <input type="text" name="txtLot" class="form-control"
+                                    value="<?= $_SESSION['EDPOSV1AddProduct_lotNo'] ?>" required />
+                            </div>
+                        </div>
+                        <div class="row col-md-12 ">
+                            <div class="form-group col-md-4">
+                                <label>ເອກະສານອ້າງອີງ</label>
+                                <input name="edit_fileUpload" class="form-control" type="file"
+                                    value="<?= $_SESSION['EDPOSV1AddProduct_PoFile'] ?>">
+                                <label for="">
+                                    <?= $_SESSION['EDPOSV1AddProduct_PoFile'] ?>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row col-md-6 ">
+                            <div class="form-group col-md-2">
+
+                                <input type="radio" name="invenType" value="1" checked> ທົ່ວໄປ<br>
+                         
+                            </div>
+                            <div class="form-group col-md-2">
+
+                             
+                                <input type="radio" name="invenType" value="2"> ຄັ່ງຍ່ອຍ<br>
+                            </div>
+                        </div>
+                    </div>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+        <div class="box-footer">
+            <input type="submit" class="btn btn-primary" name="btnAddproduct" value="  ເພີ່ມສິນຄ້າເຂົ້າສາງ  " />
+        </div>
+        </form>
+
+
+
+
+        <?php if ($catcount > 0) { ?>
+            <!-- text centen in table -->
+            <style>
+                th {
+                    text-align: center;
+                }
+            </style>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        <form method="post" id="frmtranD" action="?d=stock/recieve" enctype="multipart/form-data">
+                            <div class="box-body pad table-responsive">
+                                <table id="example1" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ລຳດັບ</th>
+                                            <th>ລາຍລະອຽດສິນຄ້າ</th>
+                                            <!-- <th>ຫົວໜ່ວຍ(1)</th> -->
+                                            <!-- <th>ຈໍານວນ(1)</th> -->
+                                            <!-- <th>ຫົວໜ່ວຍ(2)</th> -->
+                                            <!-- <th>ຈໍານວນ(2)</th> -->
+                                            <th>ຫົວໜ່ວຍ(3)</th>
+                                            <th>ຈໍານວນ(3)</th>
+                                            <th>ລາຄາ(3)</th>
+                                            <th>ລວມ</th>
+                                            <th>ສ່ວນຫຼຸດ(3)</th>
+                                            <th>ວັນໝົດອາຍຸ</th>
+                                            <th>ຈັດເກັບ</th>
+                                            <?php if ($_SESSION['EDPOSV1role_id'] != 4) { ?>
+                                                <th>ລຶບ</th>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 1;
+                                        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) { ?>
+                                            <tr>
+                                                <td>
+                                                    <span>
+                                                        <?= ($i + $start) ?>
+                                                    </span>
+                                                    <input type="hidden" name="type[]" class="type" value="added" />
+                                                    <input type="hidden" name="id[]" value="<?= $row['tmpDID'] ?>" />
+                                                    <input type="hidden" name="txtstatus_id[]"
+                                                        value="<?= $row['status_id'] ?>" />
+                                                </td>
+                                                <td><input type="hidden" name="txtm_name[]" size=""
+                                                        value="<?= $row['materialName'] ?>" readonly />
+                                                    <?= $row['materialName'] ?>
+                                                </td>
+                                                <!-- <td><?= $row['unitName1'] ?></td>
+                                                <td><?= number_format($row['unitQty1']) ?></td>
+                                                <td><?= $row['unitName2'] ?></td>
+                                                <td><?= number_format($row['unitQty2']) ?></td> -->
+                                                <td>
+                                                    <?= $row['unitName3'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= number_format($row['unitQty3']) ?>
+                                                </td>
+                                                <td>
+                                                    <?= number_format($row['pur_price']) ?>
+                                                </td>
+                                                <td>
+                                                    <?= number_format($row['pur_price'] * $row['total']) ?>
+                                                </td>
+                                                <td>
+                                                    <?= number_format($row['receive_dis']) ?>
+                                                </td>
+                                                <td>
+                                                    <?= $row['exp_date'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $row['location_addr'] ?>
+                                                </td>
+                                                <?php if (isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) { ?>
+                                                    <td class="centered">
+                                                        <a
+                                                            href="?d=stock/recieve&del_id=<?php echo base64_encode($row["tmpDID"] . "tasoksavhay"); ?>&delinfoid=<?= $row['info_id'] ?>">
+                                                            <i class="fa fa-trash-o"></i></a>
+                                                    </td>
+                                                <?php } ?>
+                                            </tr>
+                                            <?php $i++;
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
+                                <div class="box-footer">
+                                    <input type="submit" class="btn btn-primary" name="btnSave"
+                                        value="  &#3738;&#3761;&#3737;&#3735;&#3766;&#3713;  "
+                                        onclick="return confirm('ທ່ານຕ້ອງການບັນທຶກແທ້ບໍ...?')" />
+                                </div>
+                            <?php } ?>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+
+    </div>
+    </div>
+
+    </div>
+
+
+
+
+</section>

@@ -1,0 +1,313 @@
+<?php
+require_once('indexCode.php');
+$Get_infoID_v = $_SESSION['EDPOSV1info_id'];
+if ($_GET['notification1'] == 'yes' && $_SESSION['EDPOSV1notification1'] == 'yes') {
+  $_SESSION['EDPOSV1notification1'] = 'no';
+}
+if ($_GET['notification2'] == 'yes' && $_SESSION['EDPOSV1notification2'] == 'yes') {
+  $_SESSION['EDPOSV1notification2'] = 'no';
+}
+if (isset($_GET['notification1']) || isset($_GET['EDPOSV1notification2'])) {
+  $oldURL = $_SESSION['EDPOSV1GetOrURL'];
+  header("Location: " . $oldURL);
+}
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <?php function htmltage($title)
+  { ?>
+    <title><?php echo $title; ?></title>
+  <?php } ?>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+  <!-- Morris chart -->
+  <link rel="stylesheet" href="bower_components/morris.js/morris.css">
+  <!-- jvectormap -->
+  <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
+  <!-- Date Picker -->
+  <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <script language="javascript" type="text/javascript">
+    function getXMLHTTP() { //fuction to return the xml http object
+      var xmlhttp = false;
+      try {
+        xmlhttp = new XMLHttpRequest();
+      } catch (e) {
+        try {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        } catch (e) {
+          try {
+            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+          } catch (e1) {
+            xmlhttp = false;
+          }
+        }
+      }
+
+      return xmlhttp;
+    }
+    /*******************/
+    function GetProID(GetProID, divID) {
+
+      var strURL = "function/findDistrict.php?GetProID=" + GetProID;
+      var req = getXMLHTTP();
+      if (req) {
+        req.onreadystatechange = function() {
+          if (req.readyState == 4) {
+            // only if "OK"
+            if (req.status == 200) {
+              document.getElementById('district1' + divID).innerHTML = req.responseText;
+              '<option>Select City</option>' +
+              '</select>';
+            } else {
+              alert("Problem while using XMLHTTP (Account List):\n" + req.statusText);
+            }
+          }
+        }
+        req.open("GET", strURL, true);
+        req.send(null);
+      }
+    }
+
+    /*******************/
+    function AddTextBarcode(GetNumber) {
+
+      var curTextBarcode = document.getElementById("txtBarcode").value;
+      if (GetNumber == "Del") {
+        var strLength = curTextBarcode.length - 1;
+        var newText = curTextBarcode.substr(0, strLength);
+        document.getElementById("txtBarcode").value = newText;
+      } else {
+        document.getElementById("txtBarcode").value = curTextBarcode + GetNumber;
+      }
+    }
+  </script>
+
+</head>
+
+<body class="sidebar-mini skin-blue-light">
+  <?php if (isset($_SESSION['EDPOSV1user_id'])) {  ?>
+    <div class="wrapper">
+      <?php
+      $_SESSION['EDPOSV1GetOrURL'] = $_SERVER['REQUEST_URI'];
+      $urlNotify1 = $_SERVER['REQUEST_URI'] . '&notification1=yes';
+      $urlNotify2 = $_SERVER['REQUEST_URI'] . '&notification2=yes';
+
+      $resultCheckCurStock = CheckCurStatusStock($Get_infoID_v);
+      while ($rowCurStock = mysql_fetch_array($resultCheckCurStock, MYSQL_ASSOC)) {
+        $_SESSION['EDPOSV1CurStockStatus'] = $rowCurStock['status_id'];
+        $_SESSION['EDPOSV1OpendID'] = $rowCurStock['openID'];
+      } ?>
+      <header class="main-header">
+        <!-- Logo -->
+        <a href="index.php" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini"><b>INV</b>V1.0</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg"><b>Inventory</b> V1.0</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <?php
+              //$_SESSION['EDPOSV1CountMinStock'] = CoutnMinStock($Get_infoID_v);
+              $gg =  CoutnAlert($Get_infoID_v);
+
+              //$dateView= date('Y-m-d');
+              $GetExpireDay = $_SESSION['EDPOSV1expire_day'];
+              $dateView = new DateTime('now', new DateTimeZone('Asia/Bangkok'));
+              $dateView->modify('+' . $GetExpireDay . ' day'); // or you can use '-90 day' for deduct
+              $dateView = $dateView->format('Y-m-d');
+
+              //$_SESSION['EDPOSV1StockEXP'] = CoutnStockEXP($dateView, $Get_infoID_v);
+
+
+              $notiCount = $_SESSION['EDPOSV1CountMinStock'] + $_SESSION['EDPOSV1StockEXP'];
+              if ($notiCount > 0) {
+              ?>
+
+
+                <!-- Notifications: style can be found in dropdown.less -->
+                <li class="dropdown notifications-menu">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="label label-warning"><?= $notiCount ?></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="header">You have <?= $notiCount ?> notifications</li>
+                    <li>
+                      <!-- inner menu: contains the actual data -->
+                      <ul class="menu">
+                        <?php if ($_SESSION['EDPOSV1CountMinStock'] > 0) { ?>
+                          <li>
+                            <a href="index.php?d=report/material_min">
+                              <i class="fa fa-warning text-yellow"></i> ສິນຄ້າເຖິງຈຸດຕໍ່າສຸດ <strong><?= $_SESSION['EDPOSV1CountMinStock'] ?></strong> ລາຍການ
+                            </a>
+                          </li>
+                        <?php }
+                        if ($_SESSION['EDPOSV1StockEXP'] > 0) { ?>
+                          <li>
+                            <a href="index.php?d=report/material_exp">
+                              <i class="fa fa-minus-circle text-red"></i> ສິນຄ້າເຖິງວັນໝົດອາຍຸ <strong><?= $_SESSION['EDPOSV1StockEXP'] ?> </strong>ລາຍການ
+                            </a>
+                          </li>
+                        <?php } ?>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              <?php } ?>
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img src="users_pic/<?= $_SESSION['EDPOSV1user_pic'] ?>" class="user-image" alt="User Image">
+                  <span class="hidden-xs"><?= $_SESSION['EDPOSV1first_name'] ?></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    <img src="users_pic/<?= $_SESSION['EDPOSV1user_pic'] ?>" class="img-circle" alt="User Image">
+                    <p>
+                      <?= $_SESSION['EDPOSV1first_name'] . ' ' . $_SESSION['EDPOSV1last_name'] ?>
+                      <small>Member since <?= $_SESSION['EDPOSV1dateuser_add'] ?></small>
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      <a href="index.php?d=profile/profile" class="btn btn-default btn-flat">Profile</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="logout.php" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="template.php?d=template/template"><i class="fa fa-gears"></i></a>
+              </li>
+              <!-- Control Sidebar Toggle Button -->
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <?php if (file_exists("menu-sidebar.php")) {
+        include_once("menu-sidebar.php");
+      } ?>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <?php if ($_SESSION['EDPOSV1CurStockStatus'] == 2) { ?>
+          <div>
+            <h1 class="h1" align="center">ກະລຸນາເປີດງວດກ່ອນເຄື່ອນໄຫວການບໍລິການ <a href="?d=balance/open">ເປີດກະ</a></h1>
+          </div>
+        <?php } ?>
+        <!-- Content Header (Page header) -->
+        <?php if (file_exists($vfilename)) include($vfilename); ?>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+      <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+          <b>Version</b> 2.0
+        </div>
+        <strong>Copyright &copy; 2014-2018 <a href="https://www.facebook.com/EG-POS-209297582890361">EG POS</a>.</strong> All rights reserved.
+      </footer>
+
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery 3 -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+      $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="dist/js/demo.js"></script>
+    <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- bootstrap datepicker -->
+    <script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
+
+    <script>
+      $(function() {
+        $('#example1').DataTable()
+        $('#example3').DataTable()
+        $('#example4').DataTable()
+        $('#example2').DataTable({
+          'paging': true,
+          'lengthChange': false,
+          'searching': false,
+          'ordering': false,
+          'info': true,
+          'autoWidth': false
+        })
+        $('#example21').DataTable({
+          'paging': false,
+          'lengthChange': false,
+          'searching': true,
+          'ordering': true,
+          'info': true,
+          'autoWidth': false
+        })
+      })
+
+
+      //Date picker
+      $('#datepicker1').datepicker({
+        autoclose: true
+      })
+      //Date picker
+      $('#datepicker2').datepicker({
+        autoclose: true
+      })
+    </script>
+
+  <?php } ?>
+</body>
+
+</html>

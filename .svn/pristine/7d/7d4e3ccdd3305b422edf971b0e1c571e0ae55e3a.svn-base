@@ -1,0 +1,163 @@
+<?php
+$user_id = $_SESSION["EDPOSV1user_id"];
+$info_id = $_SESSION["EDPOSV1info_id"];
+
+unset($_SESSION["EDPOSV1MADD_Mid"]);
+		unset($_SESSION["EDPOSV1MADD_txtBarcode"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_name"]);			
+		unset($_SESSION["EDPOSV1MADD_kf_id"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice1"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice2"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice3"]);	
+
+		unset($_SESSION["EDPOSV1MADD_status_id"]);
+		unset($_SESSION["EDPOSV1MADD_unit1"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty1"]);
+		unset($_SESSION["EDPOSV1MADD_unit2"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty2"]);
+		unset($_SESSION["EDPOSV1MADD_unit3"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty3"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark1"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark2"]);
+		unset($_SESSION["EDPOSV1MADD_min_stock"]);
+		unset($_SESSION["EDPOSV1MADD_minUnitID"]);
+		unset($_SESSION["EDPOSV1MADD_Ingredient"]);
+		
+if (isset($_POST['btnSaveProduct']) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['EDPOSV1role_id'] != 4) {
+	$Mid = mysql_real_escape_string(stripslashes($_POST['id']));
+	$txtBarcode = mysql_real_escape_string(stripslashes($_POST['txtBarcode']));	
+	$txtm_name = mysql_real_escape_string(stripslashes($_POST['txtm_name']));				
+	$status_id = mysql_real_escape_string(stripslashes(trim($_POST['txtstatus_id'])));	
+	$unit1 = mysql_real_escape_string(stripslashes($_POST['unit1']));
+	$unitNameQty1 =  str_replace(",","",$_POST['unitNameQty1']);
+	$unit2 = mysql_real_escape_string(stripslashes($_POST['unit2']));
+	$unitNameQty2 = str_replace(",","",$_POST['unitNameQty2']);
+	$unit3 = mysql_real_escape_string(stripslashes($_POST['unit3']));
+	$unitNameQty3 = str_replace(",","",$_POST['unitNameQty3']);
+	$txtm_Remark = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark'])));	
+	$txtm_Remark1 = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark1'])));	
+	$txtm_Remark2 = mysql_real_escape_string(stripslashes(trim($_POST['txtm_Remark2'])));	
+	$min_stock = str_replace(",","",$_POST['min_stock']);
+	$minUnitID = mysql_real_escape_string(stripslashes($_POST['minUnitID']));
+	$cbIngredient = mysql_real_escape_string(stripslashes(trim($_POST['cbIngredient']))); 
+	$mOpenStock = mysql_real_escape_string(stripslashes(trim($_POST['mOpenStock']))); 
+
+	$kf_id = mysql_real_escape_string(stripslashes($_POST['kf_id']));
+	$txtprice1 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice1'])));
+	$txtprice2 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice2'])));
+	$txtprice3 = str_replace(",","",mysql_real_escape_string(stripslashes($_POST['txtprice3'])));
+	$infoID = mysql_real_escape_string(stripslashes($_POST['infoID']));
+
+	$success = "";
+	$exist = "";
+
+	unset($_SESSION["EDPOSV1MADD_Mid"]);
+	unset($_SESSION["EDPOSV1MADD_txtBarcode"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_name"]);			
+	unset($_SESSION["EDPOSV1MADD_kf_id"]);	
+	unset($_SESSION["EDPOSV1MADD_txtprice1"]);	
+	unset($_SESSION["EDPOSV1MADD_txtprice2"]);	
+	unset($_SESSION["EDPOSV1MADD_txtprice3"]);	
+
+	unset($_SESSION["EDPOSV1MADD_status_id"]);
+	unset($_SESSION["EDPOSV1MADD_unit1"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty1"]);
+	unset($_SESSION["EDPOSV1MADD_unit2"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty2"]);
+	unset($_SESSION["EDPOSV1MADD_unit3"]);
+	unset($_SESSION["EDPOSV1MADD_unitNameQty3"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark1"]);
+	unset($_SESSION["EDPOSV1MADD_txtm_Remark2"]);
+	unset($_SESSION["EDPOSV1MADD_min_stock"]);
+	unset($_SESSION["EDPOSV1MADD_minUnitID"]);
+	unset($_SESSION["EDPOSV1MADD_Ingredient"]);
+
+
+	$_SESSION["EDPOSV1MADD_Mid"]=$Mid;
+	$_SESSION["EDPOSV1MADD_txtBarcode"]=$txtBarcode;	
+	$_SESSION["EDPOSV1MADD_txtm_name"]=$txtm_name;	
+	$_SESSION["EDPOSV1MADD_kf_id"]=$kf_id;	
+	$_SESSION["EDPOSV1MADD_txtprice1"]=$txtprice1;	
+	$_SESSION["EDPOSV1MADD_txtprice2"]=$txtprice2;	
+	$_SESSION["EDPOSV1MADD_txtprice3"]=$txtprice3;	
+
+
+
+	$_SESSION["EDPOSV1MADD_status_id"]=$status_id;	
+	$_SESSION["EDPOSV1MADD_unit1"]=$unit1;
+	$_SESSION["EDPOSV1MADD_unitNameQty1"]=$unitNameQty1;
+	$_SESSION["EDPOSV1MADD_unit2"]=$unit2;
+	$_SESSION["EDPOSV1MADD_unitNameQty2"]=$unitNameQty2;
+	$_SESSION["EDPOSV1MADD_unit3"]=$unit3;
+	$_SESSION["EDPOSV1MADD_unitNameQty3"]=$unitNameQty3;
+	$_SESSION["EDPOSV1MADD_txtm_Remark"]=$txtm_Remark;	
+	$_SESSION["EDPOSV1MADD_txtm_Remark1"]=$txtm_Remark1;	
+	$_SESSION["EDPOSV1MADD_txtm_Remark2"]=$txtm_Remark2;	
+	$_SESSION["EDPOSV1MADD_min_stock"]=$min_stock;
+	$_SESSION["EDPOSV1MADD_minUnitID"]=$minUnitID;
+	$_SESSION["EDPOSV1MADD_Ingredient"]=$cbIngredient;
+	$_SESSION["EDPOSV1MADD_mOpenStock"]=$mOpenStock;
+	
+
+
+	if ($txtBarcode != '') {
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_material WHERE status_id IN (3) and (mBarcode = '$txtBarcode' or materialName = '$txtm_name' ) and info_id='$infoID' ")) != 0) {
+			$exist = " ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+		} else { $exist =''; }
+		if (mysql_num_rows(mysql_query("SELECT * FROM tb_food_drink WHERE status_id IN (8) and (fd_barcode = '$txtBarcode' or fd_name = '$txtm_name' )")) != 0) {
+			$exist = " ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+		} else { $exist =''; }
+	} 	 
+	if (mysql_num_rows(mysql_query("SELECT * FROM tb_material WHERE mBarcode = '$txtBarcode' and status_id IN (3) ")) != 0) {					
+		$exist = " ບໍ່ສາມາດເພີ່ມໄດ້ເພາະວ່າ ".$txtBarcode." , ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";
+	} else { $exist =''; }
+
+	if ( $exist=='') {
+		// insert to material
+		sql_execute("INSERT INTO tb_material(info_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, unitID1, unitQty1,unitID2, unitQty2, unitID3, unitQty3,status_id,user_add,date_add,user_edit,date_edit, min_stock, min_unitID, kf_id, ingredient, mOpenStock) 
+			VALUES('$infoID','$txtBarcode', '$txtm_name', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2', '$unit1', '$unitNameQty1','$unit2', '$unitNameQty2','$unit3', '$unitNameQty3', '3','$user_id',NOW(), 0,'0000-00-00 00:00:00','$min_stock', '$minUnitID', '$kf_id', '$cbIngredient','$mOpenStock') ");
+		// GET material ID
+			$GetMaxMaterialID = nr_execute("SELECT MAX(materialID) as materialID FROM tb_material ");
+		// insert food list
+		if ($cbIngredient !='1') {
+			sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+						VALUES('$infoID','$kf_id', '$txtBarcode', '$txtm_name', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");	
+			// GET food ID
+				$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink ");
+			// insert receipe
+			sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3) 
+						VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '1','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice1','$txtprice2','$txtprice3' ) ");	
+		}
+		
+
+		$success = "ບັນທຶກຂໍ້ມູນສໍາເລັດແລ້ວ ";	
+		unset($_SESSION["EDPOSV1MADD_Mid"]);
+		unset($_SESSION["EDPOSV1MADD_txtBarcode"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_name"]);			
+		unset($_SESSION["EDPOSV1MADD_kf_id"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice1"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice2"]);	
+		unset($_SESSION["EDPOSV1MADD_txtprice3"]);	
+
+		unset($_SESSION["EDPOSV1MADD_status_id"]);
+		unset($_SESSION["EDPOSV1MADD_unit1"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty1"]);
+		unset($_SESSION["EDPOSV1MADD_unit2"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty2"]);
+		unset($_SESSION["EDPOSV1MADD_unit3"]);
+		unset($_SESSION["EDPOSV1MADD_unitNameQty3"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark1"]);
+		unset($_SESSION["EDPOSV1MADD_txtm_Remark2"]);
+		unset($_SESSION["EDPOSV1MADD_min_stock"]);
+		unset($_SESSION["EDPOSV1MADD_minUnitID"]);
+		unset($_SESSION["EDPOSV1MADD_Ingredient"]);
+	}
+
+}
+
+ 
+
+$result = LoadPrice_setting($whereclause);
