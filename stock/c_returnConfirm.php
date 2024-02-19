@@ -6,47 +6,64 @@ $user_id = $_SESSION["EDPOSV1user_id"];
 
 
 
-function checkHaveQtyToReturn($transferID)
+function loadApprovalSetting($approve_level, $status_approve_id)
 {
-
-	return mysql_query("select * from tb_export where `transferID`='$transferID' ");
+	return mysql_query("select * from tb_approval_setting where approve_level ='$approve_level' and status_approve_id = '$status_approve_id'");
 }
+
+
 
 
 if (isset($_GET["approve"])) {
 	$transferID = $_GET["approve"];
 
+	$load = mysql_query("select * from tb_export where `transferID` ='$transferID'");
 
-	// $check = checkHaveQtyToReturn($transferID);
-	// $previous=0;
-	// while ($row = mysql_fetch_array($check)) {
+	while ($row = mysql_fetch_array($load, MYSQL_ASSOC)) {
+		$approve_level = $row['approve_level_return'];
+
+		$status_approve_id = $row['status_get_id'];
+		// echo '<script>alert("'.$approve_level.'")</script>';
+		$check = loadApprovalSetting($approve_level, $status_approve_id);
+
+		while ($rowcheck = mysql_fetch_array($check, MYSQL_ASSOC)) {
+
+
+			$row_userId = $rowcheck['userId'];
+			// echo '<script>alert("'.$row_userId.'")</script>';
+		}
+
+		$checkMax = mysql_query("select max(approve_level) from tb_approval_setting where status_approve_id = '$status_approve_id'");
+		while ($rowcheckMax = mysql_fetch_array($checkMax, MYSQL_ASSOC)) {
+
+			$maxLevel = $rowcheckMax['max(approve_level)'];
+			// echo '<script>alert("MaxLevel:'.$maxLevel.'")</script>';
+		}
+
+		if ($maxLevel == $approve_level) {
+			// echo '<script>alert("MaxLevel=approve_level")</script>';
+			sql_execute("UPDATE tb_export SET return_approver='$row_userId',status_get_id='6' WHERE `transferID`='$transferID'");
+			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add) VALUES ('$transferID','$approve_level','$user_id','return','$user_id',NOW())");
+			// sql_execute("UPDATE tb_transactiond SET status_id='1' WHERE `transferID`='$transferID'");
+
+		} else if ($maxLevel > $approve_level) {
+			// echo '<script>alert("MaxLevel>approve_level")</script>';
+			sql_execute("UPDATE tb_export SET approve_level_return=$approve_level + 1,return_approver='$row_userId' WHERE `transferID`='$transferID'");
+
+			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add) VALUES ('$transferID','$approve_level','$user_id','return','$user_id',NOW())");
+			
+		}
+
+	}
 	
-	// 	$current = $row['qty_return'];
-
-
-	// 	if ($current == $previous) {
-	// 		echo '<script>alert("' . $row['qty_return'] . ' update status =7")</script>';
-	// 	  }else{
-	// 		echo '<script>alert("' . $row['qty_return'] . ' update status =6")</script>';
-	// 	  }
-	// 	  $previous = $current;
-			// echo '<script>alert("' . $qty_return . ' update status =6")</script>';
-		// if ($qty_return == 0) {
-		// 	sql_execute("UPDATE tb_export_ SET status_get_id=7 WHERE `transferID`='$transferID'");
-		// 	// echo '<script>alert("' . $qty_return . ' update status =6")</script>';
-
-		// } else {
-		// 	// echo '<script>alert("' . $qty_return . ' update status =7")</script>';
-		// 	sql_execute("UPDATE tb_export_ SET status_get_id=6 WHERE `transferID`='$transferID'");
-		// }
-		
-	// }
-	// $_SESSION['qty_return'] = $row['qty_return'];
-	
-	sql_execute("UPDATE tb_export SET status_get_id=6 WHERE `transferID`='$transferID'");
+	// sql_execute("UPDATE tb_export SET status_get_id=6 WHERE `transferID`='$transferID'");
 
 
 
 }
-
+if (isset($_POST["btnSave"])) {
+    $transferID = $_POST['txtTranID'];
+    $remarkReject = $_POST['txtRemarkReject'];
+	sql_execute("UPDATE tb_export SET status_get_id='8',remark_reject='$remarkReject' WHERE `transferID`='$transferID'");
+}
 ?>

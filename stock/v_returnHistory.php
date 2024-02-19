@@ -39,7 +39,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 										<th>ພາກສ່ວນ</th>
 										<th>ໝາຍເຫດ</th>
 										<th>ວັນທີ່ຕ້ອງການ</th>
-										<!-- <th>ຜູ້ອະນຸມັດ</th> -->
+										<th>ຜູ້ອະນຸມັດ</th>
 										<!-- <th>Status</th> -->
 										<!-- <th>File</th> -->
 
@@ -124,10 +124,10 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											<td class="centered">
 												<?= $row['date_want'] ?>
 											</td>
-											<!-- <td class="centered">
-												<?= $row['approve_name'] ?>
-												<?= $row['approve_lastName'] ?>
-											</td> -->
+											<td class="centered">
+												<?= $row['return_approver_first_name'] ?>
+												<?= $row['return_approver_last_name'] ?>
+											</td>
 
 											<!-- <td class="centered">
 												<a href="#"><i data-toggle="modal"

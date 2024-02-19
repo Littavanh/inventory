@@ -53,7 +53,7 @@ function LoadTable($whereclause, $whereGroupID) {
 							bill_no, bill_date, whouse, whouseDate, po_no, po_date, lot_no, cur_name
 							from v_transaction_ 
 							$whereclause and materialID = '$whereGroupID'
-							and active_id IN (1,2) and tranType IN (1,15) 
+							and active_id IN (1,2) and tranType IN (1,15,20) 
 							GROUP BY materialID,lot_no
 							ORDER BY materialID, date_add");
 }
@@ -62,7 +62,7 @@ function LoadTable($whereclause, $whereGroupID) {
 function SumMaterial($whereclause) {
 
 	return mysql_query("SELECT  materialID
-							from v_transaction_ $whereclause and  active_id IN (1,2) and tranType IN (1,15)  GROUP BY materialID  ");
+							from v_transaction_ $whereclause and  active_id IN (1,2) and tranType IN (1,15,20)  GROUP BY materialID  ");
 }
 
 function LoadInfo() { 
