@@ -262,11 +262,11 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 												?>
 												<td class="centered">
 													<h4><span class="label label-primary " 
-													<?php if($row['status_get_id'] != 3){ ?> 
+													<?php if($row['status_get_id'] < 3){ ?> 
 													data-toggle="modal" data-target="#modal-lg-doneAddjust<?= $i ?>" <?php } ?>
 													>
 															<?= $row['statusGet'] ?> <i
-															<?php if($row['status_get_id'] != 3){ ?> 
+															<?php if($row['status_get_id'] < 3){ ?> 
 															class="glyphicon glyphicon-collapse-down"
 															<?php } ?>
 															></i>
