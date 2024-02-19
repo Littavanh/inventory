@@ -46,7 +46,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 										<!-- <th>Print</th> -->
 
 										<th>ລາຍລະອຽດ</th>
-										<th>ພິມບິນ</th>
+										<!-- <th>ພິມບິນ</th> -->
 										<th>ສະຖານະ</th>
 
 
@@ -138,12 +138,12 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 												<a
 													href="index.php?d=stock/returnDetailHistory&bId=<?= $row['transferID'] ?>"><i>ເບິ່ງລາຍລະອຽດ</i></a>
 											</td>
-											<td class="centered">
+											<!-- <td class="centered">
 												<a class="btn btn-warning"
 													href="print/returnPrint_.php?d=stock&transferID=<?= $row['transferID'] ?>"
 													target="_blank" role="button"><i class="fa fa-print"></i>
 												</a>
-											</td>
+											</td> -->
 
 											<?php
 

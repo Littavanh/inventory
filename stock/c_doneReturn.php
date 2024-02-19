@@ -1,7 +1,7 @@
 <?php
 
 
-
+$user_id = $_SESSION["EDPOSV1user_id"];
 
 if (isset($_POST["btnSave"])) {
 	$cb_status = mysql_real_escape_string(stripslashes($_POST['cb_status']));
@@ -15,7 +15,7 @@ if (isset($_POST["btnSave"])) {
 		$ext1 = end((explode(".", $name1))); # extra () to prevent notice
 		$file_name1 = date('YmdHis') . $user_id . "." . $ext1;
 		copy($_FILES["edit_fileUpload"]["tmp_name"], "dist/image/addjust/" . $file_name1);
-		sql_execute("UPDATE tb_export SET status_get_id='$cb_status',po_file_return='$file_name1',date_return3=NOW() WHERE `transferID`='$transferID'");
+		sql_execute("UPDATE tb_export SET status_get_id='$cb_status',po_file_return='$file_name1',date_return3=NOW(),user_add_return='$user_id' WHERE `transferID`='$transferID'");
 
 
 		sql_execute("INSERT INTO tb_transactiond(tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
