@@ -1,0 +1,103 @@
+<?php
+	
+	date_default_timezone_set('Asia/Vientiane'); // set your timezone
+	$Get_infoID = $_SESSION['EDPOSV1info_id'];
+	$Get_infoName = $_SESSION['EDPOSV1info_name'];
+	
+	$infoID = mysql_real_escape_string(stripslashes($_GET['infoID']));	
+	$categoryID = mysql_real_escape_string(stripslashes($_GET['categoryID']));	
+	$startdate = mysql_real_escape_string(stripslashes($_GET['startdate']));
+	$enddate = mysql_real_escape_string(stripslashes($_GET['enddate']));
+	$Lot_no = mysql_real_escape_string(stripslashes($_GET['Lot_no']));
+
+
+
+	//------------------------------------------------ Building search clause // 	
+	list($start_year, $start_month, $start_day) = explode('-', $startdate);
+$whereclause = "";
+/*
+if ($startdate != NULL && $enddate != NULL){
+	$whereclause .= "(DATE(date_tran) BETWEEN '$startdate' AND '$enddate') AND ";
+}else{
+	$whereclause .= "(DATE(date_tran) BETWEEN '$startdate' AND DATE(NOW())) AND ";
+} 
+*/
+if ($startdate != NULL ){
+	$whereclause .= "(YEAR(date_tran) = '$start_year' AND MONTH(date_tran) =$start_month) AND ";
+}else{
+	$whereclause .= "YEAR(date_tran) = YEAR(NOW()) AND MONTH(date_tran) = MONTH(NOW()) AND ";
+} 
+
+// if ($Lot_no != NULL) {
+// 	$whereclause .= " lot_no='$Lot_no' AND ";
+// }
+if ($infoID !='0') $whereclause .= "info_id='$infoID' AND ";
+if ($categoryID !='0') $whereclause .= "kf_id='$categoryID' AND ";
+if ($whereclause != "") $whereclause = "WHERE  " . substr($whereclause, 0, strlen($whereclause)-5);
+
+
+$params = "";
+if ($startdate != NULL){
+	$params .= "startdate=$startdate&infoID=$infoID&kf_id=$categoryID";
+}
+
+
+function LoadTable($whereclause, $whereGroupID) {
+
+	//return mysql_query("select * from v_transaction $whereclause and materialID = '$whereGroupID' and active_id IN (1,2) and tranType = 1  ORDER BY materialID, date_add");
+	return mysql_query("select traDate, sum(unitQty1) as unitQty1, sum(unitQty2) as unitQty2, sum(unitQty3) as unitQty3, 
+							AVG(pur_price) as pur_price, 
+							AVG(receive_dis) as receive_dis, 
+							materialID, materialName,unitName1, unitName2, unitName3,
+							cap1,cap2,cap3,mBarcode,supplierName,date_add,date_tran,
+							bill_no, bill_date, whouse, whouseDate, po_no, po_date, lot_no, cur_name,kf_id
+							from v_transaction 
+							$whereclause AND  materialID = '$whereGroupID'
+							and active_id IN (1,2) and tranType IN (1,15,20) 
+							GROUP BY materialID,lot_no
+							ORDER BY materialID, date_add");
+}
+
+//=======SUM material by material ID
+function SumMaterial($whereclause) {
+
+	return mysql_query("SELECT  materialID
+							from v_transaction $whereclause and  active_id IN (1,2) and tranType IN (1,15,20)  GROUP BY materialID ORDER BY date_add ");
+							
+}
+
+function LoadInfo() { 
+	return mysql_query("select distinct info_id, info_name from tb_info WHERE status_id IN (1)  ");
+}
+function LoadCategory() { 
+	return mysql_query("select * from v_kind_of_food WHERE status_id IN (3)  ");
+}
+ 
+function LoadSupplier(){
+	return mysql_query(" select * from tb_supplier WHERE status_id=1 ");
+}
+
+$SumResult = SumMaterial($whereclause);
+
+// echo "SELECT tranID, traDate, reciever, remark, username, date_add, supplierName from v_transaction $whereclause and  active_id IN (1,2) and tranType = 1  GROUP BY materialID ";
+
+function LoadLot(){
+	return mysql_query(" SELECT DISTINCT lot_no FROM v_transaction");
+}
+function LoadTableAll(){
+	return mysql_query("select * from v_transaction GROUP BY materialID ORDER BY materialID, date_add");
+}
+// count currency 
+function LoadCount_Cur($cur_name,$whereclause){
+
+	$result = mysql_query("  SELECT  SUM(unitQty3 * `pur_price`) AS sum_unitQty3 FROM v_transaction 
+	$whereclause 
+	AND active_id IN (1,2) AND tranType = 1 AND `cur_name`='$cur_name'");
+	return mysql_fetch_array($result)['sum_unitQty3'];
+}
+function LoadCount_Qty3($whereclause){
+
+	$result = mysql_query("  SELECT  SUM(unitQty3) AS sum_qty3 FROM v_transaction $whereclause 
+	AND active_id IN (1,2) AND tranType = 1 ");
+	return mysql_fetch_array($result)['sum_qty3'];
+}
