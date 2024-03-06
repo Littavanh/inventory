@@ -24,7 +24,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 					<p class="errormessage"><?= $exist ?></p>
 
 
-					<div class="form-group col-md-3">
+					<!-- <div class="form-group col-md-3">
 						<label>BU/ຫົວໜ່ວຍທຸລະກິດ:</label>
 						<select class="form-control" name="infoID" onChange="document.location='index.php?d=stock/material&infoID='+this.value">
 							<option value="0">-- ເລືອກທັງໝົດ --</option>
@@ -44,7 +44,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 
 
 
-					</div>
+					</div> -->
 					<!-- text centen in table -->
 					<style>
 						th {
@@ -68,7 +68,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											<!-- <th>ລາຍລະອຽດ1</th> -->
 											<!-- <th>ລາຍລະອຽດ2</th> -->
 											<!--<th>ລາຍລະອຽດ3</th>-->
-											<th>BU/ຫົວໜ່ວຍທຸລະກິດ</th>
+											<!-- <th>BU/ຫົວໜ່ວຍທຸລະກິດ</th> -->
 											<th>ໝວດສິນຄ້າ</th>
 											<!-- <th>ລາຄາຂາຍ(1)</th>	
 									  	<th>ລາຄາຂາຍ(2)</th>	
@@ -95,7 +95,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 												<!-- <td><?= $row['materialRemark'] ?></td>
 												<td><?= $row['materialRemark1'] ?></td> -->
 												<!-- <td><?= $row['materialRemark2'] ?></td> -->
-												<td>
+												<!-- <td>
 													<select name="infoID[]" disabled>
 														<?php
 														$rs_info = LoadInfo();
@@ -105,7 +105,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 															<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
 														<?php } ?>
 													</select>
-												</td>
+												</td> -->
 												<td><?= $row['kf_name'] ?></td>
 												<!--<td><?= number_format($row['price']) ?></td>
 								          	<td><?= number_format($row['price2']) ?></td>

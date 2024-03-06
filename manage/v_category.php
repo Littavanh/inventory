@@ -22,7 +22,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 					<p><?= $success ?></p>
 					<p class="errormessage"><?= $exist ?></p>
 
-					<div class="form-group col-md-3">
+					<!-- <div class="form-group col-md-3">
 						<label>ສາງ</label>
 						<select class="form-control" name="infoID" onChange="document.location='index.php?d=manage/category&infoID='+this.value">
 							<option value="0">-- ເລືອກທັງໝົດ --</option>
@@ -34,7 +34,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 								<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>><?= $row_c['info_name'] ?></option>
 							<?php } ?>
 						</select>
-					</div>
+					</div> -->
 				</div>
 
 				<!-- text centen in table -->
@@ -53,7 +53,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 										<tr>
 											<th>ລຳດັບ</th>
 											<th>ໝວດ</th>
-											<th>ສາງ</th>
+											<!-- <th>ສາງ</th> -->
 											<th>ຈັດລໍາດັບ</th>
 											<th>ຜູ້ແກ້ໄຂ</th>
 											<th>ວັນທີ່ແກ້ໄຂ</th>
@@ -76,7 +76,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 													<input type="text" name="txtkf_name[]" size="" value="<?= $row['kf_name'] ?>" autocomplete="off" />
 													<label class="hidden"><?= $row['kf_name'] ?></label>
 												</td>
-												<td class="eqcodecols">
+												<!-- <td class="eqcodecols">
 													<?php if ($_SESSION['EDPOSV1role_id'] <= '2') { ?>
 														<select name="infoID[]">
 															<?php
@@ -92,7 +92,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 															<option value="<?= $Get_infoID ?>"><?= $Get_infoName ?></option>
 														</select>
 													<?php } ?>
-												</td>
+												</td> -->
 
 												<td>
 													<input type="text" name="txtviewOrder[]" size="" value="<?= $row['viewOrder'] ?>" autocomplete="off" />

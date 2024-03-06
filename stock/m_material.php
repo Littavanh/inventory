@@ -7,21 +7,21 @@
 	
 	// -------------------------------------------	
 $whereclause = "";
-if ($infoID >'0') {
-    $whereclause .= " v_material2.info_id='$infoID'  AND  ";
-     $Get_infoID= $infoID ;
-} 
- if ($infoID =='') {
-    $whereclause .= " v_material2.info_id='$Get_infoID'  AND  ";
-    $Get_infoID= $Get_infoID ;
-}
-$whereclause .= " v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)   AND ";
+// if ($infoID >'0') {
+//     $whereclause .= " v_material2.info_id='$infoID'  AND  ";
+//      $Get_infoID= $infoID ;
+// } 
+//  if ($infoID =='') {
+//     $whereclause .= " v_material2.info_id='$Get_infoID'  AND  ";
+//     $Get_infoID= $Get_infoID ;
+// }
+$whereclause .= " v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)  ";
 
 if ($whereclause != "") $whereclause = "WHERE " . substr($whereclause, 0, strlen($whereclause)-5);
 
 
 $params = "";
-$params .= "startdate=$startdate&enddate=$enddate&infoID=$Get_infoID&kf_id=$kf_id&";
+$params .= "startdate=$startdate&enddate=$enddate&kf_id=$kf_id&";
  
 
 // ------------------------------------- PAGE ------------------------------ //
@@ -33,7 +33,7 @@ $limitclause = "LIMIT $start, $pagesize";
 
 // --------------------------------------------------------- Build Paging
 //$catcount = nr_execute("SELECT COUNT(*) FROM v_transaction $whereclause ");
-function SumMaterial_CountRow($Get_infoID) {
+function SumMaterial_CountRow() {
     return mysql_query("SELECT distinct tb_kind_food.kf_name , tb_kind_food.printerNo , tb_kind_food.kf_name , 
                             tb_kind_food.printerNo , v_material2.materialID , v_material2.materialName , 
                             v_material2.materialRemark , v_material2.materialRemark1 , v_material2.materialRemark2 , 
@@ -44,7 +44,7 @@ function SumMaterial_CountRow($Get_infoID) {
                             FROM v_material2 
                             INNER JOIN tb_kind_food ON (v_material2.kf_id = tb_kind_food.kf_id and v_material2.info_id = tb_kind_food.info_id) 
                             
-                            WHERE v_material2.info_id='$Get_infoID' AND v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)  
+                            WHERE  v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)  
                             ORDER BY v_material2.mBarcode ");
 }
 
@@ -64,7 +64,7 @@ $pagedescription = "ຫນ້າທີ $pagenum, ສະແດງລາຍກາ�
 
 
 
-function LoadPrice_setting($whereclause, $Get_infoID, $limitclause) {      						     						
+function LoadPrice_setting($whereclause, $limitclause) {      						     						
 		return mysql_query("SELECT distinct tb_kind_food.kf_name , tb_kind_food.printerNo , tb_kind_food.kf_name , 
                             tb_kind_food.printerNo , v_material2.materialID , v_material2.materialName , 
                             v_material2.materialRemark , v_material2.materialRemark1 , v_material2.materialRemark2 , 
@@ -74,7 +74,7 @@ function LoadPrice_setting($whereclause, $Get_infoID, $limitclause) {
                             v_material2.info_id 
                             FROM v_material2 
                             INNER JOIN tb_kind_food ON (v_material2.kf_id = tb_kind_food.kf_id and v_material2.info_id = tb_kind_food.info_id)                             
-                            WHERE v_material2.info_id='$Get_infoID' AND v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)  
+                            WHERE  v_material2.status_id IN (3) AND v_material2.materialID NOT IN (1)  
                             ORDER BY v_material2.mBarcode $limitclause"); 												
 }
 

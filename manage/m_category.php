@@ -7,14 +7,14 @@
 	
 	// -------------------------------------------	
 $whereclause = "";
-$whereclause .= " status_id IN (3) AND ";
-if ($infoID >'0') {
-	$whereclause .= " info_id='$infoID'  ";	
-} 
-if ($infoID == '') {
-	$whereclause .= " info_id='$Get_infoID' ";
+$whereclause .= " status_id IN (3)";
+// if ($infoID >'0') {
+// 	$whereclause .= " info_id='$infoID'  ";	
+// } 
+// if ($infoID == '') {
+// 	$whereclause .= " info_id='$Get_infoID' ";
 	
-}
+// }
 if ($whereclause != "")
 	$whereclause = "WHERE " . $whereclause;
 
