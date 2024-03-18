@@ -129,7 +129,7 @@ if ($get_auto_id != "") {
 						<div class="row">
 							<div class="form-group col-md-4">
 								<label>ວັນທີຕ້ອງການ</label>
-								<div class="input-group date">
+								<div >
 									<div class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</div>
