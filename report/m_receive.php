@@ -82,7 +82,7 @@ function LoadTableV2($monthView, $yearView, $whereclause)
 	and  vOut.info_id = vall.info_id and vOut.pur_price = vall.pur_price
 	GROUP BY vOut.info_id, vOut.materialID, vOut.pur_price),0) as out_bl,
 	COALESCE(( select sum(vTotal.unitQty3) from tb_transactiond vTotal
-	WHERE  vTotal.date_tran <= '$lastDayInMonth'  and vTotal.materialID = vall.materialID and vTotal.trantype IN (1,15,19)
+	WHERE  vTotal.date_tran <= '$lastDayInMonth'  and vTotal.materialID = vall.materialID and vTotal.trantype IN (1,15,19,20)
 	and  vTotal.info_id = vall.info_id and vTotal.pur_price = vall.pur_price
 	GROUP BY vTotal.info_id, vTotal.materialID, vTotal.pur_price),0) as total_bl
 	from v_sum_transaction_all vall  
