@@ -19,7 +19,7 @@
 										<div class="input-group-addon">
 											<i class="fa fa-calendar"></i>
 										</div>
-										<input type="date" name="startdate" class="form-control pull-right" id="datepicker1" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['startdate']  ?>">
+										<input type="date" name="startdate" class="form-control pull-right"  autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['startdate']  ?>">
 									</div>
 								</div>
 								<div class="form-group col-md-6">
@@ -28,7 +28,7 @@
 										<div class="input-group-addon">
 											<i class="fa fa-calendar"></i>
 										</div>
-										<input type="date" name="enddate" class="form-control pull-right" id="datepicker2" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['enddate']  ?>">
+										<input type="date" name="enddate" class="form-control pull-right" autocomplete="off" data-date-format="yyyy-mm-dd" value="<?= $_GET['enddate']  ?>">
 									</div>
 								</div>
 

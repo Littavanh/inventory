@@ -136,6 +136,8 @@ date_default_timezone_set("Asia/Vientiane"); ?>
 								<!-- <th style="white-space: nowrap; overflow: hidden;">Barcode</th> -->
 								<th rowspan="2" style="white-space: nowrap; overflow: hidden; text-align: center;">
 									ລາຍລະອຽດສິນຄ້າ<br />Description of Goods<br /></th>
+								<th rowspan="2" style="white-space: nowrap; overflow: hidden; text-align: center;">
+									ໝາຍເຫດ<br />Remark<br /></th>
 								<!-- <th style="white-space: nowrap; overflow: hidden;">ລາຍລະອຽດສິນຄ້າ</th> -->
 								<th rowspan="2" style="white-space: nowrap; overflow: hidden; text-align: center;">
 									ຫົວໜ່ວຍ<br />Unit<br /></th>
@@ -253,6 +255,9 @@ date_default_timezone_set("Asia/Vientiane"); ?>
 											<?= $itemD['materialName'] ?>
 										</td>
 										<td>
+											<?= $itemD['Typename'] ?>
+										</td>
+										<td>
 											<?= $itemD['unitName3'] ?>
 										</td>
 										<td>
@@ -305,7 +310,7 @@ date_default_timezone_set("Asia/Vientiane"); ?>
 
 							<tr style="color:#FFF" bgcolor="#999999">
 
-								<td colspan="5" align="center"><strong>ລວມມູນຄ່າ ຮັບສິນຄ້າເຂົ້າສາງ ປະຈໍາເດືອນ
+								<td colspan="6" align="center"><strong>ລວມມູນຄ່າ ຮັບສິນຄ້າເຂົ້າສາງ ປະຈໍາເດືອນ
 										<?= $_GET['startdate'] ?>
 									</strong></td>
 								<td align="center"><strong>
@@ -317,7 +322,7 @@ date_default_timezone_set("Asia/Vientiane"); ?>
 								<td align="right"><strong>ກີບ</strong></td>
 							</tr>
 							<tr style="color:#222">
-								<td colspan="6" align="center"></td>
+								<td colspan="7" align="center"></td>
 
 								<td align="right"><strong>
 										<?= number_format(LoadCount_Cur('ບາດ', $whereclause), 2, '.', ',') ?>
@@ -325,7 +330,7 @@ date_default_timezone_set("Asia/Vientiane"); ?>
 								<td align="right"><strong>ບາດ</strong></td>
 							</tr>
 							<tr style="color:#222 ">
-								<td colspan="6" align="center"></td>
+								<td colspan="7" align="center"></td>
 
 								<td align="right"><strong>
 										<?= number_format(LoadCount_Cur('ໂດລາ', $whereclause), 2, '.', ',') ?>

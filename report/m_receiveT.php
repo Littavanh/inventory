@@ -50,7 +50,7 @@ function LoadTable($whereclause, $whereGroupID) {
 							AVG(receive_dis) as receive_dis, 
 							materialID, materialName,unitName1, unitName2, unitName3,
 							cap1,cap2,cap3,mBarcode,supplierName,date_add,date_tran,
-							bill_no, bill_date, whouse, whouseDate, po_no, po_date, lot_no, cur_name,kf_id
+							bill_no, bill_date, whouse, whouseDate, po_no, po_date, lot_no, cur_name,kf_id,Typename
 							from v_transaction 
 							$whereclause AND  materialID = '$whereGroupID'
 							and active_id IN (1,2) and tranType IN (1,15,20) 
@@ -92,12 +92,12 @@ function LoadCount_Cur($cur_name,$whereclause){
 
 	$result = mysql_query("  SELECT  SUM(unitQty3 * `pur_price`) AS sum_unitQty3 FROM v_transaction 
 	$whereclause 
-	AND active_id IN (1,2) AND tranType = 1 AND `cur_name`='$cur_name'");
+	AND active_id IN (1,2) AND tranType IN (1,15,20) AND `cur_name`='$cur_name'");
 	return mysql_fetch_array($result)['sum_unitQty3'];
 }
 function LoadCount_Qty3($whereclause){
 
 	$result = mysql_query("  SELECT  SUM(unitQty3) AS sum_qty3 FROM v_transaction $whereclause 
-	AND active_id IN (1,2) AND tranType = 1 ");
+	AND active_id IN (1,2) AND tranType IN (1,15,20) ");
 	return mysql_fetch_array($result)['sum_qty3'];
 }

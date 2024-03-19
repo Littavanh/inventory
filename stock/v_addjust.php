@@ -129,12 +129,12 @@ if ($get_auto_id != "") {
 						<div class="row">
 							<div class="form-group col-md-4">
 								<label>ວັນທີຕ້ອງການ</label>
-								<div >
+								<div class="input-group date">
 									<div class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</div>
 									<input type="date" name="txtDateWant" class="form-control pull-right"
-										id="datepicker1" data-date-format="yyyy-mm-dd"
+										 data-date-format="yyyy-mm-dd"
 										value="<?= $_SESSION['EDPOSV1AddJustDateWant'] ?>" required
 										autocomplete="off" />
 								</div>
