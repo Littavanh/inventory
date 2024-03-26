@@ -1,7 +1,7 @@
 <?php
 session_start();
 htmltage("ປະຫວັດອະນຸມັດຮັບສິນຄ້າ");
-if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] == 4) {
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset ($_SESSION['EDPOSV1user_id']) || $_SESSION['EDPOSV1role_id'] == 4) {
     header("Location: ?d=index");
 }
 
@@ -150,19 +150,19 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                                 <?= $row['supplierName'] ?>
                                             </td>
                                             <?php
-
-                                            if ($row['level'] == "0") {
+                                            if ($row['approver_id'] == 1) {
                                                 ?>
                                                 <td class="centered">
-                                                    <?= $row['approver'] ?>
-                                                    <?= $row['approver_last_name'] ?>
+                                                    ວິຊາການຈັດຊື້
+                                                   
                                                 </td>
                                                 <?php
                                             } else {
                                                 ?>
+
                                                 <td class="centered">
-                                                    <?= $row['orderer_name'] ?>
-                                                    <?= $row['orderer_lastName'] ?>
+                                                    <?= $row['approver'] ?>
+                                                    <?= $row['approver_last_name'] ?>
                                                 </td>
                                                 <?php
                                             }

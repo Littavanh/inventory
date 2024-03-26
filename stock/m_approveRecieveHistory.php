@@ -1,11 +1,14 @@
 <?php
 $TokenKey = $_SESSION['EDPOSV1TokenKey'];
 $userId = $_SESSION['EDPOSV1user_id'];
-if($userId =='2613'){
-    $where = "where approver_id='$userId'and `level`='1' and statusApprove_id in (1,2,4)";
-}else{
-    $where = "where orderer='$userId' and `level`='1' and statusApprove_id in (1,4)";
-}
+// $load = mysql_query("select * from tb_approve_history where status_approve_id='2'");
+
+// while ($row = mysql_fetch_array($load, MYSQL_ASSOC)) {
+//     if($userId = $row['user_id']){
+
+//     }
+// }
+    $where = "where user_add='$userId' and statusApprove_id in (1,2,4)";
 
 function loadImportPending($where) {
     //    echo '<script>alert("'.$where.'")</script>';

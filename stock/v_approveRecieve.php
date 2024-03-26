@@ -37,7 +37,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 										<th>ເລກທີໃບສັ່ງຊື້</th>
 										<th>ວັນທີໃບສັ່ງຊື້</th>
 										<th>ຜູ້ຮັບສິນຄ້າ</th>
-										<th>ຜູ້ມອບສິນຄ້າ</th>
+										<!-- <th>ຜູ້ມອບສິນຄ້າ</th> -->
 										<th>ຫົວໜ່ວຍທຸລະກິດ</th>
 										<th>ຜູ້ສະໜອງ</th>
 										<th>ຜູ້ອະນຸມັດ</th>
@@ -149,34 +149,36 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											<td class="centered">
 												<?= $row['reciever'] ?>
 											</td>
-											<td class="centered">
+											<!-- <td class="centered">
 												<?= $row['orderer_name'] ?>
 												<?= $row['orderer_lastName'] ?>
-											</td>
+											</td> -->
 											<td class="centered">
 												<?= $row['info_name'] ?>
 											</td>
 											<td class="centered">
 												<?= $row['supplierName'] ?>
 											</td>
+											
 											<?php
+                                            if ($row['approver_id'] == 1) {
+                                                ?>
+                                                <td class="centered">
+                                                    ວິຊາການຈັດຊື້
+                                                   
+                                                </td>
+                                                <?php
+                                            } else {
+                                                ?>
 
-											if ($row['level'] == "0") {
-												?>
-												<td class="centered">
-													<?= $row['approver'] ?>
-													<?= $row['approver_last_name'] ?>
-												</td>
-												<?php
-											} else {
-												?>
-												<td class="centered">
-													<?= $row['orderer_name'] ?>
-													<?= $row['orderer_lastName'] ?>
-												</td>
-												<?php
-											}
-											?>
+                                                <td class="centered">
+                                                    <?= $row['approver'] ?>
+                                                    <?= $row['approver_last_name'] ?>
+                                                </td>
+                                                <?php
+                                            }
+                                            ?>
+											
 
 											<?php
 
@@ -198,7 +200,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 													href="index.php?d=stock/approveRecieveDetail&tranID=<?= $row['tranID'] ?>&po_no=<?= $row['po_no'] ?>&po_date=<?= $row['po_date'] ?>&info_name=<?= $row['info_name'] ?>&bill_no=<?= $row['bill_no'] ?>&bill_date=<?= $row['bill_date'] ?>&whouse_no=<?= $row['whouse_no'] ?>&whouse_date=<?= $row['whouse_date'] ?>"><i>ເບິ່ງລາຍລະອຽດ</i></a>
 											</td>
 											<td class="centered"> <a class="btn btn-success"
-													href="?d=stock/approveRecieve&approve=<?= $row['tranID'] ?>&approver_id=<?= $row['approver_id'] ?>&orderer=<?= $row['orderer'] ?>&level=<?= $row['level'] ?>"
+													href="?d=stock/approveRecieve&approve=<?= $row['tranID'] ?>"
 													onclick="return confirm('ທ່ານຕ້ອງການອະນຸມັດແທ້ບໍ່ ?')">ອະນຸມັດ</a>
 												<a class="btn btn-danger" href="#"><i data-toggle="modal"
 														data-target="#modal-lg-Reject<?= $i ?>">ບໍ່ອະນຸມັດ</a>

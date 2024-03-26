@@ -393,7 +393,9 @@ if ($get_auto_id != "") {
 					</div>
 					<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
 						<div class="box-footer">
-							<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
+						<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
+							<input type="submit" class="btn btn-danger" name="btnClear" value="  Clear  " />
+							
 
 						</div>
 					<?php } ?>

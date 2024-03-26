@@ -28,10 +28,10 @@ if (isset($_GET["approve"])) {
 
 	while ($row = mysql_fetch_array($load, MYSQL_ASSOC)) {
 		$approve_level = $row['approve_level'];
-
+		$approve_level_as=$row['approve_level'] + 1;
 		$status_approve_id = $row['status_approve_id'];
 		// echo '<script>alert("'.$approve_level.'")</script>';
-		$check = loadApprovalSetting($approve_level, $status_approve_id);
+		$check = loadApprovalSetting($approve_level_as, $status_approve_id);
 
 		while ($rowcheck = mysql_fetch_array($check, MYSQL_ASSOC)) {
 
@@ -49,15 +49,15 @@ if (isset($_GET["approve"])) {
 
 		if ($maxLevel == $approve_level) {
 			// echo '<script>alert("MaxLevel=approve_level")</script>';
-			sql_execute("UPDATE tb_export SET approver='$row_userId',status_approve_id='1',status_get_id='1' WHERE `transferID`='$transferID'");
-			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add) VALUES ('$transferID','$approve_level','$user_id','','$user_id',NOW())");
+			sql_execute("UPDATE tb_export SET status_approve_id='1',status_get_id='1' WHERE `transferID`='$transferID'");
+			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add,status_approve_id) VALUES ('$transferID','$approve_level','$user_id','','$user_id',NOW(),'$status_approve_id')");
 			sql_execute("UPDATE tb_transactiond SET status_id='1' WHERE `transferID`='$transferID'");
 
 		} else if ($maxLevel > $approve_level) {
 			// echo '<script>alert("MaxLevel>approve_level")</script>';
 			sql_execute("UPDATE tb_export SET approve_level=$approve_level + 1,approver='$row_userId' WHERE `transferID`='$transferID'");
 
-			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add) VALUES ('$transferID','$approve_level','$user_id','','$user_id',NOW())");
+			sql_execute("INSERT INTO tb_approve_history (transferID,approve_level,user_id,remark,user_add,date_add,status_approve_id) VALUES ('$transferID','$approve_level','$user_id','','$user_id',NOW(),'$status_approve_id')");
 			
 		}
 

@@ -37,7 +37,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 										<th>ເລກທີໃບສັ່ງຊື້</th>
 										<th>ວັນທີໃບສັ່ງຊື້</th>
 										<th>ຜູ້ຮັບສິນຄ້າ</th>
-										<th>ຜູ້ມອບສິນຄ້າ</th>
+										<!-- <th>ຜູ້ມອບສິນຄ້າ</th> -->
 										<th>ຫົວໜ່ວຍທຸລະກິດ</th>
 										<th>ຜູ້ສະໜອງ</th>
 										<th>ຜູ້ອະນຸມັດ</th>
@@ -143,9 +143,9 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											<td class="centered">
 												<?= $row['reciever'] ?>
 											</td>
-											<td class="centered">
+											<!-- <td class="centered">
 												<?= $row['orderer_name'] ?> <?= $row['orderer_lastName'] ?>
-											</td>
+											</td> -->
 											<td class="centered">
 												<?= $row['info_name'] ?>
 											</td>
@@ -153,19 +153,19 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 												<?= $row['supplierName'] ?>
 											</td>
 											<?php
-
-                                            if ($row['level'] == "0") {
+                                            if ($row['approver_id'] == 1) {
                                                 ?>
                                                 <td class="centered">
-                                                    <?= $row['approver'] ?>
-                                                    <?= $row['approver_last_name'] ?>
+                                                    ວິຊາການຈັດຊື້
+                                                   
                                                 </td>
                                                 <?php
                                             } else {
                                                 ?>
+
                                                 <td class="centered">
-                                                    <?= $row['orderer_name'] ?>
-                                                    <?= $row['orderer_lastName'] ?>
+                                                    <?= $row['approver'] ?>
+                                                    <?= $row['approver_last_name'] ?>
                                                 </td>
                                                 <?php
                                             }

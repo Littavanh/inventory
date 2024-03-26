@@ -87,6 +87,7 @@ function checkLogin($passKey, $UserName, $UserPassword, $Device_token, $webToken
 
             $_SESSION['EDPOSV1role_id'] = $rowR['role_id'];
             $_SESSION['EDPOSV1isEmpInventory'] = $rowR['isEmpInventory'];
+            $_SESSION['EDPOSV1isOrderer'] = $rowR['isOrderer'];
             $_SESSION['EDPOSV1TokenKey'] = $data['TokenKey'];
             $_SESSION['EDPOSV1lao_fullname'] = $data['lao_fullname'];
             $_SESSION['EDPOSV1emp_dep'] = $data['emp_dep'];

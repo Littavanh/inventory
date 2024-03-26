@@ -48,8 +48,8 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 
 
 
-			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype) 
-					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','2613','$txtOrderer','$invenType') ";
+			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype,`level`) 
+					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','$lineManagerId','$txtOrderer','$invenType','1') ";
 			$resultH = mysql_query($sql, $conn);
 		}
 
@@ -105,7 +105,8 @@ if (isset($_POST["btnAddproduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
 	$txtDate = mysql_real_escape_string(stripslashes($_POST['txtDate']));
 	$txtexp = mysql_real_escape_string(stripslashes($_POST['txtexp']));
 	$txtreciever = mysql_real_escape_string(stripslashes($_POST['txtreciever']));
-	$txtOrderer = mysql_real_escape_string(stripslashes($_POST['txtOrderer']));
+	// $txtOrderer = mysql_real_escape_string(stripslashes($_POST['txtOrderer']));
+	$txtOrderer = 1;
 	$txtSupplier = mysql_real_escape_string(stripslashes($_POST['supplierID']));
 	$txtRemark = mysql_real_escape_string(stripslashes($_POST['txtRemark']));
 	$txtprice = mysql_real_escape_string(stripslashes(trim($_POST['txtprice'][$i])));

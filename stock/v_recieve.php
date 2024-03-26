@@ -101,7 +101,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                             </div>
                         </div>
 
-                        <div class="row col-md-4 ">
+                        <!-- <div class="row col-md-4 ">
                             <div class="form-group col-md-10">
                                 <label>ຜູ້ມອບສິນຄ້າ</label>
                                 <select class="form-control" id="select2" name="txtOrderer" >
@@ -120,10 +120,10 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                     <?php }
                                     ?>
                                 </select>
-                                <!-- <input type="text" name="txtOrderer" class="form-control"
-                                    value="<?= $_SESSION['EDPOSV1Orderer'] ?>" required /> -->
+                              
                             </div>
-                        </div>
+                        </div> -->
+
                         <!-- info product -->
 
                         <!-- Bill -->
@@ -209,7 +209,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                 </label>
                             </div>
                         </div>
-                        <div class="row col-md-6 ">
+                        <div class="row col-md-6 " hidden>
                             <div class="form-group col-md-2">
 
                                 <input type="radio" name="invenType" value="1" checked> ທົ່ວໄປ<br>

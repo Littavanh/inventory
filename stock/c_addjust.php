@@ -110,6 +110,11 @@ if (isset($_POST["btnAdd"])) {
 	}
 
 }
+
+
+if (isset($_POST["btnClear"])) {
+	sql_execute("DELETE FROM tb_export_request");
+}
 if (isset($_POST["btnAddproduct"])) {
 	// $remark = $_POST["txtRemark"];
 
