@@ -159,26 +159,27 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											<td class="centered">
 												<?= $row['supplierName'] ?>
 											</td>
-											
-											<?php
-                                            if ($row['approver_id'] == 1) {
-                                                ?>
-                                                <td class="centered">
-                                                    ວິຊາການຈັດຊື້
-                                                   
-                                                </td>
-                                                <?php
-                                            } else {
-                                                ?>
 
-                                                <td class="centered">
-                                                    <?= $row['approver'] ?>
-                                                    <?= $row['approver_last_name'] ?>
-                                                </td>
-                                                <?php
-                                            }
-                                            ?>
-											
+											<?php
+											if ($row['approver_id'] == 1) {
+												?>
+												<td class="centered">
+													<?= $row['orderer_name'] ?>
+													<?= $row['orderer_lastName'] ?>
+
+												</td>
+												<?php
+											} else {
+												?>
+
+												<td class="centered">
+													<?= $row['approver'] ?>
+													<?= $row['approver_last_name'] ?>
+												</td>
+												<?php
+											}
+											?>
+
 
 											<?php
 

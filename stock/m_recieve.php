@@ -124,7 +124,7 @@ function LoadSupplier()
 }
 function LoadUser()
 {
-	return mysql_query(" select * from tb_user WHERE status_id=3  ");
+	return mysql_query(" select * from tb_user WHERE status_id=3 AND isOrderer = 1  ");
 }
 
 function LoadInfo()

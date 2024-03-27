@@ -41,7 +41,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 										<th>ຫົວໜ່ວຍທຸລະກິດ</th>
 										<th>ຜູ້ສະໜອງ</th>
 										<th>ຜູ້ອະນຸມັດ</th>
-										
+										<th>ພິມບິນ</th>
 										<th>ເອກະສານອ້າງອີງ</th>
 										<th>ລາຍລະອຽດ</th>
 										<th>ສະຖານະ</th>
@@ -156,7 +156,8 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                             if ($row['approver_id'] == 1) {
                                                 ?>
                                                 <td class="centered">
-                                                    ວິຊາການຈັດຊື້
+												<?= $row['orderer_name'] ?>
+													<?= $row['orderer_lastName'] ?>
                                                    
                                                 </td>
                                                 <?php
@@ -170,7 +171,9 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                                 <?php
                                             }
                                             ?>
-											
+											 <td class="centered"><a class="btn btn-warning"
+                                                    href="print/approveRecievePrint.php?d=stock&tranID=<?= $row['tranID'] ?>"
+                                                    target="_blank" role="button"><i class="fa fa-print"></i></td>
 											<td class="centered">
 												<a href="#"><i data-toggle="modal"
 														data-target="#modal-lg-Image<?= $i ?>">ໄຟລແນບ</i></a>

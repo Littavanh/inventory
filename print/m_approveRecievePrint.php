@@ -22,3 +22,14 @@ function detailPrint(){
 	}
 }
 
+function checkApproveSignature()
+{
+	$tranID = $_GET["tranID"];
+	if (isset($tranID) && $tranID != "") {
+
+		$sql = "select * from v_approve_history where transferID = '$tranID' group by approve_level";
+
+		$result = mysql_query($sql);
+		return $result;
+	}
+}

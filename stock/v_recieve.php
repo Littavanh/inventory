@@ -101,7 +101,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                             </div>
                         </div>
 
-                        <!-- <div class="row col-md-4 ">
+                        <div class="row col-md-4 ">
                             <div class="form-group col-md-10">
                                 <label>ຜູ້ມອບສິນຄ້າ</label>
                                 <select class="form-control" id="select2" name="txtOrderer" >
@@ -122,7 +122,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                 </select>
                               
                             </div>
-                        </div> -->
+                        </div>
 
                         <!-- info product -->
 

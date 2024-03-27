@@ -111,8 +111,8 @@
           </a>
           <ul class="treeview-menu">
             <li class="treeview <?php if (
-              $_GET['d'] == 'stock/recieve' || $_GET['d'] == 'stock/approveRecieve' ||
-              $_GET['d'] == 'stock/approveRecieveHistory' || $_GET['d'] == 'stock/addjust' || $_GET['d'] == 'stock/approveAddjust'
+              $_GET['d'] == 'stock/recieve' || $_GET['d'] == 'stock/approveRecieve' || $_GET['d'] == 'stock/recieveSub' || $_GET['d'] == 'stock/approveRecieveSub' || $_GET['d'] == 'stock/recieveSubHistory'
+              || $_GET['d'] == 'stock/approveRecieveHistory' || $_GET['d'] == 'stock/addjust' || $_GET['d'] == 'stock/approveAddjust'
               || $_GET['d'] == 'stock/approveAddjustHistory' || $_GET['d'] == 'stock/doneAddjust' || $_GET['d'] == 'stock/material' || $_GET['d'] == 'stock/recieveHistory' || $_GET['d'] == 'stock/returnHistory' || $_GET['d'] == 'stock/return' || $_GET['d'] == 'stock/returnConfirm' || $_GET['d'] == 'stock/doneReturn' || $_GET['d'] == 'stock/recieveHistory'
             ) {
               echo " active menu-open";
@@ -125,6 +125,7 @@
               <ul class="treeview-menu">
                 <!-- <span class="badge bg-warning">2</span> -->
                 <?php if ($_SESSION['EDPOSV1role_id'] <= 3) { ?>
+
                   <li <?php if ($_GET['d'] == 'stock/recieve') {
                     echo "class='active'";
                   } ?>><a href="index.php?d=stock/recieve"><i class="fa fa-circle-o"></i> ການຮັບສິນຄ້າ</a></li>
@@ -136,10 +137,23 @@
                     echo "class='active'";
                   } ?>><a href="index.php?d=stock/approveRecieve"><i class="fa fa-circle-o"></i> ອະນຸມັດ ຮັບສິນຄ້າ </a>
                   </li>
+
                   <li <?php if ($_GET['d'] == 'stock/approveRecieveHistory') {
                     echo "class='active'";
                   } ?>><a href="index.php?d=stock/approveRecieveHistory"><i class="fa fa-circle-o"></i> ປະຫວັດອະນຸມັດ
                       ຮັບສິນຄ້າ </a></li>
+                  <li <?php if ($_GET['d'] == 'stock/recieveSub') {
+                    echo "class='active'";
+                  } ?>><a href="index.php?d=stock/recieveSub"><i class="fa fa-circle-o"></i> ການຮັບສິນຄ້າ(ຄັງຍ່ອຍ)</a></li>
+                  <li <?php if ($_GET['d'] == 'stock/recieveSubHistory') {
+                    echo "class='active'";
+                  } ?>><a href="index.php?d=stock/recieveSubHistory"><i class="fa fa-circle-o"></i> ປະຫວັດ
+                      ການຮັບສິນຄ້າ(ຄັງຍ່ອຍ)</a></li>
+                  <li <?php if ($_GET['d'] == 'stock/approveRecieveSub') {
+                    echo "class='active'";
+                  } ?>><a href="index.php?d=stock/approveRecieveSub"><i class="fa fa-circle-o"></i> ອະນຸມັດ ຮັບສິນຄ້າ(ຄັງຍ່ອຍ)
+                    </a>
+                  </li>
                   <li <?php if ($_GET['d'] == 'stock/addjust') {
                     echo "class='active'";
                   } ?>><a href="index.php?d=stock/addjust"><i class="fa fa-circle-o"></i> ການເບີກສິນຄ້າ</a></li>

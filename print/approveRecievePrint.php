@@ -4,8 +4,8 @@ if (!isset($_SESSION['EDPOSV1user_id'])) {
     header("Location: ../login.php");
     exit();
 }
-include_once("../config.php");
-include_once("m_approveRecievePrint.php");
+include_once ("../config.php");
+include_once ("m_approveRecievePrint.php");
 $result = headerPrint();
 $result_eq = detailPrint();
 
@@ -39,6 +39,15 @@ $row = mysql_fetch_array($result);
         @page {
             margin: 0;
         }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .line {
+            border: 1px solid;
+        }
     </style>
 
 </head>
@@ -50,61 +59,80 @@ $row = mysql_fetch_array($result);
                 <tr>
                     <td align="center" width="20%">
                         <div>
-                            <img src="../dist/logo/logo.jpg" width="150" height="100" />
+                            <img src="../dist/logo/logo.jpg" width="200" height="150" />
                         </div>
                     </td>
-                    <!-- <td align="left" width="100%" style="padding: 0 5px;">
-                        <h3>LAO WORLD PUBLIC COMPANY</h3>
-                        <h6>HEAD OFFICE : T4 RD, BAN PHONETHAN NEUA, SAYSETTHA DISTRICT, VIENTIANE, LAO PDR.</h6>
-                        <h5>Fax: (+856) 21 415-409 Office: (+856) 21 415-477, website: www.laoworldpublic.com</h5>
-                    </td> -->
+
                 </tr>
 
             </table>
-            <div id="topic" style="top: 1em;">
-                <h1>ໃບຮັບສິນຄ້າ</h1>
-
+            <div class="line"></div>
+            <div class="container">
+                <div class="row" align="center">
+                    
+                </div>
+                <div class="row" align="right">
+                    <h5>ເລກທີ:
+                        <?= $row['whouse_no'] ?>
+                    </h5>
+                    <h5>ນະຄອນຫຼວງວຽງຈັນ, ວັນທີ:
+                        <?= $row['whouse_date'] ?>
+                    </h5>
+                </div>
             </div>
+
+
+        </div>
+        <br>
+        <br>
+        <div id="topic">
+            <h1>ໃບຮັບເຄື່ອງ</h1>
+            <!-- <h4>ເບີກຖາວອນ <input type="checkbox" name="" id="" checked></h4>
+            <h4>ເບີກຊົ່ວຄາວ <input type="checkbox" name="" id=""></h4> -->
         </div>
 
         <div id="tbl_content3">
-            <table border="0">
-                <tr class="tb_h">
-                    <td style="padding: 0 5px; width: 35%;">
-                        <div>
-                            <h3 align="left">ຂໍ້ມູນການຮັບສິນຄ້າ :</h3>
-                            <p align="left">ໃບຮັບສິນຄ້າເລກທີ :
-                                <?= $row['bill_no'] ?>
-                            </p>
-                            <p align="left">ວັນທີຮັບສິນຄ້າ :
-                                <?= $row['traDate'] ?>
-                            </p>
-                            <!-- <p align="left">ຈຸດປະສົງ : <?= $row['remark'] ?> </p> -->
-                            <p align="left">ໃບບິນ PO :
-                                <?= $row["po_no"] ?>
-                            </p>
-                            <p align="left">ຫົວໜ່ວຍຮັບສິນຄ້າ :
-                                <?= $row["info_name"] ?>
-                            </p>
-                            <p align="left">ຜູ້ສະໜອງ :
-                                <?= $row["supplierName"] ?>
-                            </p>
-
-                        </div>
-
+            <table border="1">
+                <tr>
+                    <td style="padding: 0 5px;">ອີງຕາມແຜນສະເໜີ</td>
+                    <td style="padding: 0 5px;" colspan="3">ໃບສະເໜີຂໍຈັດຊື້-ຈັດຈ້າງ, ເລກທີ
+                        <?= $row['po_no'] ?> ,
+                        ລົງວັນທີ
+                        <?= $row['po_date'] ?>
                     </td>
-                    <!-- <td style="padding: 0 5px; width: 35%;">
-                        <div>
-                          
-                            <p align="left">ຜູ້ຂໍຮັບສິນຄ້າ : <?= $row['reciever'] ?></p>
-                            <p align="left">ຜູ້ອະນຸມັດ : <?= $row['approver'] ?> <?= $row['approver_last_name'] ?> </p>
-                  
-
-                        </div>
-
-                    </td> -->
-
                 </tr>
+                <tr>
+                    <td style="padding: 0 5px;">ຜູ້ຈັດຊື້</td>
+                    <?php
+                    $checkA = checkApproveSignature();
+
+                    while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                        //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                        ?>
+                        <?php if ($row_ca['approve_level'] == 2) {
+                            ?>
+
+                            <td style="padding: 0 5px;">
+                                <?= $row_ca['first_name'] ?>
+                                <?= $row_ca['last_name'] ?>
+                            </td>
+                            <?php
+                        }
+                        ?>
+                    <?php } ?>
+                    <td style="padding: 0 5px;">ຜູ້ສະເໜີຊື້</td>
+                    <td style="padding: 0 5px;"></td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 0 5px;">ສັງກັດໜ່ວຍງານ</td>
+                    <td style="padding: 0 5px;"></td>
+                    <td style="padding: 0 5px;">ສັງກັດໜ່ວຍງານ</td>
+                    <td style="padding: 0 5px;">
+                        <?= $row['info_name'] ?>
+                    </td>
+                </tr>
+
             </table>
             <br>
             <table border="1">
@@ -139,8 +167,8 @@ $row = mysql_fetch_array($result);
                         <td class="centered">
                             <?= $k ?>
                         </td>
-                        <!--<td><? //=$row_eq["eq_no"]?></td>-->
-                        <!--<td><? //=$row_eq["serial_num"]?> </td>-->
+                        <!--<td><? //=$row_eq["eq_no"]    ?></td>-->
+                        <!--<td><? //=$row_eq["serial_num"]    ?> </td>-->
                         <td class="centered" style="padding: 0.5em">
                             <?= $row_eq["mBarcode"] ?>
                         </td>
@@ -190,12 +218,144 @@ $row = mysql_fetch_array($result);
                 <?php } ?>
             </table>
         </div>
+
+
+        <div id="signature" style="border-style: groove; padding: 10px;">
+            <table>
+                <tr class="centered">
+                    <td>
+                        <b>ພະນັກງານສາງ</b>
+                    </td>
+
+                    <td>
+                        <b>ຫົວໜ້າສາງ</b>
+                    </td>
+                    <td>
+                        <b>ວິຊາການຈັດຊື້</b>
+                    </td>
+                    <td>
+                        <b>ຫົວໜ້າຈັດຊື້</b>
+                    </td>
+                </tr>
+                <tr class="centered">
+                    <td>
+                        <div class="row" style="border: none;">
+                            <?php
+                            $imagePath = "../dist/signature/" . $row['sign_user_add'];
+                            if (!file_exists($imagePath) || $row['sign_user_add'] == '') {
+                                $imagePath = "";
+                            }
+                            ?>
+                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                        </div>
+                        <h4>
+                            <?= $row['reciever'] ?>
+                        </h4>
+                    </td>
+                    <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                            <?php if ($row_ca['approve_level'] == 1) {
+                                ?>
+                                <div class="row" style="border: none;">
+                                    <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                                </div>
+                                <h4>
+                                    <?= $row_ca['first_name'] ?>
+                                    <?= $row_ca['last_name'] ?>
+                                </h4>
+                                <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                    <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                            <?php if ($row_ca['approve_level'] == 2) {
+                                ?>
+                                <div class="row" style="border: none;">
+                                    <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                                </div>
+                                <h4>
+                                    <?= $row_ca['first_name'] ?>
+                                    <?= $row_ca['last_name'] ?>
+                                </h4>
+                                <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                    <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                            <?php if ($row_ca['approve_level'] == 3) {
+                                ?>
+                                <div class="row" style="border: none;">
+                                    <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                                </div>
+                                <h4>
+                                    <?= $row_ca['first_name'] ?>
+                                    <?= $row_ca['last_name'] ?>
+                                </h4>
+                                <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                </tr>
+
+            </table>
+
+
+        </div>
         <br>
         <div id="tbl_content3">
 
             <table border="1">
                 <tr>
-                    <th align="left">Comments:</th>
+                    <th align="left">ໝາຍເຫດ:</th>
                 </tr>
                 <tr>
                     <td style="padding: 0 5px; height: 125px;">
@@ -203,72 +363,6 @@ $row = mysql_fetch_array($result);
                     </td>
                 </tr>
             </table>
-        </div>
-        <div id="signature" style="border-style: groove; padding: 10px;">
-            <table>
-                <tr class="centered">
-                    <td>
-                        <b>ຜູ້ຮັບເຄື່ອງ</b>
-                    </td>
-
-                    <td>
-                        <b>ຜູ້ມອບເຄື່ອງ</b>
-                    </td>
-                    <td>
-                        <b>ຜູ້ຢັ້ງຢືນ</b>
-                    </td>
-                </tr>
-                <tr class="centered">
-                    <td>
-                    <div class="row" style="border: none;" >
-                            <?php
-                            $imagePath = "../dist/signature/".$row['sign_user_add'];
-                            if (!file_exists($imagePath) || $row['sign_user_add'] == '') {
-                                $imagePath = "";
-                            }
-                            ?>
-                            <embed src="<?= $imagePath ?>" width="150px" height="150px" />
-                          
-                          
-                        </div>
-                        <?= $row['reciever'] ?>
-                    </td>
-                    <td>
-                    <div class="row" style="border: none;" >
-                            <?php
-                            $imagePath = "../dist/signature/".$row['user_orderer'];
-                            if (!file_exists($imagePath) || $row['user_orderer'] == '') {
-                                $imagePath = "";
-                            }
-                            ?>
-                            <embed src="<?= $imagePath ?>" width="150px" height="150px" />
-                          
-                          
-                        </div>
-                        <?= $row['orderer_name'] ?>
-                        <?= $row['orderer_lastName'] ?>
-                    </td>
-                    <td>
-                        <div class="row" style="border: none;" >
-                            <?php
-                            $imagePath = "../dist/signature/".$row['sign_approver'];
-                            if (!file_exists($imagePath) || $row['sign_approver'] == '') {
-                                $imagePath = "";
-                            }
-                            ?>
-                            <embed src="<?= $imagePath ?>" width="150px" height="150px" />
-                          
-                          
-                        </div>
-                        <?= $row['approver'] ?>
-                        <?= $row['approver_last_name'] ?>
-                    </td>
-
-                </tr>
-
-            </table>
-
-
         </div>
     </div>
 </body>

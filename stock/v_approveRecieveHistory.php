@@ -153,7 +153,8 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset ($_SESSION['EDPOSV1user_id
                                             if ($row['approver_id'] == 1) {
                                                 ?>
                                                 <td class="centered">
-                                                    ວິຊາການຈັດຊື້
+                                                <?= $row['orderer_name'] ?>
+													<?= $row['orderer_lastName'] ?>
                                                    
                                                 </td>
                                                 <?php
