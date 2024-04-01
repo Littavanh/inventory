@@ -69,14 +69,18 @@ $row = mysql_fetch_array($result);
             <div class="line"></div>
             <div class="container">
                 <div class="row" align="center">
-                    
+
                 </div>
                 <div class="row" align="right">
                     <h5>ເລກທີ:
-                        <?= $row['whouse_no'] ?>
+                        <b>
+                            <?= $row['whouse_no'] ?>
+                        </b>
                     </h5>
                     <h5>ນະຄອນຫຼວງວຽງຈັນ, ວັນທີ:
-                        <?= $row['whouse_date'] ?>
+                        <b>
+                            <?= $row['whouse_date'] ?>
+                        </b>
                     </h5>
                 </div>
             </div>
@@ -96,32 +100,31 @@ $row = mysql_fetch_array($result);
                 <tr>
                     <td style="padding: 0 5px;">ອີງຕາມແຜນສະເໜີ</td>
                     <td style="padding: 0 5px;" colspan="3">ໃບສະເໜີຂໍຈັດຊື້-ຈັດຈ້າງ, ເລກທີ
-                        <?= $row['po_no'] ?> ,
+                        <b>
+                            <?= $row['po_no'] ?>
+                        </b> ,
                         ລົງວັນທີ
-                        <?= $row['po_date'] ?>
+                        <b>
+                            <?= $row['po_date'] ?>
+                        </b>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 0 5px;">ຜູ້ຈັດຊື້</td>
-                    <?php
-                    $checkA = checkApproveSignature();
 
-                    while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
-                        //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
-                        ?>
-                        <?php if ($row_ca['approve_level'] == 2) {
-                            ?>
 
-                            <td style="padding: 0 5px;">
-                                <?= $row_ca['first_name'] ?>
-                                <?= $row_ca['last_name'] ?>
-                            </td>
-                            <?php
-                        }
-                        ?>
-                    <?php } ?>
+                    <td style="padding: 0 5px;">
+                        <b>
+                            <?= $row['orderer_name'] ?>
+                            <?= $row['orderer_lastName'] ?>
+                        </b>
+                    </td>
+
                     <td style="padding: 0 5px;">ຜູ້ສະເໜີຊື້</td>
-                    <td style="padding: 0 5px;"></td>
+                    <td style="padding: 0 5px;">
+                       <b> <?= $row['proposer_name'] ?>
+                        <?= $row['proposer_last_name'] ?></b>
+                    </td>
                 </tr>
 
                 <tr>
@@ -129,7 +132,7 @@ $row = mysql_fetch_array($result);
                     <td style="padding: 0 5px;"></td>
                     <td style="padding: 0 5px;">ສັງກັດໜ່ວຍງານ</td>
                     <td style="padding: 0 5px;">
-                        <?= $row['info_name'] ?>
+                       <b> <?= $row['info_name'] ?></b>
                     </td>
                 </tr>
 
@@ -167,8 +170,8 @@ $row = mysql_fetch_array($result);
                         <td class="centered">
                             <?= $k ?>
                         </td>
-                        <!--<td><? //=$row_eq["eq_no"]    ?></td>-->
-                        <!--<td><? //=$row_eq["serial_num"]    ?> </td>-->
+                        <!--<td><? //=$row_eq["eq_no"]     ?></td>-->
+                        <!--<td><? //=$row_eq["serial_num"]     ?> </td>-->
                         <td class="centered" style="padding: 0.5em">
                             <?= $row_eq["mBarcode"] ?>
                         </td>
@@ -220,41 +223,85 @@ $row = mysql_fetch_array($result);
         </div>
 
 
-        <div id="signature" style="border-style: groove; padding: 10px;">
-            <table>
+        <div id="signature">
+            <table border="1">
                 <tr class="centered">
                     <td>
-                        <b>ພະນັກງານສາງ</b>
+                        <b>ຜູ້ຢັ້ງຢືນ</b>
                     </td>
 
                     <td>
-                        <b>ຫົວໜ້າສາງ</b>
+                        <b>ຜູ້ກວດກາ</b>
                     </td>
                     <td>
-                        <b>ວິຊາການຈັດຊື້</b>
+                        <b>ຜູ້ຮັບສິນຄ້າ</b>
                     </td>
                     <td>
-                        <b>ຫົວໜ້າຈັດຊື້</b>
+                        <b>ຜູ້ມອບສິນຄ້າ</b>
                     </td>
                 </tr>
                 <tr class="centered">
-                    <td>
-                        <div class="row" style="border: none;">
-                            <?php
-                            $imagePath = "../dist/signature/" . $row['sign_user_add'];
-                            if (!file_exists($imagePath) || $row['sign_user_add'] == '') {
-                                $imagePath = "";
+              <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                            <?php if ($row_ca['approve_level'] == 3) {
+                                ?>
+                                <div class="row" style="border: none;">
+                                    <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                                </div>
+                                <h4>
+                                    <?= $row_ca['first_name'] ?>
+                                    <?= $row_ca['last_name'] ?>
+                                </h4>
+                                <?php
                             }
                             ?>
-                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
-
-
-                        </div>
-                        <h4>
-                            <?= $row['reciever'] ?>
-                        </h4>
+                        <?php } ?>
                     </td>
-                    <td align="center">
+                 <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                            <?php if ($row_ca['approve_level'] == 2) {
+                                ?>
+                                <div class="row" style="border: none;">
+                                    <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                                </div>
+                                <h4>
+                                    <?= $row_ca['first_name'] ?>
+                                    <?= $row_ca['last_name'] ?>
+                                </h4>
+                                <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                   <td align="center">
                         <?php
 
                         $checkA = checkApproveSignature();
@@ -285,18 +332,10 @@ $row = mysql_fetch_array($result);
                         <?php } ?>
                     </td>
                     <td align="center">
-                        <?php
-
-                        $checkA = checkApproveSignature();
-
-                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
-                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
-                            ?>
-                            <?php if ($row_ca['approve_level'] == 2) {
-                                ?>
+                      
                                 <div class="row" style="border: none;">
                                     <?php
-                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    $imagePath = "../dist/signature/" . $row['signature'];
                                     if (!file_exists($imagePath) || $row_ca['signature'] == '') {
                                         $imagePath = "";
                                     }
@@ -306,50 +345,39 @@ $row = mysql_fetch_array($result);
 
                                 </div>
                                 <h4>
-                                    <?= $row_ca['first_name'] ?>
-                                    <?= $row_ca['last_name'] ?>
+                                    <?= $row['reciever'] ?>
+                              
                                 </h4>
-                                <?php
-                            }
-                            ?>
-                        <?php } ?>
-                    </td>
-                    <td align="center">
-                        <?php
-
-                        $checkA = checkApproveSignature();
-
-                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
-                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
-                            ?>
-                            <?php if ($row_ca['approve_level'] == 3) {
-                                ?>
-                                <div class="row" style="border: none;">
-                                    <?php
-                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
-                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
-                                        $imagePath = "";
-                                    }
-                                    ?>
-                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
-
-
-                                </div>
-                                <h4>
-                                    <?= $row_ca['first_name'] ?>
-                                    <?= $row_ca['last_name'] ?>
-                                </h4>
-                                <?php
-                            }
-                            ?>
-                        <?php } ?>
+                            
                     </td>
                 </tr>
-
+                <!-- <tr>
+                    <td align="center">
+                        <h4>
+                            ຊື່ແຈ້ງ:...............................
+                        </h4>
+                    </td>
+                    <td align="center">
+                        <h4>
+                            ຊື່ແຈ້ງ:...............................
+                        </h4>
+                    </td>
+                    <td align="center">
+                        <h4>
+                            ຊື່ແຈ້ງ:...............................
+                        </h4>
+                    </td>
+                    <td align="center">
+                        <h4>
+                            ຊື່ແຈ້ງ:...............................
+                        </h4>
+                    </td>
+                </tr> -->
             </table>
 
 
         </div>
+        <br>
         <br>
         <div id="tbl_content3">
 

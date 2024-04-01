@@ -314,7 +314,10 @@ if (isset($_GET['notification1']) || isset($_GET['EDPOSV1notification2'])) {
           placeholder: "-- ກະລຸນາເລືອກ --",
           allowClear: true
       });
-   
+      $('#select3').select2({
+          placeholder: "-- ກະລຸນາເລືອກ --",
+          allowClear: true
+      });
 
       //Date picker
       $('#datepicker1').datepicker({

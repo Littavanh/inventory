@@ -2,8 +2,9 @@
 $TokenKey = $_SESSION['EDPOSV1TokenKey'];
 $userId = $_SESSION['EDPOSV1user_id'];
 $isOrderer = $_SESSION['EDPOSV1isOrderer'];
-if($isOrderer ==1){
-    $where = "where approver_id='$isOrderer' and statusApprove_id='2'";
+$isEmpInventory =  $_SESSION['EDPOSV1isEmpInventory'];
+if($isEmpInventory =='1'){
+    $where = "where approver_id='$isEmpInventory' and statusApprove_id='2'";
 }else{
     $where = "where approver_id='$userId' and statusApprove_id='2'";
 }

@@ -76,23 +76,6 @@ if (isset ($_GET["approve"])) {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 if (isset ($_POST["btnSave"])) {

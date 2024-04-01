@@ -28,6 +28,7 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 			$txtDate = $_SESSION['EDPOSV1AddProducttxtDate'];
 			$txtreciever = $_SESSION['EDPOSV1AddProducttxtreciever'];
 			$txtOrderer = $_SESSION['EDPOSV1Orderer'];
+			$txtProposer = $_SESSION['EDPOSV1Proposer'];
 			$txtSupplier = $_SESSION['EDPOSV1AddProductSupllier'];
 			$txtRemark = $_SESSION['EDPOSV1AddProducttxtRemark'];
 			// info product
@@ -48,8 +49,8 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 
 
 
-			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype,`level`,orderer_role) 
-					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','$lineManagerId','$txtOrderer','$invenType','1','1') ";
+			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype,`level`,orderer_role,proposer_id) 
+					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','1','$user_id','$invenType','1','1','$txtProposer') ";
 			$resultH = mysql_query($sql, $conn);
 		}
 
@@ -77,7 +78,7 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 			unset($_SESSION['EDPOSV1AddProducttxtRemark']);
 			unset($_SESSION['EDPOSV1tmpProductID']);
 			unset($_SESSION['EDPOSV1AddProductSupllier']);
-
+			
 			unset($_SESSION['EDPOSV1AddProduct_lotNo']);
 			unset($_SESSION['EDPOSV1AddProduct_txtBillNo']);
 			unset($_SESSION['EDPOSV1AddProduct_txtBillDate']);
@@ -88,6 +89,8 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 			unset($_SESSION['EDPOSV1AddProduct_curr_id']);
 			unset($_SESSION['EDPOSV1AddProduct_PoFile']);
 			unset($_SESSION['EDPOSV1AddProduct_invenType']);
+			unset($_SESSION['EDPOSV1Orderer']);
+			unset($_SESSION['EDPOSV1Proposer']);
 
 
 
@@ -105,8 +108,9 @@ if (isset($_POST["btnAddproduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
 	$txtDate = mysql_real_escape_string(stripslashes($_POST['txtDate']));
 	$txtexp = mysql_real_escape_string(stripslashes($_POST['txtexp']));
 	$txtreciever = mysql_real_escape_string(stripslashes($_POST['txtreciever']));
-	$txtOrderer = mysql_real_escape_string(stripslashes($_POST['txtOrderer']));
-	// $txtOrderer = 1;
+	// $txtOrderer = mysql_real_escape_string(stripslashes($_POST['txtOrderer']));
+	$txtProposer = mysql_real_escape_string(stripslashes($_POST['txtProposer']));
+	$txtOrderer = 1;
 	$txtSupplier = mysql_real_escape_string(stripslashes($_POST['supplierID']));
 	$txtRemark = mysql_real_escape_string(stripslashes($_POST['txtRemark']));
 	$txtprice = mysql_real_escape_string(stripslashes(trim($_POST['txtprice'][$i])));
@@ -137,6 +141,7 @@ if (isset($_POST["btnAddproduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
 	$_SESSION['EDPOSV1AddProducttxtDate'] = $txtDate;
 	$_SESSION['EDPOSV1AddProducttxtreciever'] = $txtreciever;
 	$_SESSION['EDPOSV1Orderer'] = $txtOrderer;
+	$_SESSION['EDPOSV1Proposer'] = $txtProposer;
 	$_SESSION['EDPOSV1AddProductSupllier'] = $txtSupplier;
 	$_SESSION['EDPOSV1AddProducttxtRemark'] = $txtRemark;
 	$_SESSION['EDPOSV1AddProductExpDate'] = $txtexp;

@@ -167,7 +167,7 @@
                       ປະຫວັດການເບີກສິນຄ້າ</a>
                   </li>
                   <?php
-                  if ($_SESSION['EDPOSV1isEmpInventory'] == "yes") {
+                  if ($_SESSION['EDPOSV1isEmpInventory'] == "1") {
 
                     ?>
                     <li <?php if ($_GET['d'] == 'stock/doneAddjust') {
@@ -191,7 +191,7 @@
                       ອະນຸມັດການສົ່ງຄືນສິນຄ້າ</a>
                   </li>
                   <?php
-                  if ($_SESSION['EDPOSV1isEmpInventory'] == "yes") {
+                  if ($_SESSION['EDPOSV1isEmpInventory'] == "1") {
 
                     ?>
                     <li <?php if ($_GET['d'] == 'stock/doneReturn') {
@@ -262,7 +262,7 @@
                       ປະຫວັດການເບີກສິນຄ້າ</a>
                   </li>
                   <?php
-                  if ($_SESSION['EDPOSV1isEmpInventory'] == "yes") {
+                  if ($_SESSION['EDPOSV1isEmpInventory'] == "1") {
 
                     ?>
                     <li <?php if ($_GET['d'] == 'stock1/doneAddjust') {
@@ -288,7 +288,7 @@
                       ອະນຸມັດການສົ່ງຄືນສິນຄ້າ</a>
                   </li>
                   <?php
-                  if ($_SESSION['EDPOSV1isEmpInventory'] == "yes") {
+                  if ($_SESSION['EDPOSV1isEmpInventory'] == "1") {
 
                     ?>
                     <li <?php if ($_GET['d'] == 'stock1/doneReturn') {
