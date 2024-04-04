@@ -48,8 +48,8 @@ if (isset($_POST["btnSave"]) && isset($_SESSION['EDPOSV1role_id'])) {
 
 
 
-			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype,`level`) 
-					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','$lineManagerId','$txtOrderer','$invenType','1') ";
+			$sql = "INSERT INTO tb_import(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id,bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,lot_no,po_file,statusApprove_id,approver_id,orderer,inventype,`level`,orderer_role,proposer_id) 
+					VALUES('$trantmp', '$txtDate', '$txtreciever', '$txtRemark', '1','$user_id',NOW(),1,'$OpenStockID', '$txtSupplier', '$infoID','$txtBillNo','$txtBill_date','$txtWhouse_no','$txtDate_whouse_date','$txtPo_no','$txtPo_date','$txtLot','$file_name1','2','1','$txtOrderer','$invenType','1','1','1') ";
 			$resultH = mysql_query($sql, $conn);
 		}
 
@@ -169,7 +169,7 @@ if (isset($_POST["btnAddproduct"]) && isset($_SESSION['EDPOSV1role_id'])) {
 
 if (isset($_POST["btncancel"]) && isset($_SESSION['EDPOSV1role_id'])) {
 	unset($_SESSION['EDPOSV1AddProduct']);
-	header("Location: ?d=stock/recieve");
+	header("Location: ?d=stock/recieveSub");
 }
 
 if (isset($_POST["btnsaveProduct"]) && isset($_SESSION['EDPOSV1role_id'])) {

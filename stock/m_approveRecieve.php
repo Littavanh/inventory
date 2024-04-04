@@ -4,9 +4,9 @@ $userId = $_SESSION['EDPOSV1user_id'];
 $isOrderer = $_SESSION['EDPOSV1isOrderer'];
 $isEmpInventory =  $_SESSION['EDPOSV1isEmpInventory'];
 if($isEmpInventory =='1'){
-    $where = "where approver_id='$isEmpInventory' and statusApprove_id='2'";
+    $where = "where approver_id='$isEmpInventory' and statusApprove_id='2' and inventype='1'";
 }else{
-    $where = "where approver_id='$userId' and statusApprove_id='2'";
+    $where = "where approver_id='$userId' and statusApprove_id='2' and inventype='1'";
 }
    
 

@@ -4,7 +4,7 @@ session_start();
 htmltage("ການຮັບສິນຄ້າ(ຄັງຍ່ອຍ)");
 
 if (isset($_SESSION['EDPOSV1AddProduct']) && $_SESSION['EDPOSV1tmpProductID'] != '') {
-    include("v_addproduct.php");
+    include("v_addproductSub.php");
 }
 if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id']) || $_SESSION['role_id'] == 4) {
     header("Location: ?d=index");

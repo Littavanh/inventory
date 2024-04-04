@@ -37,7 +37,7 @@ $ddd = ($jj - $kk) / 6;
 						<tr>
 							<td>ຄົ້ນຫາ: </td>
 							<td>
-								<select name="materialID" onchange="document.location='?d=stock/recieve&materialID='+this.value">
+								<select id="select3" name="materialID" onchange="document.location='?d=stock/recieve&materialID='+this.value">
 									<option value="0">-- ລາຍການສິນຄ້າ --</option>
 									<?php while ($row_c = mysql_fetch_array($rs_material, MYSQL_ASSOC)) {
 										$selected = $row_c['materialID'] == base64_decode($_GET['materialID']) ? "selected" : "";

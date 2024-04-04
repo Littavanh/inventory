@@ -8,7 +8,7 @@ $userId = $_SESSION['EDPOSV1user_id'];
 
 //     }
 // }
-    $where = "where approver_id='$userId' and statusApprove_id in (1,2,4)";
+    $where = "where approver_id='$userId' and inventype='1' and statusApprove_id in (1,2,4)";
 
 function loadImportPending($where) {
     //    echo '<script>alert("'.$where.'")</script>';

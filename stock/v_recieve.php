@@ -65,35 +65,14 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                         </div>
                         <!-- <div class="row">
                             <div class="form-group col-md-4"> -->
-                        <div class="row col-md-2 ">
+                        <div class="row col-md-4 ">
                             <div class="form-group col-md-10">
                                 <label>ຜູ້ມອບສິນຄ້າ</label>
                                 <input type="text" readonly name="txtreciever" class="form-control"
                                     value="<?= $_SESSION['EDPOSV1lao_fullname'] ?>" required />
                             </div>
                         </div>
-                        <div class="row col-md-2 ">
-                            <div class="form-group col-md-10">
-                                <label>ຜູ້ສະເໜີຊື້</label>
-                                <select class="form-control" id="select3" name="txtProposer" >
-                                    <option value="0">-- ກະລຸນາເລືອກ --</option>
-                                    <?php
-                                    $loadUser = LoadUserAll();
-
-
-                                    while ($row_u = mysql_fetch_array($loadUser, MYSQL_ASSOC)) {
-                                        $selected = $row_u['user_id'] == $_SESSION['EDPOSV1Proposer'] ? "selected" : "";
-                                        ?>
-                                        <option value="<?= $row_u['user_id'] ?>" <?= $selected ?>>
-                                            <?= $row_u['first_name'] ?>
-                                            <?= $row_u['last_name'] ?>
-                                        </option>
-                                    <?php }
-                                    ?>
-                                </select>
-                              
-                            </div>
-                        </div>
+                       
                         <!-- <div class="row">
                             <div class="form-group col-md-4"> -->
                         <div class="row col-md-4 ">
@@ -122,7 +101,28 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                     rows="1"><?= $_SESSION['EDPOSV1AddProducttxtRemark'] ?></textarea>
                             </div>
                         </div>
+                        <div class="row col-md-4 ">
+                            <div class="form-group col-md-10">
+                                <label>ຜູ້ສະເໜີຊື້</label>
+                                <select class="form-control" id="select3" name="txtProposer" >
+                                    <option value="0">-- ກະລຸນາເລືອກ --</option>
+                                    <?php
+                                    $loadUser = LoadUserAll();
 
+
+                                    while ($row_u = mysql_fetch_array($loadUser, MYSQL_ASSOC)) {
+                                        $selected = $row_u['user_id'] == $_SESSION['EDPOSV1Proposer'] ? "selected" : "";
+                                        ?>
+                                        <option value="<?= $row_u['user_id'] ?>" <?= $selected ?>>
+                                            <?= $row_u['first_name'] ?>
+                                            <?= $row_u['last_name'] ?>
+                                        </option>
+                                    <?php }
+                                    ?>
+                                </select>
+                              
+                            </div>
+                        </div>
                         <!-- <div class="row col-md-2 ">
                             <div class="form-group col-md-10">
                                 <label>ຜູ້ມອບສິນຄ້າ</label>

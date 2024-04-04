@@ -415,11 +415,11 @@
           </ul>
         </li>
       <?php } ?>
-      <li <?php if ($_GET['d'] == 'about/about') {
+      <!-- <li <?php if ($_GET['d'] == 'about/about') {
         echo "class='active'";
       } ?>><a href="index.php?d=about/about"><i
             class="fa fa-question"></i> <span>ກ່ຽວກັບໂປຼແກຼມ</span></a></li>
-      <li><a href="help/view.php" target="_blank"><i class="fa fa-book"></i> <span>ຄູ່ມືນໍາໃຊ້</span></a></li>
+      <li><a href="help/view.php" target="_blank"><i class="fa fa-book"></i> <span>ຄູ່ມືນໍາໃຊ້</span></a></li> -->
       <li><a href="logout.php"><i class="fa fa-sign-out"></i> <span>ອອກໂປຼແກຼມ</span></a></li>
     </ul>
   </section>

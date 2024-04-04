@@ -22,32 +22,32 @@ $row = mysql_fetch_array($result);
     <link type="text/css" rel="stylesheet" href="../css/printformat/formatpage.css" />
     <script src="../js/Action.js" type="text/javascript"></script>
     <script>
-        function loadedCloseWindows() {
-            window.setTimeout(CloseMe, 100);
-        }
+    function loadedCloseWindows() {
+        window.setTimeout(CloseMe, 100);
+    }
 
-        function CloseMe() {
-            window.close();
-        }
+    function CloseMe() {
+        window.close();
+    }
     </script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+    }
 
-        @page {
-            margin: 0;
-        }
+    @page {
+        margin: 0;
+    }
 
-        .container {
-            display: flex;
-            justify-content: space-between;
-        }
+    .container {
+        display: flex;
+        justify-content: space-between;
+    }
 
-        .line {
-            border: 1px solid;
-        }
+    .line {
+        border: 1px solid;
+    }
     </style>
 
 </head>
@@ -122,8 +122,10 @@ $row = mysql_fetch_array($result);
 
                     <td style="padding: 0 5px;">ຜູ້ສະເໜີຊື້</td>
                     <td style="padding: 0 5px;">
-                       <b> <?= $row['proposer_name'] ?>
-                        <?= $row['proposer_last_name'] ?></b>
+                        <b>
+                            <?= $row['proposer_name'] ?>
+                            <?= $row['proposer_last_name'] ?>
+                        </b>
                     </td>
                 </tr>
 
@@ -132,7 +134,9 @@ $row = mysql_fetch_array($result);
                     <td style="padding: 0 5px;"></td>
                     <td style="padding: 0 5px;">ສັງກັດໜ່ວຍງານ</td>
                     <td style="padding: 0 5px;">
-                       <b> <?= $row['info_name'] ?></b>
+                        <b>
+                            <?= $row['info_name'] ?>
+                        </b>
                     </td>
                 </tr>
 
@@ -148,6 +152,7 @@ $row = mysql_fetch_array($result);
                     <td style="padding: 0 5px;">ຈຳນວນ <br /> <span class="item_ct"> Quantity</span></td>
                     <td style="padding: 0 5px;">ລາຄາ <br /> <span class="item_ct"> Price</span></td>
                     <td style="padding: 0 5px;">ລວມ <br /> <span class="item_ct"> Total </span></td>
+                    <td style="padding: 0 5px;">ສະກຸນເງິນ <br /> <span class="item_ct"> Currency </span></td>
                     <!-- <td>ໝາຍເຫດ <br /><span class="item_ct"> Remark</span> </td> -->
                 </tr>
                 <?php
@@ -158,66 +163,103 @@ $row = mysql_fetch_array($result);
                 // }
                 $k = 0;
                 $total_price = 0;
-                $total_sumQty = 0;
-                $total_sumPrice = 0;
+                $total_sumQtyKip = 0;
+                $total_sumPriceKip = 0;
+                $total_sumQtyUsd = 0;
+                $total_sumPriceUsd = 0;
+                $total_sumQtyThb = 0;
+                $total_sumPriceThb = 0;
                 //$discount = 0;
                 while (@$row_eq = mysql_fetch_array($result_eq, MYSQL_ASSOC)) {
                     $k++;
                     $total_price = $row_eq["pur_price"] * $row_eq["unitQty3"]
                         // $discount += $row_eq["discount"];
                         ?>
-                    <tr>
-                        <td class="centered">
-                            <?= $k ?>
-                        </td>
-                        <!--<td><? //=$row_eq["eq_no"]     ?></td>-->
-                        <!--<td><? //=$row_eq["serial_num"]     ?> </td>-->
-                        <td class="centered" style="padding: 0.5em">
-                            <?= $row_eq["mBarcode"] ?>
-                        </td>
-                        <td style="padding: 0.5em">
-                            <?= $row_eq["materialName"] ?>
-                        </td>
-                        <td class="centered">
-                            <?= $row_eq["unitQty3"] ?>
-                        </td>
-                        <td style="padding: 0.5em">
-                            <?= number_format($row_eq["pur_price"], 2, '.', ',') ?>
-                        </td>
-                        <td style="padding: 0.5em">
-                            <?= number_format($total_price, 2, '.', ',') ?>
-                        </td>
-                        <!-- <td style="padding: 0.5em">
-                        <?= $row_eq["Dremark"] ?>
-                    </td> -->
-                    </tr>
-                    <?php
-                    $total_sumQty = $total_sumQty + $row_eq["unitQty3"];
-                    $total_sumPrice = $total_sumPrice + $row_eq["pur_price"] * $row_eq["unitQty3"];
+                <tr>
+                    <td class="centered">
+                        <?= $k ?>
+                    </td>
+                    <!--<td><? //=$row_eq["eq_no"]      ?></td>-->
+                    <!--<td><? //=$row_eq["serial_num"]      ?> </td>-->
+                    <td class="centered" style="padding: 0.5em">
+                        <?= $row_eq["mBarcode"] ?>
+                    </td>
+                    <td style="padding: 0.5em">
+                        <?= $row_eq["materialName"] ?>
+                    </td>
+                    <td class="centered">
+                        <?= $row_eq["unitQty3"] ?>
+                    </td>
+                    <td style="padding: 0.5em">
+                        <?= number_format($row_eq["pur_price"], 2, '.', ',') ?>
+                    </td>
+                    <td style="padding: 0.5em">
+                        <?= number_format($total_price, 2, '.', ',') ?>
+                    </td>
+                    <td class="centered" style="padding: 0.5em">
+                        <?= $row_eq["currency"] ?>
+                    </td>
+                </tr>
+                <?php
+                    if ($row_eq['currency'] == 'ກີບ') {
+                        $total_sumQtyKip = $total_sumQtyKip + $row_eq["unitQty3"];
+                        $total_sumPriceKip = $total_sumPriceKip + $row_eq["pur_price"] * $row_eq["unitQty3"];
+                    }
+                    if ($row_eq['currency'] == 'ໂດລາ') {
+                        $total_sumQtyUsd = $total_sumQtyUsd + $row_eq["unitQty3"];
+                        $total_sumPriceUsd = $total_sumPriceUsd + $row_eq["pur_price"] * $row_eq["unitQty3"];
+                    }
+                    if ($row_eq['currency'] == 'ບາດ') {
+                        $total_sumQtyThb = $total_sumQtyThb + $row_eq["unitQty3"];
+                        $total_sumPriceThb = $total_sumPriceThb + $row_eq["pur_price"] * $row_eq["unitQty3"];
+                    }
                 }
                 ?>
                 <tr>
-                    <td style="padding: 0 5px;" align="right" colspan="3"><b>ລວມ</b></td>
+                    <td style="padding: 0 5px;" align="right" colspan="3"><b>ລວມ ເປັນກີບ</b></td>
                     <td class="centered"><b>
-                            <?= number_format($total_sumQty) ?>
+                            <?= number_format($total_sumQtyKip) ?>
                         </b></td>
                     <td></td>
                     <td style="padding: 0 5px;" colspan="3"><b>
-                            <?= number_format($total_sumPrice, 2, '.', ',') ?>
+                            <?= number_format($total_sumPriceKip, 2, '.', ',') ?>
                         </b></td>
+                   
+                </tr>
+                <tr>
+                    <td style="padding: 0 5px;" align="right" colspan="3"><b>ລວມ ເປັນບາດ</b></td>
+                    <td class="centered"><b>
+                            <?= number_format($total_sumQtyThb) ?>
+                        </b></td>
+                    <td></td>
+                    <td style="padding: 0 5px;" colspan="3"><b>
+                            <?= number_format($total_sumPriceThb, 2, '.', ',') ?>
+                        </b></td>
+               
+                </tr>
+                <tr>
+                    <td style="padding: 0 5px;" align="right" colspan="3"><b>ລວມ ເປັນໂດລາ</b></td>
+                    <td class="centered"><b>
+                            <?= number_format($total_sumQtyUsd) ?>
+                        </b></td>
+                    <td></td>
+                    <td style="padding: 0 5px;" colspan="3"><b>
+                            <?= number_format($total_sumPriceUsd, 2, '.', ',') ?>
+                        </b></td>
+                   
                 </tr>
                 <?php
                 for ($i = $k + 1; $i <= $num_r; $i++) { ?>
-                    <tr>
-                        <td class="centered">
-                            <?= $i ?>
-                        </td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                <tr>
+                    <td class="centered">
+                        <?= $i ?>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
                 <?php } ?>
             </table>
         </div>
@@ -241,7 +283,7 @@ $row = mysql_fetch_array($result);
                     </td>
                 </tr>
                 <tr class="centered">
-              <td align="center">
+                    <td align="center">
                         <?php
 
                         $checkA = checkApproveSignature();
@@ -249,106 +291,106 @@ $row = mysql_fetch_array($result);
                         while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
                             //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
                             ?>
-                            <?php if ($row_ca['approve_level'] == 3) {
+                        <?php if ($row_ca['approve_level'] == 3) {
                                 ?>
-                                <div class="row" style="border: none;">
-                                    <?php
+                        <div class="row" style="border: none;">
+                            <?php
                                     $imagePath = "../dist/signature/" . $row_ca['signature'];
                                     if (!file_exists($imagePath) || $row_ca['signature'] == '') {
                                         $imagePath = "";
                                     }
                                     ?>
-                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
 
 
-                                </div>
-                                <h4>
-                                    <?= $row_ca['first_name'] ?>
-                                    <?= $row_ca['last_name'] ?>
-                                </h4>
-                                <?php
-                            }
-                            ?>
-                        <?php } ?>
-                    </td>
-                 <td align="center">
+                        </div>
+                        <h4>
+                            <?= $row_ca['first_name'] ?>
+                            <?= $row_ca['last_name'] ?>
+                        </h4>
                         <?php
-
-                        $checkA = checkApproveSignature();
-
-                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
-                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
-                            ?>
-                            <?php if ($row_ca['approve_level'] == 2) {
-                                ?>
-                                <div class="row" style="border: none;">
-                                    <?php
-                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
-                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
-                                        $imagePath = "";
-                                    }
-                                    ?>
-                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
-
-
-                                </div>
-                                <h4>
-                                    <?= $row_ca['first_name'] ?>
-                                    <?= $row_ca['last_name'] ?>
-                                </h4>
-                                <?php
-                            }
-                            ?>
-                        <?php } ?>
-                    </td>
-                   <td align="center">
-                        <?php
-
-                        $checkA = checkApproveSignature();
-
-                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
-                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
-                            ?>
-                            <?php if ($row_ca['approve_level'] == 1) {
-                                ?>
-                                <div class="row" style="border: none;">
-                                    <?php
-                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
-                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
-                                        $imagePath = "";
-                                    }
-                                    ?>
-                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
-
-
-                                </div>
-                                <h4>
-                                    <?= $row_ca['first_name'] ?>
-                                    <?= $row_ca['last_name'] ?>
-                                </h4>
-                                <?php
                             }
                             ?>
                         <?php } ?>
                     </td>
                     <td align="center">
-                      
-                                <div class="row" style="border: none;">
-                                    <?php
-                                    $imagePath = "../dist/signature/" . $row['signature'];
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                        <?php if ($row_ca['approve_level'] == 2) {
+                                ?>
+                        <div class="row" style="border: none;">
+                            <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
                                     if (!file_exists($imagePath) || $row_ca['signature'] == '') {
                                         $imagePath = "";
                                     }
                                     ?>
-                                    <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
 
 
-                                </div>
-                                <h4>
-                                    <?= $row['reciever'] ?>
-                              
-                                </h4>
-                            
+                        </div>
+                        <h4>
+                            <?= $row_ca['first_name'] ?>
+                            <?= $row_ca['last_name'] ?>
+                        </h4>
+                        <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                    <td align="center">
+                        <?php
+
+                        $checkA = checkApproveSignature();
+
+                        while (@$row_ca = mysql_fetch_array($checkA, MYSQL_ASSOC)) {
+                            //  echo '<script>alert("'.$row_ca['first_name'].'")</script>';
+                            ?>
+                        <?php if ($row_ca['approve_level'] == 1) {
+                                ?>
+                        <div class="row" style="border: none;">
+                            <?php
+                                    $imagePath = "../dist/signature/" . $row_ca['signature'];
+                                    if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                        $imagePath = "";
+                                    }
+                                    ?>
+                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                        </div>
+                        <h4>
+                            <?= $row_ca['first_name'] ?>
+                            <?= $row_ca['last_name'] ?>
+                        </h4>
+                        <?php
+                            }
+                            ?>
+                        <?php } ?>
+                    </td>
+                    <td align="center">
+
+                        <div class="row" style="border: none;">
+                            <?php
+                            $imagePath = "../dist/signature/" . $row['signature'];
+                            if (!file_exists($imagePath) || $row_ca['signature'] == '') {
+                                $imagePath = "";
+                            }
+                            ?>
+                            <embed src="<?= $imagePath ?>" width="120px" height="120px" />
+
+
+                        </div>
+                        <h4>
+                            <?= $row['reciever'] ?>
+
+                        </h4>
+
                     </td>
                 </tr>
                 <!-- <tr>
@@ -387,7 +429,7 @@ $row = mysql_fetch_array($result);
                 </tr>
                 <tr>
                     <td style="padding: 0 5px; height: 125px;">
-
+                        <?= $row['remark'] ?>
                     </td>
                 </tr>
             </table>
