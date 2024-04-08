@@ -78,8 +78,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 															$imagePath = "dist/image/notfound.png";
 														}
 														?>
-														<embed src="<?=$imagePath?>"  width="100%"
-                                                        height="800px" />
+														<embed src="<?= $imagePath ?>" width="100%" height="800px" />
 
 
 													</div>
@@ -108,8 +107,8 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 															<div class="row col-md-12 ">
 																<div class="form-group col-md-10">
 
-																	<textarea name="txtRemarkReject" class="form-control" readonly
-																		cols="50"
+																	<textarea name="txtRemarkReject" class="form-control"
+																		readonly cols="50"
 																		rows="4"><?= $row['remark_reject'] ?></textarea>
 																</div>
 															</div>
@@ -124,7 +123,7 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											</div>
 
 										</div>
-										<tr>
+										<tr >
 											<td class="centered">
 												<?= $i ?>
 											</td>
@@ -153,27 +152,27 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 												<?= $row['supplierName'] ?>
 											</td>
 											<?php
-                                            if ($row['approver_id'] == 1) {
-                                                ?>
-                                                <td class="centered">
-												<!-- <?= $row['orderer_name'] ?>
+											if ($row['approver_id'] == 1) {
+												?>
+												<td class="centered">
+													<!-- <?= $row['orderer_name'] ?>
 													<?= $row['orderer_lastName'] ?> -->
-                                                   ພະນັງງານສາງ
-                                                </td>
-                                                <?php
-                                            } else {
-                                                ?>
+													ພະນັງງານສາງ
+												</td>
+												<?php
+											} else {
+												?>
 
-                                                <td class="centered">
-                                                    <?= $row['approver'] ?>
-                                                    <?= $row['approver_last_name'] ?>
-                                                </td>
-                                                <?php
-                                            }
-                                            ?>
-											 <td class="centered"><a class="btn btn-warning"
-                                                    href="print/approveRecievePrint.php?d=stock&tranID=<?= $row['tranID'] ?>"
-                                                    target="_blank" role="button"><i class="fa fa-print"></i></td>
+												<td class="centered">
+													<?= $row['approver'] ?>
+													<?= $row['approver_last_name'] ?>
+												</td>
+												<?php
+											}
+											?>
+											<td class="centered"><a class="btn btn-warning"
+													href="print/approveRecievePrint.php?d=stock&tranID=<?= $row['tranID'] ?>"
+													target="_blank" role="button"><i class="fa fa-print"></i></td>
 											<td class="centered">
 												<a href="#"><i data-toggle="modal"
 														data-target="#modal-lg-Image<?= $i ?>">ໄຟລແນບ</i></a>
@@ -198,8 +197,10 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 																data-target="#modal-lg-RejectShow<?= $i ?>">
 																<h4><span class="label label-danger ">ບໍ່ອະນຸມັດ</span></h4>
 															</i></a>
-
-
+													<br>
+														<a href="index.php?d=stock/recieveHistoryDetailEdit&tranID=<?= $row['tranID'] ?>&po_no=<?= $row['po_no'] ?>&po_date=<?= $row['po_date'] ?>&info_name=<?= $row['info_name'] ?>&bill_no=<?= $row['bill_no'] ?>&bill_date=<?= $row['bill_date'] ?>&whouse_no=<?= $row['whouse_no'] ?>&whouse_date=<?= $row['whouse_date'] ?>"><i >
+																<h4><span class="label label-primary ">ແກ້ໄຂລາຍການໃໝ່</span></h4>
+															</i></a>
 													</td>
 												<?php
 											} else {
@@ -211,7 +212,12 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 											}
 											?>
 											<!-- <td class="centered"> <a class="btn btn-success" href="?d=stock1/approveRecieve&approve=<?= $row['tranID'] ?>" onclick="return confirm('ທ່ານຕ້ອງການອະນຸມັດແທ້ບໍ່ ?')">ອະນຸມັດ</a></td> -->
-											<td>	<h5> <?=$row['remark_reject']?></h5></td>
+											<td>
+												<h5>
+													<?= $row['remark_reject'] ?>
+												</h5>
+											</td>
+
 										</tr>
 										<?php
 										$i++;
