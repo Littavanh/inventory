@@ -2,7 +2,13 @@
 date_default_timezone_set('Asia/Vientiane');
 session_start();
 htmltage("ການຮັບສິນຄ້າ");
-
+$get_auto_id = nr_execute("SELECT whouse_no,date_add FROM tb_import order by date_add DESC limit 1");
+if ($get_auto_id != "") {
+	$autoId = "$get_auto_id" + 1;
+	$whouse_no = str_pad($autoId, 5, '0', STR_PAD_LEFT);
+} else {
+	$whouse_no = str_pad(1, 5, '0', STR_PAD_LEFT);
+}
 if (isset($_SESSION['EDPOSV1AddProduct']) && $_SESSION['EDPOSV1tmpProductID'] != '') {
     include("v_addproduct.php");
 }
@@ -56,9 +62,9 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input type="date" name="txtDate" class="form-control pull-right" autocomplete="off"
+                                    <input readonly type="date" name="txtDate" class="form-control pull-right" autocomplete="off"
                                         data-date-format="yyyy-mm-dd"
-                                        value="<?= $_SESSION['EDPOSV1AddProducttxtDate'] ?>" required>
+                                        value="<?= date('Y-m-d') ?>" required>
 
                                 </div>
                             </div>
@@ -176,8 +182,8 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                         <div class="row col-md-12 ">
                             <div class="form-group col-md-2">
                                 <label>ເລກທີ ໃບຮັບສິນຄ້າ</label>
-                                <input type="text" name="txtWhouse_no" class="form-control"
-                                    value="<?= $_SESSION['EDPOSV1AddProduct_txtWhouseNo'] ?>" />
+                                <input type="text" readonly name="txtWhouse_no" class="form-control"
+                                    value="<?= $whouse_no ?>" />
                             </div>
                             <div class="form-group col-md-2">
                                 <label>ລົງວັນທີ</label>
@@ -185,9 +191,9 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input type="date" name="txtDate_whouse_date" class="form-control pull-right"
+                                    <input readonly type="date" name="txtDate_whouse_date" class="form-control pull-right"
                                         id="TimepickerWhouse" autocomplete="off" data-date-format="yyyy-mm-dd"
-                                        value="<?= $_SESSION['EDPOSV1AddProduct_WhouseDate']; ?>">
+                                        value="<?= date('Y-m-d') ?>">
                                 </div>
                             </div>
                         </div>

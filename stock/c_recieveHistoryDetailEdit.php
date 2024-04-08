@@ -15,19 +15,25 @@ if (isset($_GET["del"])) {
     }
 }
 
-if (isset($_GET["edit"])) {
-    $id = $_GET['edit'];
+
+if (isset($_POST["btnSubmitAgain"])) {
+    $id = $_POST['txtTranID'];
 
 
-    $sql = "UPDATE tb_import_detail SET statusApprove_id='2' WHERE tranID ='$id'";
+    $sql = "UPDATE tb_import SET statusApprove_id='2' WHERE tranID ='$id'";
 
     $result = mysql_query($sql, $conn);
     if ($result) {
-        header("Location: ?d=stock/recieveHistory");
+        $sql1 = "UPDATE tb_import_detail SET statusApprove_id='2' WHERE tranID ='$id'";
 
+        $result1 = mysql_query($sql1, $conn);
+        if ($result1) {
+            header("Location: ?d=stock/recieveHistory");
+        } else {
+            echo "<center><h2>ERROR Delete</h2></center>";
+        }
     } else {
         echo "<center><h2>ERROR Delete</h2></center>";
     }
 }
-
 ?>
