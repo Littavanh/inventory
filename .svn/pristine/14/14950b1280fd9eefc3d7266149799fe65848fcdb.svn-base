@@ -1,0 +1,87 @@
+<?php 
+    $Get_infoID= $_SESSION['EDPOSV1info_id'];
+    $Get_infoName=$_SESSION['EDPOSV1info_name'];
+
+    $infoID = mysql_real_escape_string(stripslashes($_GET['infoID']));  
+	$kf_id = mysql_real_escape_string(stripslashes(base64_decode($_GET['kf_id'])));
+	
+	// -------------------------------------------	
+$whereclause = "";
+// if ($infoID >'0') {
+//     $whereclause .= " v_material2.info_id='$infoID'  AND  ";
+//      $Get_infoID= $infoID ;
+// } 
+//  if ($infoID =='') {
+//     $whereclause .= " v_material2.info_id='$Get_infoID'  AND  ";
+//     $Get_infoID= $Get_infoID ;
+// }
+$whereclause .= " v_material2.status_id IN (3)   ";
+
+if ($whereclause != "") $whereclause = "WHERE " . substr($whereclause, 0, strlen($whereclause)-5);
+
+
+$params = "";
+$params .= "startdate=$startdate&enddate=$enddate&kf_id=$kf_id&";
+ 
+
+// ------------------------------------- PAGE ------------------------------ //
+$pagesize = 50;
+$start =  (int)$_GET['start'];
+    
+$limitclause = "LIMIT $start, $pagesize";
+
+
+// --------------------------------------------------------- Build Paging
+//$catcount = nr_execute("SELECT COUNT(*) FROM v_transaction $whereclause ");
+function SumMaterial_CountRow() {
+    return mysql_query("SELECT distinct tb_kind_food.kf_name , tb_kind_food.printerNo , tb_kind_food.kf_name , 
+                            tb_kind_food.printerNo , v_material2.materialID , v_material2.materialName , 
+                            v_material2.materialRemark , v_material2.materialRemark1 , v_material2.materialRemark2 , 
+                            v_material2.unitName1 , v_material2.unitQty1 , v_material2.unitName2 , v_material2.unitQty2 , 
+                            v_material2.unitName3 , v_material2.unitQty3 , v_material2.min_stock , 
+                            v_material2.mBarcode , v_material2.ingredient , 
+                            v_material2.info_id 
+                            FROM v_material2 
+                            INNER JOIN tb_kind_food ON (v_material2.kf_id = tb_kind_food.kf_id and v_material2.info_id = tb_kind_food.info_id) 
+                            
+                            WHERE  v_material2.status_id IN (3) 
+                            ORDER BY v_material2.mBarcode ");
+}
+
+/*
+$catcount=0;
+$RS_CountRow = SumMaterial_CountRow($Get_infoID);
+while ($item_CR = mysql_fetch_array($RS_CountRow)) {
+    $catcount++;
+}
+
+$pagecount = ceil($catcount / $pagesize);
+$pagenum = floor($start/$pagesize) +1;
+$starttext = $start+1;
+$endtext = min($start + $pagesize, $catcount);
+$pagedescription = "ຫນ້າທີ $pagenum, ສະແດງລາຍການທີ $starttext ຫາ $endtext, ຈາກທັງຫມົດ $catcount ລາຍການ";
+*/
+
+
+
+function LoadPrice_setting($whereclause, $limitclause) {      						     						
+		return mysql_query("SELECT distinct tb_kind_food.kf_name , tb_kind_food.printerNo , tb_kind_food.kf_name , 
+                            tb_kind_food.printerNo , v_material2.materialID , v_material2.materialName , 
+                            v_material2.materialRemark , v_material2.materialRemark1 , v_material2.materialRemark2 , 
+                            v_material2.unitName1 , v_material2.unitQty1 , v_material2.unitName2 , v_material2.unitQty2 , 
+                            v_material2.unitName3 , v_material2.unitQty3 , v_material2.min_stock , 
+                            v_material2.mBarcode , v_material2.ingredient , 
+                            v_material2.info_id 
+                            FROM v_material2 
+                            INNER JOIN tb_kind_food ON (v_material2.kf_id = tb_kind_food.kf_id )                             
+                            WHERE  v_material2.status_id IN (3) 
+                            ORDER BY v_material2.mBarcode $limitclause"); 												
+}
+
+ 									
+    
+							
+function LoadInfo() { 
+    return mysql_query("select distinct info_id, info_name, info_id from tb_info WHERE status_id IN (1)  ");
+}
+ 

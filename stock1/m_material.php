@@ -15,7 +15,7 @@ if ($infoID >'0') {
     $whereclause .= " v_material2_.info_id='$Get_infoID'  AND  ";
     $Get_infoID= $Get_infoID ;
 }
-$whereclause .= " v_material2_.status_id IN (3) AND v_material2_.materialID NOT IN (1)   AND ";
+$whereclause .= " v_material2_.status_id IN (3)  AND ";
 
 if ($whereclause != "") $whereclause = "WHERE " . substr($whereclause, 0, strlen($whereclause)-5);
 
@@ -44,7 +44,7 @@ function SumMaterial_CountRow($Get_infoID) {
                             FROM v_material2_ 
                             INNER JOIN tb_kind_food_ ON (v_material2_.kf_id = tb_kind_food_.kf_id and v_material2_.info_id = tb_kind_food_.info_id) 
                             
-                            WHERE v_material2_.info_id='$Get_infoID' AND v_material2_.status_id IN (3) AND v_material2_.materialID NOT IN (1)  
+                            WHERE v_material2_.info_id='$Get_infoID' AND v_material2_.status_id IN (3)   
                             ORDER BY v_material2_.mBarcode ");
 }
 
@@ -74,7 +74,7 @@ function LoadPrice_setting($whereclause, $Get_infoID, $limitclause) {
                             v_material2_.info_id 
                             FROM v_material2_ 
                             INNER JOIN tb_kind_food_ ON (v_material2_.kf_id = tb_kind_food_.kf_id and v_material2_.info_id = tb_kind_food_.info_id)                             
-                            WHERE v_material2_.info_id='$Get_infoID' AND v_material2_.status_id IN (3) AND v_material2_.materialID NOT IN (1)  
+                            WHERE v_material2_.info_id='$Get_infoID' AND v_material2_.status_id IN (3) 
                             ORDER BY v_material2_.mBarcode $limitclause"); 												
 }
 

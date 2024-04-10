@@ -219,11 +219,11 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
                         </div>
 
                         <!-- lot -->
-                        <div class="row col-md-12 ">
+                        <div class="row col-md-12 "  >
                             <div class="form-group col-md-4">
-                                <label>ຄັ້ງທີ</label>
+                                <!-- <label >ຄັ້ງທີ</label> -->
 
-                                <input type="text" name="txtLot" class="form-control"
+                                <input  type="hidden" name="txtLot" class="form-control"
                                     value="<?= $_SESSION['EDPOSV1AddProduct_lotNo'] ?>" required />
                             </div>
                         </div>

@@ -109,7 +109,7 @@ function selkindfood($infoID)
 
 function selMaterialList1($infoID)
 {
-	return mysql_query(" select * from v_material_ WHERE status_id IN (3) and materialID NOT IN (1) and info_id='$infoID' ");
+	return mysql_query(" select * from v_material_ WHERE status_id IN (3)  and info_id='$infoID' ");
 }
 
 

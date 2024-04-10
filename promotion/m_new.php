@@ -6,7 +6,7 @@
 	// -------------------------------------------	
 $whereclause = "";
 //if ($kf_id != 0) $whereclause .= " kf_id = '$kf_id' AND ";
-$whereclause .= " status_id IN (3) AND materialID NOT IN (1) AND ";
+$whereclause .= " status_id IN (3)  AND ";
 
 if ($whereclause != "") $whereclause = "WHERE " . substr($whereclause, 0, strlen($whereclause)-5);
 

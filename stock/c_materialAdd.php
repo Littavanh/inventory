@@ -241,7 +241,7 @@ if (isset($_POST['btnSaveProduct']) && isset($_SESSION['EDPOSV1role_id']) && $_S
 		} else {
 			$exist = '';
 		}
-
+		
 		if ($exist == '' && $txtprice3 >= 0) {
 			// insert to material
 			sql_execute("INSERT INTO tb_material(info_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, uname1, unitQty1,uname2, unitQty2, uname3, unitQty3,status_id,user_add,date_add,user_edit,date_edit, min_stock, kf_id, ingredient, mOpenStock) 
@@ -249,39 +249,39 @@ if (isset($_POST['btnSaveProduct']) && isset($_SESSION['EDPOSV1role_id']) && $_S
 			// GET material ID
 			$GetMaxMaterialID = nr_execute("SELECT MAX(materialID) as materialID FROM tb_material WHERE info_id='$infoID'");
 			// insert food list
-			if ($cbIngredient != '1') {
-				if ($txtprice1 >= 0) {
-					$newItemName1 = $txtm_name . ' ' . $unit1;;
-					sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
-							VALUES('$infoID','$kf_id', '$txtBarcode1', '$newItemName1', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
-					// GET food ID
-					$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
-					// insert receipe
-					sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
-						VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty1','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice1','$txtprice12','0','1', '$CurPrice1' ) ");
-				}
-				if ($txtprice2 >= 0) {
-					$newItemName2 = $txtm_name . ' ' . $unit2;
-					sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
-							VALUES('$infoID','$kf_id', '$txtBarcode2', '$newItemName2', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
-					// GET food ID
-					$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
-					// insert receipe
-					sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+			// if ($cbIngredient != '1') {
+			// 	if ($txtprice1 >= 0) {
+			// 		$newItemName1 = $txtm_name . ' ' . $unit1;;
+			// 		sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+			// 				VALUES('$infoID','$kf_id', '$txtBarcode1', '$newItemName1', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
+			// 		// GET food ID
+			// 		$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
+			// 		// insert receipe
+			// 		sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+			// 			VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty1','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice1','$txtprice12','0','1', '$CurPrice1' ) ");
+			// 	}
+			// 	if ($txtprice2 >= 0) {
+			// 		$newItemName2 = $txtm_name . ' ' . $unit2;
+			// 		sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+			// 				VALUES('$infoID','$kf_id', '$txtBarcode2', '$newItemName2', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
+			// 		// GET food ID
+			// 		$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
+			// 		// insert receipe
+			// 		sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
 				
-						VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty2','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice2','$txtprice22','0','2', '$CurPrice1' ) ");
-				}
-				if ($txtprice3 >= 0) {
-					$newItemName3 = $txtm_name;
-					sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
-							VALUES('$infoID','$kf_id', '$txtBarcode3', '$newItemName3', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
-					// GET food ID
-					$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
-					// insert receipe
-					sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
-						VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty3','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice3','$txtprice32','0', '3', '$CurPrice1' ) ");
-				}
-			}
+			// 			VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty2','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice2','$txtprice22','0','2', '$CurPrice1' ) ");
+			// 	}
+			// 	if ($txtprice3 >= 0) {
+			// 		$newItemName3 = $txtm_name;
+			// 		sql_execute("INSERT INTO tb_food_drink(info_id, kf_id, fd_Barcode, fd_name, detail1, detail2, detail3, price,photo,status_id,user_add,date_add,user_edit,date_edit) 
+			// 				VALUES('$infoID','$kf_id', '$txtBarcode3', '$newItemName3', '$txtm_Remark', '$txtm_Remark1', '$txtm_Remark2','0','$file_name','8','$user_id',NOW(), 0,'0000-00-00 00:00:00') ");
+			// 		// GET food ID
+			// 		$GetMaxFoodID = nr_execute("SELECT MAX(fd_id) AS fd_id FROM tb_food_drink WHERE info_id='$infoID'");
+			// 		// insert receipe
+			// 		sql_execute("INSERT INTO tb_recipe(info_id, fd_id,materialID, recipeCapacity,remark,status_id,user_add,date_add,user_edit,date_edit, price, price2,price3, unitID, cy_id) 
+			// 			VALUES('$infoID','$GetMaxFoodID', '$GetMaxMaterialID', '$unitNameQty3','','3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$txtprice3','$txtprice32','0', '3', '$CurPrice1' ) ");
+			// 	}
+			// }
 
 
 			$success = "ບັນທຶກຂໍ້ມູນສໍາເລັດແລ້ວ ";

@@ -46,4 +46,4 @@ if(isset($_GET["del_id"]) && isset($_SESSION['EDPOSV1role_id']) && $_SESSION['ED
 }
   
 
-$result = LoadPrice_setting($whereclause, $Get_infoID, "");
+$result = LoadPrice_setting($whereclause, $Get_infoID);
