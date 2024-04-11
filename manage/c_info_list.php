@@ -27,20 +27,18 @@ if (isset($_POST['btnsave']) && isset($_POST['type']) && $_SESSION['EDPOSV1role_
 			switch ($_POST['type'][$i]) {	
 				case "added" :	
 					if (mysql_num_rows(mysql_query("SELECT * FROM tb_info WHERE info_name = '$info_name' and info_tel='$info_tel' and status_id IN (1) ")) == 0) {	
-						sql_execute("insert into tb_info (info_id, info_name, info_addr, info_tel, info_owner, bill_no, 
-									bill_date, printReceive, saveInfoCus, status_id, dbch, regNo,  info_logo, exp_num, shopType)
-									SELECT '$maxInfoID', '$info_name', '$info_addr', '$info_tel', '$info_owner', 100, NOW(), '$printReceive', '$saveInfoCus', 1,1, regNo,  info_logo,1,1
-									FROM tb_info WHERE info_id='$Get_infoID' ");
+						sql_execute("INSERT INTO tb_info ( info_name, info_addr, info_tel, info_owner, info_logo) 
+						values ('$info_name','$info_addr', '$info_tel','', '');");
 						/* insert material */
-						$maxInfoID_new = nr_execute("SELECT MAX(info_id) as maxInfoID FROM tb_info ");
-						sql_execute("insert into tb_material (materialID, info_id, kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, 
-									unitQty1,  unitQty2,  unitQty3, min_stock,  status_id, user_add, date_add, ingredient, mOpenStock, dbch)
-									SELECT 	materialID, '$maxInfoID_new', kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2,  
-										unitQty1,  unitQty2,  unitQty3, min_stock,  status_id, '$user_id', NOW(), ingredient, mOpenStock, 1
-									FROM 	tb_material WHERE info_id='$Get_infoID' and materialID = 1");
-						/* insert unit */
-						sql_execute("insert into tb_day_leave (info_id, dayleave_amount, dayleave_remark, user_add, date_add)
-									VALUES ('$maxInfoID_new', '14', '', '$user_id', NOW())");
+						// $maxInfoID_new = nr_execute("SELECT MAX(info_id) as maxInfoID FROM tb_info ");
+						// sql_execute("insert into tb_material (materialID, info_id, kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2, 
+						// 			unitQty1,  unitQty2,  unitQty3, min_stock,  status_id, user_add, date_add, ingredient, mOpenStock, dbch)
+						// 			SELECT 	materialID, '$maxInfoID_new', kf_id, mBarcode, materialName, materialRemark, materialRemark1, materialRemark2,  
+						// 				unitQty1,  unitQty2,  unitQty3, min_stock,  status_id, '$user_id', NOW(), ingredient, mOpenStock, 1
+						// 			FROM 	tb_material WHERE info_id='$Get_infoID' and materialID = 1");
+						// /* insert unit */
+						// sql_execute("insert into tb_day_leave (info_id, dayleave_amount, dayleave_remark, user_add, date_add)
+						// 			VALUES ('$maxInfoID_new', '14', '', '$user_id', NOW())");
 
 						$success = " ເພີ່ມຂໍ້ມູນສໍາເລັດແລ້ວ ...!";
 						 
@@ -54,8 +52,8 @@ if (isset($_POST['btnsave']) && isset($_POST['type']) && $_SESSION['EDPOSV1role_
 									 remark='$txtremark', status_id='6', user_add='$user_id', date_add=NOW()
 										WHERE payID = '$payID' " );
 						*/
-						sql_execute("UPDATE tb_info SET info_name='$info_name', info_addr='$info_addr', info_tel='$info_tel', info_owner='$info_owner', 
-									printReceive='$printReceive', saveInfoCus='$saveInfoCus', dbch=1 
+						sql_execute("UPDATE tb_info SET info_name='$info_name', info_addr='$info_addr', info_tel='$info_tel'
+									
 									WHERE info_id='$infoIDF' ");
 
 						$success = " ແກ້ໄຂຂໍ້ມູນສໍາເລັດແລ້ວ ...!";

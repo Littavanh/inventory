@@ -134,7 +134,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 			<input type="hidden" name="eq_id[]" />
 		</td>
 		<td class="eqcodecols"><input type="text" name="txtkf_name[]" size="" value="" autocomplete="off" /></td>
-		<td class="eqcodecols">
+		<!-- <td class="eqcodecols">
 			<?php if ($_SESSION['EDPOSV1role_id'] <= '2') { ?>
 				<select name="infoID[]">
 					<?php
@@ -150,7 +150,7 @@ $whereclause = " WHERE status_id IN (8,9)";
 					<option value="<?= $Get_infoID ?>"><?= $Get_infoName ?></option>
 				</select>
 			<?php } ?>
-		</td>
+		</td> -->
 		<td>
 			<input type="text" name="txtviewOrder[]" size="" value="<?= $row['viewOrder'] ?>" autocomplete="off" />
 		</td>

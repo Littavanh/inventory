@@ -19,14 +19,14 @@ if (isset($_POST['type']) && $_SESSION['EDPOSV1role_id'] <= 3  ) {
 					if (mysql_num_rows(mysql_query("SELECT * FROM tb_kind_food WHERE kf_name = '$kf_name' and status_id = 3 and info_id='$infoID'")) == 0) {						
 						
 						sql_execute("INSERT INTO tb_kind_food(kf_name, status_id,user_add,date_add,user_edit,date_edit, info_id, viewOrder) 
-										VALUES('$kf_name', '3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '$infoID', '$txtviewOrder') ");
+										VALUES('$kf_name', '3','$user_id',NOW(), 0,'0000-00-00 00:00:00', '0', '$txtviewOrder') ");
 						$success = " ເພີ່ມຂໍ້ມູນສໍາເລັດແລ້ວ ...!";
 					} else { $exist = $kf_name." ມີໃນຖານຂໍ້ມູນແລ້ວ ...!";}
 				break;
 					
 				case "edited":							
 					sql_execute(" UPDATE tb_kind_food SET kf_name = '$kf_name', info_id='$infoID',
-								user_edit = '$user_id',date_edit=NOW(), edit_to = '$kf_name', viewOrder='$txtviewOrder' WHERE kf_id = '$kf_id' and  info_id='$infoid_old'" );
+								user_edit = '$user_id',date_edit=NOW(), edit_to = '$kf_name', viewOrder='$txtviewOrder' WHERE kf_id = '$kf_id'" );
 							$success = " ແກ້ໄຂຂໍ້ມູນສໍາເລັດແລ້ວ ...!";
 				break;
 			}
@@ -42,11 +42,11 @@ if(isset($_GET["del_id"]) &&(($_SESSION['EDPOSV1role_id']) <= 3)){
 	$info_idDel = mysql_real_escape_string(stripslashes($_GET['infoID']));
 	$id = mysql_real_escape_string(stripslashes( base64_decode($_GET['del_id'])));
 	$id = substr($id, 0, strlen($id)-11);
-	$sql = "UPDATE tb_kind_food SET status_id = 20, user_edit = '$usr_id', date_edit = NOW() WHERE kf_id ='$id' and info_id='$info_idDel'";	 
+	$sql = "UPDATE tb_kind_food SET status_id = 20, user_edit = '$usr_id', date_edit = NOW() WHERE kf_id ='$id'";	 
 	$result = mysql_query($sql, $conn);	
 
-	$sql = "UPDATE tb_food_drink SET status_id = 20, user_edit = '$usr_id', date_edit = NOW() WHERE kf_id ='$id' and info_id='$info_idDel'";	 
-	$result = mysql_query($sql, $conn);	
+	// $sql = "UPDATE tb_food_drink SET status_id = 20, user_edit = '$usr_id', date_edit = NOW() WHERE kf_id ='$id' and info_id='$info_idDel'";	 
+	// $result = mysql_query($sql, $conn);	
 	
 	if($result){
 		header("Location: ?d=manage/category&infoID=$info_idDel");	

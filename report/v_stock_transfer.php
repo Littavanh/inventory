@@ -182,7 +182,7 @@ date_default_timezone_set('Asia/Vientiane');
 
 									<tr>
 										<td>
-											<?= $j ?> | <?= $itemD['kf_id'] ?>
+											<?= $j  ?>
 										</td>
 										<td>
 											<?= $itemD['mBarcode'] ?>
