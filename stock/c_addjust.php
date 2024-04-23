@@ -39,8 +39,9 @@ if (isset($_POST["btnAdd"])) {
 			copy($_FILES["edit_fileUpload"]["tmp_name"], "dist/image/addjust/" . $file_name1);
 		}
 		$boFile = $_SESSION['EDPOSV1AddProduct_BoFile'];
-
+		
 		for ($i = 0; $i < count($_POST['type']); $i++) {
+		
 			$addInfoID = mysql_real_escape_string(stripslashes($_POST['addInfoID'][$i]));
 			$txtmaterialID = mysql_real_escape_string(stripslashes($_POST['id'][$i]));
 			$txtmaterialName = mysql_real_escape_string(stripslashes($_POST['txtmaterialName'][$i]));
