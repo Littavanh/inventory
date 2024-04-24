@@ -1,6 +1,6 @@
 <?php
 session_start();
-htmltage("ສົ່ງສິນຄ້າອອກສາງ");
+htmltage("ການເບີກສິນຄ້າ");
 if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'])) {
 	header("Location: ?d=index");
 }
@@ -75,7 +75,7 @@ if ($get_auto_id != "") {
 									<?php
 									$rs_info = LoadCategory();
 									while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
-
+										$selected = $row_c['kf_id'] == $_GET['kf_id'] ? "selected" : "";
 										?>
 
 										<option value="<?= $row_c['kf_id'] ?>" <?= $selected ?>>
@@ -134,9 +134,8 @@ if ($get_auto_id != "") {
 										<i class="fa fa-calendar"></i>
 									</div>
 									<input type="date" name="txtDateWant" class="form-control pull-right"
-										 data-date-format="yyyy-mm-dd"
-										value="<?= $_SESSION['EDPOSV1AddJustDateWant'] ?>" required
-										autocomplete="off" />
+										data-date-format="yyyy-mm-dd" value="<?= $_SESSION['EDPOSV1AddJustDateWant'] ?>"
+										required autocomplete="off" />
 								</div>
 							</div>
 						</div>
@@ -184,7 +183,10 @@ if ($get_auto_id != "") {
 							</thead>
 							<tbody id="body">
 								<?php $i = 1;
+									$num_rows = mysql_num_rows($SumResult);
+									// echo '<script>alert("'.$num_rows.'")</script>';
 								while ($item = mysql_fetch_array($SumResult)) {
+									
 									$whereGroupID = $item['materialID'];
 									$cvgroup11 = 0;
 									$cvgroup12 = 0;
@@ -210,7 +212,8 @@ if ($get_auto_id != "") {
 									<tr>
 										<td class="centered">
 											<?= ($i + $start) ?>
-											<!-- | <?= $item['info_id'] ?> | <?= $item['kf_id'] ?> -->
+											<input type="hidden" name="type[]" value="u" />
+											<input type="hidden" name="num" value="<?=$num_rows?>" />
 										</td>
 										<td class="centered">
 											<?= $item['mBarcode'] ?>
@@ -224,22 +227,9 @@ if ($get_auto_id != "") {
 												<?= $item['materialName'] ?>
 											</label>
 										</td>
-										<!-- <td><strong><input type="hidden" name="type[]" class="type" value="unchanged" />
-												<input type="hidden" name="tranID[]" value="<?= $item['tranID'] ?>" />
-												<input type="hidden" name="addInfoID[]" value="<?= $item['info_id'] ?>" />
-												<input type="hidden" name="txtexp_date[]" value="<?= $item['exp_date'] ?>" />
-												<input type="hidden" name="id[]" value="<?= $item['materialID'] ?>" />
-												<input type="hidden" name="txtSqty1[]" value="<?= $cvgroup12 ?>" />
-												<input type="hidden" name="txtSqty2[]" value="<?= $cvgroup22 ?>" />
-												<input type="hidden" name="txtSqty3[]" value="<?= $cvgroup21 ?>" />
-												<input type="hidden" name="txtcap1[]" value="<?= $item['cap1'] ?>" />
-												<input type="hidden" name="txtcap2[]" value="<?= $item['cap2'] ?>" />
-												<input type="hidden" name="txtcap3[]" value="<?= $item['cap3'] ?>" />
-												<input type="hidden" name="txtStockQTY[]" value="<?= $item['unitQty3'] ?>" />
-												<input type="hidden" name="txtunitname3[]" value="<?= $item['unitName3'] ?>" />
-												<?= $cvgroup12 . $item['unitName1'] . ' / ' . $cvgroup22 . $item['unitName2'] . ' / ' . $cvgroup21 . $item['unitName3'] ?></strong>
-										</td> -->
-										<td><strong><input type="hidden" name="type[]" class="type" value="unchanged" />
+
+										<td><strong>
+
 												<input type="hidden" name="tranID[]" value="<?= $item['tranID'] ?>" />
 												<input type="hidden" name="addInfoID[]" value="<?= $item['info_id'] ?>" />
 												<input type="hidden" name="txtexp_date[]"
@@ -262,14 +252,7 @@ if ($get_auto_id != "") {
 											<?= $item['exp_date'] ?>
 											<input type="hidden" name="txtExpDate[]" value="<?= $item['exp_date'] ?>">
 										</td>
-										<!-- <?php if ($item['cap1'] > 0) { ?>
-											<td class="eqcodecols">
-												<input type="text" name="txtQTY1[]" size='10%' onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" />
-											</td>
-										<?php } else { ?><td bgcolor="#999999"></td><?php }
-										if ($item['cap2'] > 0) { ?>
-											<td class="eqcodecols"><input type="text" name="txtQTY2[]" size='10%' onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off"></td>
-										<?php } else { ?><td bgcolor="#999999"></td><?php } ?> -->
+										
 										<?php if ($item['cap3'] > 0) { ?>
 											<td class="eqcodecols"><input type="text" name="txtQTY3[]" size='10%'
 													onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" />
@@ -295,46 +278,25 @@ if ($get_auto_id != "") {
 										</td>
 									</tr>
 									<?php $i++;
-								} ?>
+
+								}
+								?>
 							</tbody>
 						</table>
-						<div class="paging">
-							<?php
-							if ($pagecount > 1) {
-								if ($pagenum > 1)
-									echo "<a href='?d=report/material_instock&$params&start=" . (($pagenum - 2) * $pagesize) . "' $isselected>&lt; ກັບຄືນ</a>";
-								$j = 1;
-								$g_start = 0;
-								if ($_GET['start'] >= $pagesize * 4)
-									$g_start = ($_GET['start'] / $pagesize) - 4;
 
-								for ($i = $g_start; $i < $pagecount; $i++) {
-									if ($i == $pagenum - 1)
-										$isselected = "class='selected'";
-									else
-										$isselected = "";
-
-									if ($j <= 15) {
-										echo "<a href='?d=report/material_instock&$params&start=" . ($i * $pagesize) . "' $isselected>" . ($i + 1) . "</a>";
-									}
-									$j++;
-								}
-								if ($pagenum < $pagecount)
-									echo "<a href='?d=report/material_instock&$params&start=" . ($pagenum * $pagesize) . "' $isselected>ຕໍ່ໄປ  &gt;</a>";
-							}
-							?>
-						</div>
 					</div>
-					<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
-						<div class="box-footer">
 
-							<button type="submit" class="btn btn-primary" name="btnAdd">ເພີ່ມ</button>
-						</div>
-					<?php } ?>
+					<div class="box-footer">
+
+						<!-- <input type="submit" class="btn btn-primary"  value="  ເພີ່ມ  " /> -->
+						<button type="submit" class="btn btn-primary" name="btnAddItem"  >ເພີ່ມ</button>
+					</div>
+
 				</div>
 			</div>
 		</div>
-
+	</form>
+	<form method="post" action="?d=stock/addjust" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="box">
@@ -393,9 +355,9 @@ if ($get_auto_id != "") {
 					</div>
 					<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
 						<div class="box-footer">
-						<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
+							<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
 							<input type="submit" class="btn btn-danger" name="btnClear" value="  Clear  " />
-							
+
 
 						</div>
 					<?php } ?>
@@ -404,3 +366,4 @@ if ($get_auto_id != "") {
 		</div>
 	</form>
 </section>
+
