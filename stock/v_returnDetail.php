@@ -111,18 +111,20 @@ if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'
 	</form>
 </section>
 <script>
+	
+
 	function cal(qty, i) {
 
 		txtQty = document.getElementById("txtQty" + i).value;
 
-		qty = qty;
-		// alert(txtQty);
-		// alert(qty);
-		if (txtQty >= qty) {
+		 qty = qty;
+	
+		if (parseInt(txtQty) >= parseInt(qty)) {
 			document.getElementById("txtReturn" + i).value = txtQty - qty;
 			console.log(document.getElementById("txtReturn" + i).value);
 		} else {
-			alert("ຈຳນວນນຳໃຊ້ຕ້ອງນ້ອຍກ່ວາຈຳນວນທີ່ເບີກມາ!!");
+			alert('ຈຳນວນນຳໃຊ້: '+qty+ ' ຕ້ອງນ້ອຍກ່ວາຈຳນວນເບີກ: '+txtQty);
+			
 			document.getElementById("txtUsed" + i).value = "";
 			document.getElementById("txtReturn" + i).value = "";
 		}

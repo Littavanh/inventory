@@ -15,7 +15,7 @@ if (isset($_POST['type'])) {
 	// echo '<script>alert("' . count($_POST['type']) . '")</script>';
 
 	$txtDateTran = mysql_real_escape_string(stripslashes($_POST['txtDateTran']));
-	// echo '<script>alert("' . $txtDateTran . '")</script>';
+	
 	$_SESSION['EDPOSV1AddJustDate'] = $txtDateTran;
 	$txtreciever = mysql_real_escape_string(stripslashes($_POST['txtreciever']));
 	$_SESSION['EDPOSV1AddJustReciever'] = $txtreciever;
@@ -148,7 +148,13 @@ if (isset($_POST["btnAddproduct"])) {
 
 	$transferOutID = nr_execute("SELECT CONCAT (DATE_FORMAT(now(), '%Y%m%d'), RAND()*1000) as trantmp");
 
+// echo '<script>alert("' . $txtDateTran . '")</script>';
 
+// echo '<script>alert("' . $txtreciever . '")</script>';
+// echo '<script>alert("' . $txtRemark . '")</script>';
+// echo '<script>alert("' . $txt_release . '")</script>';
+// echo '<script>alert("' . $txt_sector . '")</script>';
+// echo '<script>alert("' . $txtDateWant . '")</script>';
 	$tmp_file_name1 = trim($_FILES["edit_fileUpload"]["tmp_name"]);
 
 	if ($tmp_file_name1 != "") {
@@ -162,8 +168,7 @@ if (isset($_POST["btnAddproduct"])) {
 	$boFile = $_SESSION['EDPOSV1AddProduct_BoFile'];
 
 	$RequestB = LoadRequest();
-	// $itemCount = mysql_num_rows($RequestB);
-	//  echo '<script>alert("'.$itemCount.'")</script>';
+	
 	while ($itemB = mysql_fetch_array($RequestB)) {
 		$addInfoID = $itemB['info_id'];
 		$txtmaterialID = $itemB['materialID'];
@@ -195,11 +200,7 @@ if (isset($_POST["btnAddproduct"])) {
 						from v_transaction WHERE info_id='$addInfoID' and materialID='$txtmaterialID' and active_id = 1  and exp_date='$txtExpDate' and pur_price='$txtpurPrice'  LIMIT 0,1");
 		$success = " ລໍຖ້າອະນຸມັດການເບີກ ...!";
 
-		//============= INSERT HEADER	
-		// sql_execute("INSERT INTO tb_transactionh(tranID, traDate, reciever, remark, status_id, user_add, date_add, active_id, openID, supplierID, info_id, filename
-		// VALUES()
-		// ");
-
+		
 		sql_execute("INSERT INTO tb_export(info_id, tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
 							Dremark, staffName,transferID, pur_price, sale_price,`release`,sector,cur_id,lot_no,
 							bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,status_approve_id,approve_level,approver,po_file,date_want,reason) 
@@ -211,16 +212,17 @@ if (isset($_POST["btnAddproduct"])) {
 
 
 
-		unset($_SESSION['EDPOSV1AddJustDate']);
-		unset($_SESSION['EDPOSV1AddJustReciever']);
-		unset($_SESSION['EDPOSV1AddJustRemark']);
-		unset($_SESSION['EDPOSV1AddJust_Release']);
-		unset($_SESSION['EDPOSV1AddJust_Sector']);
-		unset($_SESSION['EDPOSV1AddProduct_BoFile']);
-
-		sql_execute("DELETE FROM tb_export_request");
+		
 
 	}
+	
 
+	sql_execute("DELETE FROM tb_export_request");
+	unset($_SESSION['EDPOSV1AddJustDate']);
+	unset($_SESSION['EDPOSV1AddJustReciever']);
+	unset($_SESSION['EDPOSV1AddJustRemark']);
+	unset($_SESSION['EDPOSV1AddJust_Release']);
+	unset($_SESSION['EDPOSV1AddJust_Sector']);
+	unset($_SESSION['EDPOSV1AddProduct_BoFile']);
 }
 $SumResult = SumMaterial($whereclause);

@@ -183,10 +183,10 @@ if ($get_auto_id != "") {
 							</thead>
 							<tbody id="body">
 								<?php $i = 1;
-									$num_rows = mysql_num_rows($SumResult);
-									// echo '<script>alert("'.$num_rows.'")</script>';
+								$num_rows = mysql_num_rows($SumResult);
+								// echo '<script>alert("'.$num_rows.'")</script>';
 								while ($item = mysql_fetch_array($SumResult)) {
-									
+
 									$whereGroupID = $item['materialID'];
 									$cvgroup11 = 0;
 									$cvgroup12 = 0;
@@ -213,7 +213,7 @@ if ($get_auto_id != "") {
 										<td class="centered">
 											<?= ($i + $start) ?>
 											<input type="hidden" name="type[]" value="u" />
-											<input type="hidden" name="num" value="<?=$num_rows?>" />
+											<input type="hidden" name="num" value="<?= $num_rows ?>" />
 										</td>
 										<td class="centered">
 											<?= $item['mBarcode'] ?>
@@ -252,7 +252,7 @@ if ($get_auto_id != "") {
 											<?= $item['exp_date'] ?>
 											<input type="hidden" name="txtExpDate[]" value="<?= $item['exp_date'] ?>">
 										</td>
-										
+
 										<?php if ($item['cap3'] > 0) { ?>
 											<td class="eqcodecols"><input type="text" name="txtQTY3[]" size='10%'
 													onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" />
@@ -289,14 +289,22 @@ if ($get_auto_id != "") {
 					<div class="box-footer">
 
 						<!-- <input type="submit" class="btn btn-primary"  value="  ເພີ່ມ  " /> -->
-						<button type="submit" class="btn btn-primary" name="btnAddItem"  >ເພີ່ມ</button>
+						<button type="submit" class="btn btn-primary" name="btnAddItem">ເພີ່ມ</button>
 					</div>
 
 				</div>
 			</div>
 		</div>
-	</form>
-	<form method="post" action="?d=stock/addjust" enctype="multipart/form-data">
+	
+	<?php
+	$Request = LoadRequest();
+
+	$itemCount = mysql_num_rows($Request);
+	// echo '<script>alert("' .$itemCount. '")</script>';
+	if ($itemCount > 0) {
+		 ?>
+
+	
 		<div class="row">
 			<div class="col-md-12">
 				<div class="box">
@@ -320,50 +328,53 @@ if ($get_auto_id != "") {
 							</thead>
 							<tbody>
 								<?php $i = 1;
-								$Request = LoadRequest();
-								while ($item1 = mysql_fetch_array($Request)) {
-									?>
-									<tr>
-										<td class="centered">
-											<?= $i ?>
-										</td>
-										<td class="centered">
-											<?= $item1['mBarcode'] ?>
-										</td>
-										<td>
-											<?= $item1['materialName'] ?>
-										</td>
-										<td class="centered">
-											<?= ($item1['unitQty3']) * (-1) ?>
-										</td>
-										<td class="centered">
-											<?= $item1['exp_date'] ?>
-										</td>
 
-										<td class="centered">
-											<?= $item1['reason'] ?>
-										</td>
+							
 
-									</tr>
 
-									<?php
-									$i++;
-								} ?>
-							</tbody>
-						</table>
+									while ($item1 = mysql_fetch_array($Request)) {
+										?>
+										<tr>
+											<td class="centered">
+												<?= $i ?>
+											</td>
+											<td class="centered">
+												<?= $item1['mBarcode'] ?>
+											</td>
+											<td>
+												<?= $item1['materialName'] ?>
+											</td>
+											<td class="centered">
+												<?= ($item1['unitQty3']) * (-1) ?>
+											</td>
+											<td class="centered">
+												<?= $item1['exp_date'] ?>
+											</td>
 
-					</div>
-					<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
-						<div class="box-footer">
-							<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
-							<input type="submit" class="btn btn-danger" name="btnClear" value="  Clear  " />
+											<td class="centered">
+												<?= $item1['reason'] ?>
+											</td>
 
+										</tr>
+
+										<?php
+										$i++;
+									} ?>
+								</tbody>
+							</table>
 
 						</div>
-					<?php } ?>
+						<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
+							<div class="box-footer">
+								<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
+								<input type="submit" class="btn btn-danger" name="btnClear" value="  Clear  " />
+
+
+							</div>
+						<?php }
+								} ?>
 				</div>
 			</div>
 		</div>
 	</form>
 </section>
-
