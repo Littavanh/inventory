@@ -25,7 +25,10 @@ if (isset($_GET['notification1']) || isset($_GET['EDPOSV1notification2'])) {
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
     <!-- Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -272,19 +275,26 @@ if (isset($_GET['notification1']) || isset($_GET['EDPOSV1notification2'])) {
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
-    <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> -->
     <!-- bootstrap datepicker -->
-    <script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-  
+   
+  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
+  <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js" ></script>
+  <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js" ></script>
+  <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.js" ></script>
+  <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/fixedHeader.dataTables.js" ></script>
+  <script src="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.bootstrap.css" ></script>
   <!-- Select2 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+ 
     <script>
       $(function() {
-        $('#example1').DataTable();
-        $('#example3').DataTable();
-        $('#example4').DataTable();
-        $('#example2').DataTable({
+        $('#example1').DataTable({'fixedHeader': true,'searching': false,});
+
+        $('#example3').DataTable({'fixedHeader': true});
+        $('#example4').DataTable({'fixedHeader': true});
+        $('#example2').DataTable({'fixedHeader': true,
           'paging': false,
           'lengthChange': true,
           'searching': true,
