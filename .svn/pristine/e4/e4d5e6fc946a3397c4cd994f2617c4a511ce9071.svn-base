@@ -1,0 +1,106 @@
+<?php
+	require_once("../config.php"); 
+session_start();
+$TokenKey = $_SESSION['EDPOSV1TokenKey'];
+$user_id = $_SESSION["EDPOSV1user_id"];
+$bu_user_add = $_SESSION['EDPOSV1emp_company'];
+$exist = "";
+$success = "";
+
+function lineManager($TokenKey,$user_id,$api_url)
+{
+
+    $message='';
+    
+    $ch = curl_init($api_url.'Inventory/lineManager');
+	
+   $jsonData = array(
+       'TokenKey' => $TokenKey,
+	   'userId' => $user_id
+   );
+  
+ 
+   $payload = json_encode($jsonData);
+
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    curl_close($ch);
+  
+ 
+    $arr = json_decode($result, true);
+  
+   $_SESSION['StatusCode'] = $arr['StatusCode'];
+   $_SESSION['ModelErrors'] = $arr['ModelErrors'];
+   $_SESSION['IsSuccess'] = $arr['IsSuccess'];
+   $_SESSION['CommonErrors'] = $arr['CommonErrors'];
+   $_SESSION['LineManagerId'] = $arr['LineManagerId'];
+   $_SESSION['LineManagerFullName'] = $arr['LineManagerFullName'];
+   
+//    echo '<script>alert("'.$_SESSION['LineManagerId'].'")</script>';
+  
+	
+   
+}
+lineManager($TokenKey, $user_id, $api_url);
+$lineManagerId = $_SESSION['LineManagerId'];
+
+$txtDateTran=$_GET['txtDateTran']; 
+$txtreciever = $_GET['txtreciever'];
+$txt_Release = $_GET['txt_Release'];
+$txt_Sector = $_GET['txt_Sector'];
+$txtRemark = $_GET['txtRemark'];
+$txtDateWant = $_GET['txtDateWant'];
+
+$addInfoID = $_GET['addInfoID'];
+$txtmaterialID = $_GET['txtmaterialID'];
+$StockSumQTY = $_GET['StockSumQTY'];
+$TranType = $_GET['TranType'];
+$txtReason = $_GET['txtReason'];
+$txtExpDate = $_GET['txtExpDate'];
+$txtPurPrice = $_GET['txtPurPrice'];
+$tranID = $_GET['tranID'];
+$qty = $_GET['qty'];
+
+$transferOutID = nr_execute("SELECT CONCAT (DATE_FORMAT(now(), '%Y%m%d'), RAND()*1000) as trantmp");
+
+
+
+if ($qty <= $StockSumQTY) {
+  $check = mysql_query("select * from v_export_request where user_add='$user_id' and materialID='$txtmaterialID'");
+  $hasRow = mysql_num_rows($check);
+  echo '<script>console.log("hasRow:' . $hasRow . '")</script>';
+  if ($hasRow > 0) {
+    $checkStock = mysql_query("SELECT unitQty3,unitQty3+(-$qty) as futureQty from tb_export_request where user_add='$user_id' and materialID='$txtmaterialID'");
+    $fuQty = mysql_fetch_array($checkStock);
+    $futureQty = (-1) * ($fuQty['futureQty']);
+    echo '<script>console.log("futureQty:' . $futureQty . '")</script>';
+    if ($futureQty <= $StockSumQTY) {
+      sql_execute("UPDATE tb_export_request SET unitQty3=unitQty3 +(-$qty)   WHERE materialID='$txtmaterialID'");
+    } else {
+      $exist .= $txtmaterialName . " ມີຈໍານວນໃນສາງ " . $StockSumQTY . $txtunitname3 . " ກະລຸນາກວດສອບຈໍານວນສິນຄ້າ ...!";
+    }
+
+  } else {
+    echo '<script>alert("qty:' . $qty . '")</script>';
+
+
+   $re= sql_execute("INSERT INTO tb_export_request(info_id, tranID, date_tran, exp_date, materialID, unitQty3, tranType, user_add, date_add,status_id, 
+    Dremark, staffName,transferID, pur_price, sale_price,`release`,sector,cur_id,lot_no,
+    bill_no,bill_date,whouse_no,whouse_date,po_no,po_date,status_approve_id,approve_level,approver,po_file,date_want,reason) 
+     select 	'$addInfoID', tranID, '$txtDateTran', exp_date, materialID, '-$qty', '$TranType','$user_id',NOW() ,1, '$txtRemark', '$txtreciever', 
+         '$transferOutID', pur_price, pur_price as sale_price,'$txt_Release','$txt_Sector',cur_id, lot_no, bill_no,bill_date,whouse,whouseDate,po_no,po_date,3,1,'$lineManagerId','','$txtDateWant','$txtReason'
+     from v_transaction WHERE info_id='$addInfoID' and materialID='$txtmaterialID' and active_id = 1  and exp_date='$txtExpDate' and pur_price='$txtPurPrice'  LIMIT 0,1");
+    // $success = " ລໍຖ້າອະນຸມັດການເບີກ ...!";
+    
+  }
+
+
+
+} else {
+  $exist .= $txtmaterialName . " ມີຈໍານວນໃນສາງ " . $StockSumQTY . $txtunitname3 . " ກະລຸນາກວດສອບຈໍານວນສິນຄ້າ ...!";
+  echo '<script>console.log("exist:' . $exist . '")</script>';
+}
+?>

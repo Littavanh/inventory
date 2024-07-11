@@ -1,0 +1,12 @@
+tmp_transactiond add column mainUnit
+v_tmp_transactiond add column mainUnit
+tb_import_detail add column mainUnit
+v_import_detail add column mainUnit
+tb_import add column bu_user_add
+v_import add column bu_user_add
+tb_export add column bu_user_add
+v_export add column bu_user_add
+
+
+
+05/07/2024 => paeng bu(khg phu berk) br thuek nar doneAddjust and Return All

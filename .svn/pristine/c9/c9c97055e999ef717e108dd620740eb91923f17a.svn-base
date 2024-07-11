@@ -1,0 +1,521 @@
+<?php
+session_start();
+htmltage("ການເບີກສິນຄ້າ");
+if ($_SESSION['EDPOSV1CurStockStatus'] == 2 || !isset($_SESSION['EDPOSV1user_id'])) {
+	header("Location: ?d=index");
+}
+
+
+$get_auto_id = nr_execute("SELECT `release`,date_add FROM tb_export order by date_add DESC limit 1");
+if ($get_auto_id != "") {
+	$autoId = "$get_auto_id" + 1;
+	$bID = str_pad($autoId, 5, '0', STR_PAD_LEFT);
+} else {
+	$bID = str_pad(1, 5, '0', STR_PAD_LEFT);
+}
+
+
+
+?>
+<link type="text/css" rel="stylesheet" href="css/element.css" />
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/Action.js"></script>
+<script type="text/javascript" src="js/calculate.js"></script>
+
+<section class="content-header">
+	<h1>ການເບີກສິນຄ້າ</h1>
+</section>
+<section class="content">
+	<form method="post" id="frmtranD" action="?d=stock/addjust" enctype="multipart/form-data">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h2 style="color:red;" align="center">
+							<?= $success ?>
+						</h2>
+						<h2 style="color:red;" class="errormessage">
+							<?= $exist ?>
+						</h2>
+					</div>
+					<div class="box-body">
+						<div class="row">
+
+							<!-- <div class="form-group col-md-3">
+								<label>BU/ຫົວໜ່ວຍທຸລະກິດ:</label>
+								<?php if ($_SESSION['EDPOSV1role_id']) { ?>
+									<select class="form-control" name="infoID"
+										onChange="document.location='index.php?d=stock/addjust&infoID='+this.value">
+										<?php
+										$rs_info = LoadInfo();
+										while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+											// $selected = $row_c['info_id'] == $row['info_id'] ? "selected" : "";
+											$selected = $row_c['info_id'] == $_GET['infoID'] ? "selected" : "";
+											?>
+											<option value="<?= $row_c['info_id'] ?>" <?= $selected ?>>
+												<?= $row_c['info_name'] ?>
+											</option>
+										<?php } ?>
+									</select>
+								<?php } else { ?>
+									<select name="infoID[]" class="form-control" onChange="FindKF(this.value); " required>
+										<option value="<?= $Get_infoID ?>">
+											<?= $Get_infoName ?>
+										</option>
+									</select>
+								<?php } ?>
+
+							</div> -->
+							<div class="form-group col-md-3">
+								<label>ໝວດສິນຄ້າ:</label>
+
+								<select class="form-control " id="select2" name="kf_id"
+									onChange="document.location='index.php?d=stock/addjust&kf_id='+this.value">
+									<option value="0">--ກະລຸນາເລືອກ--</option>
+									<?php
+									$rs_info = LoadCategory();
+									while ($row_c = mysql_fetch_array($rs_info, MYSQL_ASSOC)) {
+										$selected = $row_c['kf_id'] == $_GET['kf_id'] ? "selected" : "";
+										?>
+
+										<option value="<?= $row_c['kf_id'] ?>" <?= $selected ?>>
+											<?= $row_c['kf_name'] ?>
+										</option>
+									<?php } ?>
+								</select>
+
+
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-3">
+								<label>ວັນຂໍເບີກສິນຄ້າ</label>
+								<div class="input-group date">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="date" name="txtDateTran" id="txtDateTran"
+										class="form-control pull-right" data-date-format="yyyy-mm-dd"
+										value="<?= $_SESSION['EDPOSV1AddJustDate'] ?>" required autocomplete="off" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label>ຜູ່ຂໍເບີກສິນຄ້າ</label>
+								<input type="text" name="txtreciever" id="txtreciever" readonly class="form-control"
+									value="<?= $_SESSION['EDPOSV1lao_fullname'] ?>" required />
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="form-group col-md-3">
+								<label>ໃບສະເໜີຂໍເບີກ ເລກທີ່</label>
+								<input type="text" name="txt_Release" id="txt_Release" readonly class="form-control"
+									value="<?= $bID; ?>" required autocomplete="off" />
+							</div>
+							<div class="form-group col-md-4">
+								<label>ຂະແໜງນຳໃຊ້</label>
+								<input type="text" name="txt_Sector" id="txt_Sector" class="form-control"
+									value="<?= $_SESSION['EDPOSV1AddJust_Sector'] ?>" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label>ໝາຍເຫດ</label>
+								<textarea name="txtRemark" id="txtRemark" class="form-control" cols="50"
+									rows="3"><?= $_SESSION['EDPOSV1AddJustRemark'] ?></textarea>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label>ວັນທີຕ້ອງການ</label>
+								<div class="input-group date">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="date" name="txtDateWant" id="txtDateWant"
+										class="form-control pull-right" data-date-format="yyyy-mm-dd"
+										value="<?= $_SESSION['EDPOSV1AddJustDateWant'] ?>" required
+										autocomplete="off" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label>ແນບໄຟລ</label>
+								<input name="edit_fileUpload" id="edit_fileUpload" class="form-control" type="file"
+									value="<?= $_SESSION['EDPOSV1AddProduct_BoFile'] ?>">
+									<label for="">
+                                    <?= $_SESSION['EDPOSV1AddProduct_BoFile'] ?>
+                                </label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- text centen in table -->
+		<style>
+			th {
+				text-align: center;
+			}
+		</style>
+		<?php
+		$Request = LoadRequest($user_id);
+
+		$itemCount = mysql_num_rows($Request);
+		// echo '<script>alert("' .$itemCount. '")</script>';
+		if ($itemCount > 0) {
+			?>
+
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box">
+
+						<div class="box-body pad table-responsive" style="overflow-x: auto;">
+							<h4>
+								<?= $pagedescription ?>
+							</h4>
+							<table id="example2" class="table table-bordered table-hover beautified editable">
+								<thead>
+									<tr>
+										<th>ລຳດັບ</th>
+										<th>ລະຫັດສິນຄ້າ</th>
+										<th>ລາຍລະອຽດສິນຄ້າ</th>
+										<th>ຈໍານວນຕ້ອງການເບີກ</th>
+										<th>ວັນທີໝົດອາຍຸ</th>
+										<th>ເຫດຜົນ</th>
+										<th></th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<?php $i = 1;
+
+
+
+
+									while ($item1 = mysql_fetch_array($Request)) {
+										?>
+										<tr>
+											<td class="centered">
+												<?= $i ?>
+											</td>
+											<td class="centered">
+												<?= $item1['mBarcode'] ?>
+											</td>
+											<td>
+												<?= $item1['materialName'] ?>
+											</td>
+											<td class="centered">
+												<?= ($item1['unitQty3']) * (-1) ?>
+											</td>
+											<td class="centered">
+												<?= $item1['exp_date'] ?>
+											</td>
+
+											<td class="centered">
+												<?= $item1['reason'] ?>
+											</td>
+											<td>
+												<a href="?d=stock/addjust&id=<?= $item1["traDID"] ?>"
+													onclick="return confirm('ທ່ານຕ້ອງການລຶບແທ້ບໍ...?')"><i
+														class="fa fa-trash-o"></i></a>
+											</td>
+										</tr>
+
+										<?php
+										$i++;
+									} ?>
+								</tbody>
+							</table>
+
+						</div>
+						<?php if (isset($_SESSION['EDPOSV1role_id'])) { ?>
+							<div class="box-footer">
+								<input type="submit" class="btn btn-success" name="btnAddproduct" value="  ບັນທຶກ  " />
+								<input type="submit" class="btn btn-danger" name="btnClear" value="  Clear  " />
+
+
+							</div>
+						<?php }
+						?>
+					</div>
+				</div>
+
+			</div>
+			<?php
+		} ?>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box">
+					<div class="box-body pad table-responsive" style="overflow-x: auto;">
+						<h4>
+							<?= $pagedescription ?>
+						</h4>
+						<table id="example3" class="table table-bordered table-hover beautified editable">
+							<thead>
+								<tr>
+									<th>ລຳດັບ</th>
+									<th>ລະຫັດສິນຄ້າ</th>
+									<th>ລາຍລະອຽດສິນຄ້າ</th>
+									<th>ຈໍານວນໃນສາງ</th>
+									<th>ວັນທີໝົດອາຍຸ</th>
+									<!-- <th>ຈໍານວນ(1)</th>
+									<th>ຈໍານວນ(2)</th>
+									<th>ຈໍານວນ(3)</th> -->
+									<th>ຈໍານວນ</th>
+									<th>ເຫດຜົນ</th>
+									<th>ສະຖານະ</th>
+								</tr>
+							</thead>
+							<tbody id="body">
+								<?php $i = 1;
+								$num_rows = mysql_num_rows($SumResult);
+								// echo '<script>alert("'.$num_rows.'")</script>';
+								while ($item = mysql_fetch_array($SumResult)) {
+
+									$whereGroupID = $item['materialID'];
+									$cvgroup11 = 0;
+									$cvgroup12 = 0;
+									$cvgroup21 = 0;
+									$cvgroup22 = 0;
+									if ($item['cap1'] != 0) {
+										$cvgroup11 = $item['unitQty3'] % $item['cap1'];
+										$cvgroup12 = ($item['unitQty3'] - ($cvgroup11)) / $item['cap1'];
+										$cvgroup21 = $cvgroup11 % $item['cap2'];
+										$cvgroup22 = ($cvgroup11 - $cvgroup21) / $item['cap2'];
+									} else if ($item['cap2'] != 0) {
+										$cvgroup11 = 0;
+										$cvgroup12 = 0;
+										$cvgroup21 = $item['unitQty3'] % $item['cap2'];
+										$cvgroup22 = ($item['unitQty3'] - $cvgroup21) / $item['cap2'];
+									} else if ($item['cap3'] != 0) {
+										$cvgroup11 = 0;
+										$cvgroup12 = 0;
+										$cvgroup21 = $item['unitQty3'];
+										$cvgroup22 = 0;
+									}
+									?>
+									<tr>
+										<td class="centered">
+											<?= ($i + $start) ?>
+											<input type="hidden" name="type[]" id="" value="u" />
+											<input type="hidden" name="num" value="<?= $num_rows ?>" />
+										</td>
+										<td class="centered">
+											<?= $item['mBarcode'] ?>
+										</td>
+										<td>
+											<input type="hidden" name="txtmaterialName[]" id="txtmaterialName<?= $i ?>"
+												value="<?= $item['materialName'] ?>" readonly='true' />
+											<input type="hidden" name="txtPurPrice[]" id="txtPurPrice<?= $i ?>"
+												value="<?= $item['pur_price'] ?>" />
+											<label class="text">
+												<?= $item['materialName'] ?>
+											</label>
+										</td>
+
+										<td><strong>
+
+												<input type="hidden" name="tranID[]" id="tranID<?= $i ?>"
+													value="<?= $item['tranID'] ?>" />
+												<input type="hidden" name="addInfoID[]" id="addInfoID<?= $i ?>"
+													value="<?= $item['info_id'] ?>" />
+												<input type="hidden" name="txtexp_date[]" id="txtexp_date<?= $i ?>"
+													value="<?= $item['exp_date'] ?>" />
+												<input type="hidden" name="id[]" id="id<?= $i ?>"
+													value="<?= $item['materialID'] ?>" />
+												<input type="hidden" name="txtSqty1[]" id="txtSqty1<?= $i ?>"
+													value="<?= $cvgroup12 ?>" />
+												<input type="hidden" name="txtSqty2[]" id="txtSqty2<?= $i ?>"
+													value="<?= $cvgroup22 ?>" />
+												<input type="hidden" name="txtSqty3[]" id="txtSqty3<?= $i ?>"
+													value="<?= $cvgroup21 ?>" />
+												<input type="hidden" name="txtcap1[]" id="txtcap1<?= $i ?>"
+													value="<?= $item['cap1'] ?>" />
+												<input type="hidden" name="txtcap2[]" id="txtcap2<?= $i ?>"
+													value="<?= $item['cap2'] ?>" />
+												<input type="hidden" name="txtcap3[]" id="txtcap3<?= $i ?>"
+													value="<?= $item['cap3'] ?>" />
+												<input type="hidden" name="txtStockQTY[]" id="txtStockQTY<?= $i ?>"
+													value="<?= $item['unitQty3'] ?>" />
+												<input type="hidden" name="txtunitname3[]" id="txtunitname3<?= $i ?>"
+													value="<?= $item['unitName3'] ?>" />
+												<?= $cvgroup21 . $item['unitName3'] ?>
+											</strong>
+										</td>
+										<td class="eqcodecols">
+											<?= $item['exp_date'] ?>
+											<input type="hidden" name="txtExpDate[]" id="txtExpDate<?= $i ?>"
+												value="<?= $item['exp_date'] ?>">
+										</td>
+
+										<?php if ($item['cap3'] > 0) { ?>
+											<td class="eqcodecols"><input type="text" name="txtQTY3[]" id="txtQTY3<?= $i ?>"
+													size='10%' onblur="updateToDatabase(this.value,<?= $i ?>);"
+													onkeyup='AddAndRemoveSeparator(this);' class='number' autocomplete="off" />
+											</td>
+										<?php } else { ?>
+											<td bgcolor="#999999"></td>
+										<?php } ?>
+										<td class="eqcodecols"><input type="text" name="txtReason[]" id="txtReason<?= $i ?>"
+												size='10%' autocomplete="off" />
+										</td>
+										<td class="eqcodecols">
+											<select name="TranType[]" id="TranType<?= $i ?>">
+												<?php
+												$rs_TranType = LoadTranType();
+												while ($row_z = mysql_fetch_array($rs_TranType, MYSQL_ASSOC)) {
+													$selected = $row_z['tranType'] == 19 ? "selected" : "";
+													?>
+													<option value="<?= $row_z['tranType'] ?>" <?= $selected ?>>
+														<?= $row_z['Typename'] ?>
+													</option>
+												<?php } ?>
+											</select>
+										</td>
+									</tr>
+									<?php $i++;
+
+								}
+								?>
+							</tbody>
+						</table>
+
+					</div>
+
+					<div class="box-footer">
+
+						<!-- <input type="submit" class="btn btn-primary"  value="  ເພີ່ມ  " /> -->
+						<button type="submit" class="btn btn-primary" name="btnAddItem">ເພີ່ມ</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</form>
+</section>
+<script>
+	function updateToDatabase(qty, i) {
+		// console.log("qty:" + qty);
+		// console.log("i:" + i);
+
+		var txtDateTran = document.getElementById("txtDateTran").value;
+		var txtreciever = document.getElementById("txtreciever").value;
+		var txt_Release = document.getElementById("txt_Release").value;
+		var txt_Sector = document.getElementById("txt_Sector").value;
+		var txtRemark = document.getElementById("txtRemark").value;
+		var txtDateWant = document.getElementById("txtDateWant").value;
+		// var edit_fileUpload=document.getElementById("edit_fileUpload");
+		// var filename="";
+		// if (document.getElementById("edit_fileUpload").files.length == 0) {
+		// 	console.log("no files selected");
+		// 	filename="";
+		// }else{
+		// 	 filename= document.getElementById("edit_fileUpload").files[0].name;
+		// }
+
+
+
+		var addInfoID = document.getElementById("addInfoID" + i).value;
+		var txtmaterialID = document.getElementById("id" + i).value;
+		var txtmaterialName = document.getElementById("txtmaterialName" + i).value;
+		var txtSqty1 = document.getElementById("txtSqty1" + i).value;
+		var txtSqty2 = document.getElementById("txtSqty2" + i).value;
+		var txtSqty3 = document.getElementById("txtSqty3" + i).value;
+		var StockSumQTY = document.getElementById("txtStockQTY" + i).value;
+		var txtcap1 = document.getElementById("txtcap1" + i).value;
+		var txtcap2 = document.getElementById("txtcap2" + i).value;
+		var txtcap3 = document.getElementById("txtcap3" + i).value;
+		// var txtQTY1 = document.getElementById("txtQTY1" + i).value;
+		// var txtQTY2 = document.getElementById("txtQTY2" + i).value;
+		// var txtQTY3 = document.getElementById("txtQTY3" + i).value;
+		var txtunitname3 = document.getElementById("txtunitname3" + i).value;
+		var TranType = document.getElementById("TranType" + i).value;
+		var txtReason = document.getElementById("txtReason" + i).value;
+		var txtExpDate = document.getElementById("txtExpDate" + i).value;
+		var txtPurPrice = document.getElementById("txtPurPrice" + i).value;
+
+		var tranID = document.getElementById("tranID" + i).value;
+
+
+		// var AddJustSumQTY = (txtcap1 * txtQTY1) + (txtcap2 * txtQTY2) + (txtcap3 * txtQTY3);
+		// console.log("txtDateTran:" + txtDateTran);
+		// console.log("txtreciever:" + txtreciever);
+		// console.log("txt_Release:" + txt_Release);
+		// console.log("txt_Sector:" + txt_Sector);
+		// console.log("txtRemark:" + txtRemark);
+		// console.log("txtDateWant:" + txtDateWant);
+		// console.log("filename:" + filename);
+		// console.log("addInfoID:" + addInfoID);
+		// console.log("txtmaterialID:" + txtmaterialID);
+		// console.log("txtmaterialName:" + txtmaterialName);
+		// console.log("txtSqty1:" + txtSqty1);
+		// console.log("txtSqty2:" + txtSqty2);
+		// console.log("txtSqty3:" + txtSqty3);
+		// console.log("StockSumQTY:" + StockSumQTY);
+		// console.log("txtcap1:" + txtcap1);
+		// console.log("txtcap2:" + txtcap2);
+		// console.log("txtcap3:" + txtcap3);
+		// console.log("txtQTY1:" + txtQTY1);
+		// console.log("txtQTY2:" + txtQTY2);
+		// console.log("txtQTY3:" + txtQTY3);
+		// console.log("txtunitname3:" + txtunitname3);
+		// console.log("TranType:" + TranType);
+		// console.log("txtReason:" + txtReason);
+		// console.log("txtExpDate:" + txtExpDate);
+		// console.log("txtPurPrice:" + txtPurPrice);
+		// console.log("tranID:" + tranID);
+
+		// var lqdid = lqdid;
+		// var score = score;
+
+		if (qty > 0) {
+
+
+			var strURL =
+				"function/addExport.php?txtDateTran=" + txtDateTran + "&txtreciever=" + txtreciever + "&txt_Release=" + txt_Release
+				+ "&txt_Sector=" + txt_Sector + "&txtRemark=" + txtRemark + "&txtDateWant=" + txtDateWant 
+				+ "&addInfoID=" + addInfoID + "&txtmaterialID=" + txtmaterialID + "&StockSumQTY=" + StockSumQTY + "&TranType=" + TranType
+				+ "&txtReason=" + txtReason + "&txtExpDate=" + txtExpDate + "&txtPurPrice=" + txtPurPrice + "&tranID=" + tranID + "&qty=" + qty;
+
+
+			$.ajax({
+				type: "POST",
+				url: strURL,
+				data: {
+					txtDateTran: txtDateTran,
+					txtreciever: txtreciever,
+					txt_Release: txt_Release,
+					txt_Sector: txt_Sector,
+					txtRemark: txtRemark,
+					txtDateWant: txtDateWant,
+					addInfoID: addInfoID,
+					txtmaterialID: txtmaterialID,
+					StockSumQTY: StockSumQTY,
+					TranType: TranType,
+					txtReason: txtReason,
+					txtExpDate: txtExpDate,
+					txtPurPrice: txtPurPrice,
+					tranID: tranID,
+					qty: qty,
+				},
+				cache: false,
+				success: function (data) {
+					// console.log(strURL);
+					// console.log(data);
+					// console.log("qty:" + qty);
+					console.log("data:" + data);
+				},
+				error: function (xhr, status, error) {
+					console.error(xhr);
+				}
+			});
+		}
+	}
+</script>
